@@ -9,6 +9,8 @@ import autogen
 from typing import Dict, List, Any, Optional, Tuple, Callable
 import os
 import sys
+import random
+import math
 
 # Add the project root to the path to fix import issues
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -85,6 +87,62 @@ class ResearcherAgent(autogen.AssistantAgent):
         
         # Register with token system
         self.token_system.register_researcher(self.name)
+        
+        # Track behavior parameters based on bias
+        self.behavior_params = self._initialize_behavior_params()
+        
+        # Track workload (number of accepted reviews)
+        self.current_workload = 0
+        self.max_workload = 5  # Maximum number of ongoing reviews
+    
+    def _initialize_behavior_params(self) -> Dict[str, float]:
+        """
+        Initialize behavior parameters based on researcher bias.
+        
+        Returns:
+            Dictionary of behavioral parameters
+        """
+        # Default parameters for a neutral researcher
+        params = {
+            "acceptance_probability": 0.7,  # Probability of accepting a review request
+            "delay_probability": 0.2,       # Probability of delaying a response
+            "ignore_probability": 0.1,      # Probability of ignoring a request
+            "quality_factor": 1.0,          # Factor affecting review quality
+            "speed_factor": 1.0             # Factor affecting review speed
+        }
+        
+        # Adjust based on bias
+        if self.bias:
+            bias_lower = self.bias.lower()
+            
+            if "friendly" in bias_lower or "helpful" in bias_lower:
+                params["acceptance_probability"] = 0.9
+                params["delay_probability"] = 0.1
+                params["ignore_probability"] = 0.0
+                params["quality_factor"] = 1.2
+                
+            elif "busy" in bias_lower or "slow" in bias_lower:
+                params["acceptance_probability"] = 0.5
+                params["delay_probability"] = 0.4
+                params["ignore_probability"] = 0.1
+                params["speed_factor"] = 0.7
+                
+            elif "thorough" in bias_lower or "detail" in bias_lower:
+                params["quality_factor"] = 1.5
+                params["speed_factor"] = 0.8
+                
+            elif "fast" in bias_lower or "quick" in bias_lower:
+                params["speed_factor"] = 1.3
+                params["quality_factor"] = 0.8
+                
+            elif "malicious" in bias_lower or "adversarial" in bias_lower:
+                params["acceptance_probability"] = 0.6
+                params["quality_factor"] = 0.5
+                
+            elif "selective" in bias_lower or "picky" in bias_lower:
+                params["acceptance_probability"] = 0.4
+                
+        return params
     
     def get_token_balance(self) -> int:
         """
@@ -182,6 +240,117 @@ class ResearcherAgent(autogen.AssistantAgent):
         
         return success, message
     
+    def respond_to_invitation(self, paper_id: str, token_amount: int) -> Tuple[bool, str]:
+        """
+        Respond to a review invitation based on researcher behavior.
+        
+        Args:
+            paper_id: ID of the paper to be reviewed
+            token_amount: Reputation tokens staked on paper (priority signal)
+            
+        Returns:
+            Tuple of (accepted, reason)
+            - accepted: True if invitation accepted, False otherwise
+            - reason: Explanation of the decision
+        """
+        # Get paper details
+        paper = self.paper_db.get_paper(paper_id)
+        if not paper:
+            return False, f"Paper {paper_id} not found"
+        
+        paper_field = paper.get('field', '')
+        
+        # Check workload
+        if self.current_workload >= self.max_workload:
+            return False, "Workload too high, cannot accept more reviews"
+        
+        # Check field compatibility
+        # In a real implementation, this should use the specialty_compatibility matrix
+        # (which should be moved to a central configuration)
+        if paper_field != self.specialty and paper_field not in ["AI", "General"]:
+            # Apply a penalty to acceptance probability for non-matching fields
+            field_compatibility_penalty = 0.5
+        else:
+            field_compatibility_penalty = 1.0
+        
+        # Token influence on probability - logarithmic scale to prevent guaranteed acceptance
+        # Higher tokens increase acceptance probability, but with diminishing returns
+        if token_amount <= 0:
+            token_boost = 0.0
+        else:
+            # Log scale with diminishing returns
+            # Formula: min(0.4, 0.1 * ln(token_amount + 1))
+            # This gives around 0.1 boost at 10 tokens, 0.2 at 70 tokens, 0.3 at 400 tokens, capped at 0.4
+            token_boost = min(0.4, 0.1 * math.log(token_amount + 1))
+        
+        # Calculate final acceptance probability
+        base_probability = self.behavior_params["acceptance_probability"]
+        final_probability = base_probability * field_compatibility_penalty + token_boost
+        
+        # Clamp probability between 0 and 0.95 (never 100% guaranteed)
+        final_probability = max(0.0, min(0.95, final_probability))
+        
+        # Print detailed probability calculation for debugging
+        print(f"Review invitation probability calculation for {self.name}:")
+        print(f"  Base probability: {base_probability:.2f}")
+        print(f"  Field compatibility: {field_compatibility_penalty:.2f}")
+        print(f"  Token boost: {token_boost:.2f} (from {token_amount} tokens)")
+        print(f"  Final probability: {final_probability:.2f}")
+        
+        # Random decision based on probability
+        decision = random.random() < final_probability
+        
+        # Check for ignore or delay behaviors
+        if not decision:
+            if random.random() < self.behavior_params["ignore_probability"]:
+                return False, "Invitation ignored"
+            elif random.random() < self.behavior_params["delay_probability"]:
+                return False, "Response delayed"
+            else:
+                return False, "Invitation declined due to lack of interest or expertise"
+        
+        # If accepting, increment workload
+        self.current_workload += 1
+        
+        return True, f"Review invitation accepted for paper in field: {paper_field}"
+    
+    def get_review_invitations(self) -> List[Dict[str, Any]]:
+        """
+        Get all pending review invitations for this researcher.
+        
+        Returns:
+            List of pending review invitations
+        """
+        invitations = []
+        
+        # Search all papers for invitations to this researcher
+        papers = self.paper_db.get_all_papers()
+        for paper in papers:
+            if "review_invitations" in paper:
+                for invitation in paper["review_invitations"]:
+                    if invitation["reviewer_id"] == self.name and invitation["status"] == "invited":
+                        # Add paper info to invitation
+                        invitation_with_paper = invitation.copy()
+                        invitation_with_paper["paper_id"] = paper["id"]
+                        invitation_with_paper["paper_title"] = paper.get("title", "Untitled")
+                        invitation_with_paper["paper_field"] = paper.get("field", "")
+                        invitations.append(invitation_with_paper)
+        
+        return invitations
+    
+    def complete_review(self, paper_id: str) -> None:
+        """
+        Mark a review as completed and update workload.
+        
+        Args:
+            paper_id: ID of the paper that was reviewed
+        """
+        # Decrement workload when a review is completed
+        if self.current_workload > 0:
+            self.current_workload -= 1
+        
+        # Could also update researcher's performance metrics here
+    
     def submit_review(
         self, 
         paper_id: str, 
@@ -202,40 +371,50 @@ class ResearcherAgent(autogen.AssistantAgent):
         if not paper:
             return False, f"Paper {paper_id} not found"
         
-        # Check if there's a pending review request for this reviewer
-        has_request = False
-        for request in paper['review_requests']:
-            if request['reviewer_id'] == self.name and request['status'] == 'pending':
-                has_request = True
+        # Verify this researcher has been assigned to review this paper
+        # Check both review_requests and review_invitations
+        is_assigned = False
+        
+        # Check in review_requests
+        for request in paper.get('review_requests', []):
+            if request['reviewer_id'] == self.name and request['status'] == 'accepted':
+                is_assigned = True
                 break
-        
-        if not has_request:
-            return False, f"No pending review request found for paper {paper_id}"
-        
-        # Ensure review has required fields
-        if 'reviewer_id' not in review_content:
-            review_content['reviewer_id'] = self.name
-        
-        if 'timestamp' not in review_content:
-            review_content['timestamp'] = self.token_system._get_timestamp()
-        
-        # Add the review to the paper
-        success = self.paper_db.add_review(paper_id, review_content)
-        
-        if success:
-            # Mark review as completed in token system
-            self.token_system.complete_review(self.name, paper_id)
-            
-            # Update review request status
-            for request in paper['review_requests']:
-                if request['reviewer_id'] == self.name and request['status'] == 'pending':
-                    request['status'] = 'completed'
-                    self.paper_db.update_paper(paper_id, {'review_requests': paper['review_requests']})
+                
+        # If not found in review_requests, check in review_invitations
+        if not is_assigned:
+            for invitation in paper.get('review_invitations', []):
+                if invitation['reviewer_id'] == self.name and invitation['status'] == 'accepted':
+                    is_assigned = True
                     break
-            
-            return True, "Review submitted successfully"
-        else:
-            return False, "Failed to submit review"
+        
+        if not is_assigned:
+            return False, f"You are not assigned to review paper {paper_id}"
+        
+        # Add review to paper
+        review = {
+            'reviewer_id': self.name,
+            'content': review_content,
+            'timestamp': self.token_system._get_timestamp()
+        }
+        
+        # Add quality indicators based on behavior
+        quality_factor = self.behavior_params["quality_factor"]
+        review['metadata'] = {
+            'quality_score': round(random.uniform(3, 5) * quality_factor, 1),  # 1-5 scale
+            'thoroughness': round(random.uniform(0.5, 1.0) * quality_factor, 2)  # 0-1 scale
+        }
+        
+        # Add to paper database
+        self.paper_db.add_review(paper_id, review)
+        
+        # Mark review as completed in token system
+        self.token_system.complete_review(self.name, paper_id)
+        
+        # Update researcher workload
+        self.complete_review(paper_id)
+        
+        return True, f"Review submitted for paper {paper_id}"
     
     def get_pending_reviews(self) -> List[Dict[str, Any]]:
         """

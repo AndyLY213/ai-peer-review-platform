@@ -10,6 +10,7 @@ import sys
 import autogen
 import json
 import random
+import time
 from typing import Dict, List, Any, Optional
 from dotenv import load_dotenv
 
@@ -20,6 +21,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from src.data.paper_database import PaperDatabase
 from src.core.token_system import TokenSystem
 from src.agents.researcher_agent import ResearcherAgent
+from src.agents.editor_agent import EditorAgent
 from src.agents.researcher_templates import get_researcher_template, list_researcher_templates
 
 # Load environment variables
@@ -134,12 +136,32 @@ class PeerReviewSimulation:
         # Initialize agents dictionary
         self.agents = {}
         
+        # Initialize editor agent
+        self._create_editor_agent()
+        
         # Initialize user proxy
         self._create_user_proxy()
         
         # Group chat configuration
         self.groupchat = None
         self.manager = None
+        
+        # Specialty compatibility matrix (moved from simulate_random_interactions to make it global)
+        self.specialty_compatibility = {
+            "Artificial Intelligence": ["Artificial Intelligence", "Natural Language Processing", "Computer Vision", "Data Science and Analytics"],
+            "Natural Language Processing": ["Natural Language Processing", "Artificial Intelligence", "Data Science and Analytics"],
+            "Computer Vision": ["Computer Vision", "Artificial Intelligence", "Data Science and Analytics"],
+            "Robotics and Control Systems": ["Robotics and Control Systems", "Artificial Intelligence", "Computer Systems and Architecture"],
+            "Theoretical Computer Science": ["Theoretical Computer Science", "Artificial Intelligence"],
+            "AI Ethics and Fairness": ["AI Ethics and Fairness", "Artificial Intelligence", "Human-Computer Interaction"],
+            "Computer Systems and Architecture": ["Computer Systems and Architecture", "Robotics and Control Systems"],
+            "Human-Computer Interaction": ["Human-Computer Interaction", "AI Ethics and Fairness", "Artificial Intelligence"],
+            "Cybersecurity and Privacy": ["Cybersecurity and Privacy", "Computer Systems and Architecture"],
+            "Data Science and Analytics": ["Data Science and Analytics", "Artificial Intelligence", "Natural Language Processing", "Computer Vision"]
+        }
+        
+        # Simulation logs
+        self.simulation_logs = []
         
         # Assign imported papers to researchers if requested
         # (only effective if researchers are already created)
@@ -158,6 +180,25 @@ class PeerReviewSimulation:
                 "use_docker": False
             }
         )
+    
+    def _create_editor_agent(self):
+        """Create the editor agent for the simulation."""
+        editor_message = (
+            "You are the editor for an academic journal that evaluates and publishes "
+            "research papers. Your job is to screen submissions, invite appropriate reviewers, "
+            "and make final decisions on publication based on reviews."
+        )
+        
+        self.editor = EditorAgent(
+            name="Journal_Editor",
+            journal="Open Science Journal",
+            system_message=editor_message,
+            paper_db=self.paper_db,
+            token_system=self.token_system,
+            llm_config=self.llm_config
+        )
+        
+        print(f"Created editor agent: {self.editor.name}")
     
     def add_researcher_from_template(self, template_name: str) -> Optional[ResearcherAgent]:
         """
@@ -326,26 +367,20 @@ class PeerReviewSimulation:
         if len(researcher_names) < 2:
             return [{"error": "Need at least 2 researchers for simulation"}]
         
-        # Define specialty compatibility matrix with EXACT specialty names as used in the code
-        specialty_compatibility = {
-            "Artificial Intelligence": ["Artificial Intelligence", "Natural Language Processing", "Computer Vision", "Data Science and Analytics"],
-            "Natural Language Processing": ["Natural Language Processing", "Artificial Intelligence", "Data Science and Analytics"],
-            "Computer Vision": ["Computer Vision", "Artificial Intelligence", "Data Science and Analytics"],
-            "Robotics and Control Systems": ["Robotics and Control Systems", "Artificial Intelligence", "Computer Systems and Architecture"],
-            "Theoretical Computer Science": ["Theoretical Computer Science", "Artificial Intelligence"],
-            "AI Ethics and Fairness": ["AI Ethics and Fairness", "Artificial Intelligence", "Human-Computer Interaction"],
-            "Computer Systems and Architecture": ["Computer Systems and Architecture", "Robotics and Control Systems"],
-            "Human-Computer Interaction": ["Human-Computer Interaction", "AI Ethics and Fairness", "Artificial Intelligence"],
-            "Cybersecurity and Privacy": ["Cybersecurity and Privacy", "Computer Systems and Architecture"],
-            "Data Science and Analytics": ["Data Science and Analytics", "Artificial Intelligence", "Natural Language Processing", "Computer Vision"]
-        }
-        
         # Create a dictionary of researchers by specialty for quick lookup
         researchers_by_specialty = {}
         for name, agent in self.agents.items():
             if agent.specialty not in researchers_by_specialty:
                 researchers_by_specialty[agent.specialty] = []
             researchers_by_specialty[agent.specialty].append(name)
+        
+        # Create a dictionary mapping researcher names to data
+        researcher_data = {}
+        for name, agent in self.agents.items():
+            researcher_data[name] = {
+                "specialty": agent.specialty,
+                "bias": agent.bias
+            }
         
         # Log researcher specialties
         print("\nResearcher specialties:")
@@ -355,91 +390,221 @@ class PeerReviewSimulation:
         print("\nStarting interactions...")
         for i in range(num_interactions):
             # Select random interaction type
-            interaction_type = random.choice(["request_review", "generate_review"])
+            interaction_type = random.choice(["submit_paper", "process_invitations", "generate_review", "process_queue"])
             
-            if interaction_type == "request_review":
-                # Random requester
-                requester_name = random.choice(researcher_names)
-                requester = self.agents[requester_name]
+            if interaction_type == "submit_paper":
+                # Random author
+                author_name = random.choice(researcher_names)
+                author = self.agents[author_name]
                 
-                # Get a paper owned by requester
-                papers = requester.get_papers()
-                print(f"\nRequester {requester_name} has {len(papers)} papers")
+                # Create a new paper
+                paper_title = f"Research on {author.specialty} - {i}"
+                paper_abstract = f"This paper presents research in the field of {author.specialty}."
                 
-                if not papers:
+                paper_data = {
+                    "title": paper_title,
+                    "abstract": paper_abstract,
+                    "authors": [author_name],
+                    "field": author.specialty,
+                    "status": "draft"  # Start as draft, will be updated to submitted
+                }
+                
+                # Publish the paper
+                paper_id = author.publish_paper(paper_data)
+                
+                # Determine author's reputation stake (priority signal)
+                # Higher-reputation researchers may stake more
+                author_reputation = self.token_system.get_balance(author_name)
+                
+                # Authors stake between 10% and 30% of their reputation as priority signal
+                # With some randomness to simulate different author behaviors
+                max_stake = int(author_reputation * 0.3)
+                min_stake = min(int(author_reputation * 0.1), 10)  # At least 10 if possible
+                
+                if max_stake <= min_stake:
+                    priority_score = min_stake
+                else:
+                    priority_score = random.randint(min_stake, max_stake)
+                
+                print(f"\nAuthor {author_name} submitting paper ID {paper_id}: {paper_title}")
+                print(f"  - Author reputation: {author_reputation}")
+                print(f"  - Priority signal: {priority_score} tokens")
+                
+                # Submit paper to editor's queue with priority score
+                self.editor.submit_paper(paper_id, priority_score)
+                
+                # Spend author's reputation tokens on priority signal
+                self.token_system.spend_tokens(
+                    researcher_id=author_name,
+                    amount=priority_score,
+                    reason=f"Priority signal for paper {paper_id}"
+                )
+                
+                outcome = {
+                    "interaction": "submit_paper",
+                    "author": author_name,
+                    "paper_id": paper_id,
+                    "paper_title": paper_title,
+                    "paper_field": author.specialty,
+                    "priority_score": priority_score,
+                    "status": "submitted to queue"
+                }
+            
+            elif interaction_type == "process_queue":
+                # Process the next paper in the editor's queue
+                success, message, paper_data = self.editor.process_next_submission()
+                
+                if not success:
+                    print("\nNo papers in queue to process")
                     outcome = {
-                        "interaction": "request_review",
-                        "requester": requester_name,
+                        "interaction": "process_queue",
                         "success": False,
-                        "message": f"Requester {requester_name} has no papers"
+                        "message": "No papers in queue"
+                    }
+                    outcomes.append(outcome)
+                    continue
+                
+                print(f"\nEditor processing paper: {paper_data['title']}")
+                print(f"  - Priority score: {paper_data['priority_score']}")
+                print(f"  - Decision: {paper_data['decision']}")
+                print(f"  - Message: {paper_data['message']}")
+                
+                paper_id = paper_data["paper_id"]
+                
+                if paper_data["decision"] == "accept_for_review":
+                    # Paper passed screening, now invite reviewers
+                    invitations = self.editor.invite_reviewers(
+                        paper_id=paper_id,
+                        potential_reviewers=researcher_names,
+                        specialty_compatibility=self.specialty_compatibility,
+                        reviewer_data=researcher_data,
+                        num_reviewers=3
+                    )
+                    
+                    # Count invitations
+                    num_invited = sum(1 for inv in invitations if inv.get("invited", False))
+                    print(f"Editor invited {num_invited} reviewers for paper {paper_id}")
+                    
+                    # Log invited reviewers
+                    invited_list = [inv["reviewer_id"] for inv in invitations if inv.get("invited", False)]
+                    print(f"Invited reviewers: {', '.join(invited_list)}")
+                    
+                    outcome = {
+                        "interaction": "process_queue",
+                        "paper_id": paper_id,
+                        "paper_title": paper_data["title"],
+                        "author": paper_data["author"],
+                        "priority_score": paper_data["priority_score"],
+                        "screening": "passed",
+                        "invitations_sent": num_invited,
+                        "invited_reviewers": invited_list
                     }
                 else:
-                    # Select random paper
-                    paper = random.choice(papers)
-                    token_amount = random.randint(10, 30)
+                    outcome = {
+                        "interaction": "process_queue",
+                        "paper_id": paper_id,
+                        "paper_title": paper_data["title"],
+                        "author": paper_data["author"],
+                        "priority_score": paper_data["priority_score"],
+                        "screening": "rejected",
+                        "reason": paper_data["message"]
+                    }
+            
+            elif interaction_type == "process_invitations":
+                # Process pending review invitations
+                invitations_processed = 0
+                accepted_invitations = 0
+                
+                # For each researcher, check if they have pending invitations
+                for researcher_name in researcher_names:
+                    researcher = self.agents[researcher_name]
+                    pending_invitations = researcher.get_review_invitations()
                     
-                    # Get paper field, defaulting to the requester's specialty if not set
-                    paper_field = paper.get('field', requester.specialty)
-                    print(f"Paper ID {paper['id']} (field: {paper_field}) selected for review request")
-                    
-                    # Get compatible specialties for this paper
-                    compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
-                    print(f"Compatible specialties: {compatible_specialties}")
-                    
-                    # Find all researchers with compatible specialties
-                    valid_reviewers = []
-                    for specialty in compatible_specialties:
-                        if specialty in researchers_by_specialty:
-                            valid_reviewers.extend([
-                                name for name in researchers_by_specialty[specialty] 
-                                if name != requester_name
-                            ])
-                    
-                    # Remove duplicates
-                    valid_reviewers = list(set(valid_reviewers))
-                    print(f"Valid reviewers: {valid_reviewers}")
-                    
-                    if not valid_reviewers:
-                        outcome = {
-                            "interaction": "request_review",
-                            "requester": requester_name,
-                            "paper_id": paper["id"],
-                            "success": False,
-                            "message": f"No valid reviewers found with specialty compatible with paper field: {paper_field}"
-                        }
-                    else:
-                        # Select random reviewer from valid reviewers
-                        reviewer_name = random.choice(valid_reviewers)
-                        print(f"Selected reviewer: {reviewer_name}")
+                    # Process each invitation
+                    for invitation in pending_invitations:
+                        paper_id = invitation["paper_id"]
+                        paper = self.paper_db.get_paper(paper_id)
                         
-                        # Request review
-                        success, message = requester.request_review(
-                            paper_id=paper["id"],
-                            reviewer_id=reviewer_name,
-                            token_amount=token_amount
+                        if not paper:
+                            continue
+                        
+                        # Get the paper's priority score to influence reviewer decisions
+                        priority_score = paper.get("priority_score", 0)
+                        
+                        # Researcher decides whether to accept invitation
+                        accepted, reason = researcher.respond_to_invitation(paper_id, priority_score)
+                        print(f"\nResearcher {researcher_name} {'accepted' if accepted else 'declined'} "
+                              f"review invitation for paper {paper_id}: {reason}")
+                        
+                        # Process acceptance/rejection with editor
+                        requester_id = paper.get("owner_id", "Unknown")
+                        success, message = self.editor.process_review_acceptance(
+                            paper_id=paper_id,
+                            reviewer_id=researcher_name,
+                            accepted=accepted,
+                            token_amount=priority_score,  # Using priority score for token amount
+                            requester_id=requester_id
                         )
                         
-                        print(f"Review request result: {success}, {message}")
+                        print(f"Editor processed response: {message}")
                         
-                        outcome = {
-                            "interaction": "request_review",
-                            "requester": requester_name,
-                            "reviewer": reviewer_name,
-                            "paper_id": paper["id"],
-                            "paper_field": paper_field,
-                            "reviewer_specialty": self.agents[reviewer_name].specialty,
-                            "token_amount": token_amount,
-                            "success": success,
-                            "message": message
-                        }
+                        invitations_processed += 1
+                        if accepted:
+                            accepted_invitations += 1
+                
+                if invitations_processed == 0:
+                    outcome = {
+                        "interaction": "process_invitations",
+                        "success": False,
+                        "message": "No pending invitations found"
+                    }
+                else:
+                    outcome = {
+                        "interaction": "process_invitations",
+                        "invitations_processed": invitations_processed,
+                        "invitations_accepted": accepted_invitations,
+                        "success": True,
+                        "message": f"Processed {invitations_processed} invitations, {accepted_invitations} accepted"
+                    }
             
             elif interaction_type == "generate_review":
-                # Find pending reviews
+                # Find accepted review requests among all researchers
                 pending_reviews = []
+                
                 for agent_name, agent in self.agents.items():
-                    agent_pending = agent.get_pending_reviews()
-                    for review in agent_pending:
-                        pending_reviews.append((agent_name, review))
+                    # Get all papers
+                    papers = self.paper_db.get_all_papers()
+                    
+                    for paper in papers:
+                        # Check review requests
+                        for request in paper.get('review_requests', []):
+                            if request['reviewer_id'] == agent_name and request['status'] == 'accepted':
+                                # This researcher has accepted a review request for this paper
+                                review_data = {
+                                    "reviewer_id": agent_name,
+                                    "paper_id": paper["id"],
+                                    "paper_title": paper.get("title", "Untitled"),
+                                    "paper_field": paper.get("field", "Unknown"),
+                                    "request": request
+                                }
+                                pending_reviews.append((agent_name, review_data))
+                        
+                        # Also check review invitations
+                        for invitation in paper.get('review_invitations', []):
+                            if invitation['reviewer_id'] == agent_name and invitation['status'] == 'accepted':
+                                # This researcher has accepted a review invitation for this paper
+                                review_data = {
+                                    "reviewer_id": agent_name,
+                                    "paper_id": paper["id"],
+                                    "paper_title": paper.get("title", "Untitled"),
+                                    "paper_field": paper.get("field", "Unknown"),
+                                    "invitation": invitation
+                                }
+                                # Check if already added from review_requests
+                                if not any(data[1]["paper_id"] == paper["id"] and 
+                                          data[1]["reviewer_id"] == agent_name 
+                                          for data in pending_reviews):
+                                    pending_reviews.append((agent_name, review_data))
                 
                 print(f"\nFound {len(pending_reviews)} pending reviews")
                 
@@ -451,14 +616,16 @@ class PeerReviewSimulation:
                     }
                 else:
                     # Select random pending review
-                    reviewer_name, paper = random.choice(pending_reviews)
+                    reviewer_name, review_data = random.choice(pending_reviews)
                     reviewer = self.agents[reviewer_name]
-                    print(f"Selected reviewer {reviewer_name} to complete review for paper ID {paper['id']}")
+                    paper_id = review_data["paper_id"]
+                    
+                    print(f"Selected reviewer {reviewer_name} to complete review for paper ID {paper_id}")
                     
                     # Generate and submit review
-                    review_content = reviewer.generate_review(paper["id"])
+                    review_content = reviewer.generate_review(paper_id)
                     success, message = reviewer.submit_review(
-                        paper_id=paper["id"],
+                        paper_id=paper_id,
                         review_content=review_content
                     )
                     
@@ -468,8 +635,9 @@ class PeerReviewSimulation:
                         "interaction": "generate_review",
                         "reviewer": reviewer_name,
                         "reviewer_specialty": reviewer.specialty,
-                        "paper_id": paper["id"],
-                        "paper_field": paper.get('field', 'Unknown'),
+                        "paper_id": paper_id,
+                        "paper_title": review_data.get("paper_title", "Unknown"),
+                        "paper_field": review_data.get("paper_field", "Unknown"),
                         "success": success,
                         "message": message
                     }
@@ -478,6 +646,16 @@ class PeerReviewSimulation:
             
             # Save interaction to JSON file for analysis
             self._save_interaction(outcome)
+            
+            # Add to simulation logs
+            self.simulation_logs.append({
+                "timestamp": time.time(),
+                "interaction_type": interaction_type,
+                "outcome": outcome
+            })
+            
+            # Pause between interactions
+            time.sleep(0.1)  # Small delay to make output more readable
         
         return outcomes
     
@@ -558,11 +736,17 @@ class PeerReviewSimulation:
             round_results.append(round_result)
             
             # Print brief summary
-            review_requests = sum(1 for i in interaction_results if i["interaction"] == "request_review" and i["success"])
+            papers_submitted = sum(1 for i in interaction_results if i["interaction"] == "submit_paper")
+            papers_accepted = sum(1 for i in interaction_results if i["interaction"] == "submit_paper" and i.get("screening") == "passed")
+            invitations_processed = sum(i.get("invitations_processed", 0) for i in interaction_results if i["interaction"] == "process_invitations")
+            invitations_accepted = sum(i.get("invitations_accepted", 0) for i in interaction_results if i["interaction"] == "process_invitations")
             reviews_completed = sum(1 for i in interaction_results if i["interaction"] == "generate_review" and i["success"])
             
-            print(f"  - Review requests: {review_requests}/{sum(1 for i in interaction_results if i['interaction'] == 'request_review')}")
-            print(f"  - Reviews completed: {reviews_completed}/{sum(1 for i in interaction_results if i['interaction'] == 'generate_review')}")
+            print(f"  - Papers submitted: {papers_submitted}")
+            print(f"  - Papers passing editor screening: {papers_accepted}/{papers_submitted}")
+            print(f"  - Review invitations processed: {invitations_processed}")
+            print(f"  - Review invitations accepted: {invitations_accepted}/{invitations_processed if invitations_processed > 0 else 1}")
+            print(f"  - Reviews completed: {reviews_completed}")
             
             # Print token balances
             print("\n  Current Token Balances:")
@@ -575,7 +759,8 @@ class PeerReviewSimulation:
         # Save full simulation results
         simulation_results = {
             "rounds": round_results,
-            "final_stats": self.get_system_stats()
+            "final_stats": self.get_system_stats(),
+            "logs": self.simulation_logs
         }
         
         results_path = os.path.join(self.workspace_dir, "simulation_results.json")
@@ -596,20 +781,6 @@ class PeerReviewSimulation:
             print("No agents available to assign papers to.")
             return
         
-        # Define specialty compatibility matrix (same as in simulate_random_interactions)
-        specialty_compatibility = {
-            "Artificial Intelligence": ["Artificial Intelligence", "Natural Language Processing", "Computer Vision", "Data Science and Analytics"],
-            "Natural Language Processing": ["Natural Language Processing", "Artificial Intelligence", "Data Science and Analytics"],
-            "Computer Vision": ["Computer Vision", "Artificial Intelligence", "Data Science and Analytics"],
-            "Robotics and Control Systems": ["Robotics and Control Systems", "Artificial Intelligence", "Computer Systems and Architecture"],
-            "Theoretical Computer Science": ["Theoretical Computer Science", "Artificial Intelligence"],
-            "AI Ethics and Fairness": ["AI Ethics and Fairness", "Artificial Intelligence", "Human-Computer Interaction"],
-            "Computer Systems and Architecture": ["Computer Systems and Architecture", "Robotics and Control Systems"],
-            "Human-Computer Interaction": ["Human-Computer Interaction", "AI Ethics and Fairness", "Artificial Intelligence"],
-            "Cybersecurity and Privacy": ["Cybersecurity and Privacy", "Computer Systems and Architecture"],
-            "Data Science and Analytics": ["Data Science and Analytics", "Artificial Intelligence", "Natural Language Processing", "Computer Vision"]
-        }
-        
         # Group agents by specialty
         agents_by_specialty = {}
         for name, agent in self.agents.items():
@@ -629,7 +800,7 @@ class PeerReviewSimulation:
                 paper_field = paper.get("field", "AI")
                 
                 # Find agents with compatible specialties
-                compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
+                compatible_specialties = self.specialty_compatibility.get(paper_field, [paper_field])
                 matching_agents = []
                 
                 for specialty in compatible_specialties:
@@ -787,7 +958,7 @@ class PeerReviewSimulation:
     def display_detailed_researcher_statistics(self):
         """
         Display detailed statistics for each researcher.
-        Shows papers owned, reviews completed, and token activity.
+        Shows papers owned, reviews completed, and reputation metrics.
         """
         print("\n" + "="*50)
         print("DETAILED RESEARCHER STATISTICS")
@@ -803,14 +974,18 @@ class PeerReviewSimulation:
             completed_reviews = self.token_system.get_reviews_by_reviewer(researcher_id)
             transaction_history = self.token_system.get_researcher_transaction_history(researcher_id)
             
-            # Count tokens earned and spent
-            tokens_earned = 0
-            tokens_spent = 0
+            # Count reputation gained and staked
+            reputation_gained = 0
+            reputation_staked = 0
             for tx in transaction_history:
-                if tx.get('type') == 'review_request' and tx.get('requester_id') == researcher_id:
-                    tokens_spent += tx.get('amount', 0)
-                elif tx.get('type') == 'review_request' and tx.get('reviewer_id') == researcher_id:
-                    tokens_earned += tx.get('amount', 0)
+                if tx.get('type') == 'review_completion' and tx.get('reviewer_id') == researcher_id:
+                    if 'reputation_gained' in tx:
+                        reputation_gained += tx.get('reputation_gained', 0)
+                elif tx.get('type') == 'review_request' and tx.get('requester_id') == researcher_id:
+                    if 'priority_score' in tx:
+                        reputation_staked += tx.get('priority_score', 0)
+                    elif 'amount' in tx:  # For backwards compatibility
+                        reputation_staked += tx.get('amount', 0)
             
             # Count papers by status
             papers_by_status = {
@@ -827,9 +1002,9 @@ class PeerReviewSimulation:
             # Print researcher details
             print(f"\n{researcher_id} - {self.agents[researcher_id].specialty}")
             print("-" * 40)
-            print(f"Token Balance: {self.token_system.get_balance(researcher_id)}")
-            print(f"Tokens Earned: {tokens_earned}")
-            print(f"Tokens Spent: {tokens_spent}")
+            print(f"Reputation Score: {self.token_system.get_balance(researcher_id)}")
+            print(f"Reputation Gained: {reputation_gained}")
+            print(f"Reputation Staked: {reputation_staked}")
             print(f"\nPapers Owned: {len(papers)}")
             for status, count in papers_by_status.items():
                 if count > 0:
@@ -846,123 +1021,160 @@ class PeerReviewSimulation:
             if papers:
                 print("\nOwned Papers:")
                 for i, paper in enumerate(papers, 1):
-                    print(f"  {i}. {paper.get('title', 'Untitled')} (Field: {paper.get('field', 'Unknown')})")
+                    title = paper.get('title', 'Untitled')
+                    field = paper.get('field', 'Unknown')
+                    priority = paper.get('priority_score', 0)
+                    print(f"  {i}. {title} (Field: {field}, Priority: {priority})")
             
             # Show completed reviews
             if completed_reviews:
                 print("\nCompleted Reviews for Papers:")
                 for i, review in enumerate(completed_reviews, 1):
                     paper_id = review.get('paper_id')
+                    reputation_gain = review.get('reputation_gained', 'Unknown')
                     paper = self.paper_db.get_paper(paper_id)
                     if paper:
-                        print(f"  {i}. {paper.get('title', 'Untitled')} (ID: {paper_id})")
+                        print(f"  {i}. {paper.get('title', 'Untitled')} (ID: {paper_id}, Reputation Gained: {reputation_gain})")
                     else:
-                        print(f"  {i}. Unknown Paper (ID: {paper_id})")
+                        print(f"  {i}. Unknown Paper (ID: {paper_id}, Reputation Gained: {reputation_gain})")
 
 def main():
-    """Main function to run the peer review simulation."""
-    print("🔬 Peer Review Simulation System")
-    print("--------------------------------")
+    """Main entry point for the peer review simulation."""
+    print("Welcome to the Peer Review Simulation System!")
     
-    # Create simulation
+    # Create the simulation
     simulation = PeerReviewSimulation()
     
-    # Choose simulation mode
-    print("\nSimulation Modes:")
-    print("1. Interactive Mode (chat with researchers)")
-    print("2. Automated Simulation (run rounds of interactions)")
-    print("3. Hybrid Mode (setup researchers and then interact)")
+    # Create researcher agents from templates
+    simulation.create_all_researchers(assign_papers=True)
     
     while True:
-        mode = input("\nEnter simulation mode (1-3): ")
-        if mode in ["1", "2", "3"]:
+        print("\nMain Menu:")
+        print("1. Run automated simulation rounds")
+        print("2. Display researcher statistics")
+        print("3. View papers in review process")
+        print("4. View papers needing reviewers")
+        print("5. View submission queue")
+        print("6. Process next submission")
+        print("7. Start interactive group chat")
+        print("8. Exit")
+        
+        choice = input("\nEnter your choice (1-8): ")
+        
+        if choice == "1":
+            # Run automated simulation
+            num_rounds = int(input("Enter number of rounds: "))
+            interactions_per_round = int(input("Enter interactions per round: "))
+            simulation.run_simulation_rounds(num_rounds, interactions_per_round)
+            
+        elif choice == "2":
+            # Display researcher statistics
+            simulation.display_detailed_researcher_statistics()
+            
+        elif choice == "3":
+            # View papers in review process
+            papers_in_review = simulation.editor.get_papers_in_review()
+            print(f"\nPapers in Review Process ({len(papers_in_review)}):")
+            
+            for i, paper in enumerate(papers_in_review):
+                title = paper.get("title", "Untitled")
+                field = paper.get("field", "Unknown")
+                owner = paper.get("owner_id", "Unknown")
+                reviewers = paper.get("review_status", {}).get("reviewers", [])
+                num_reviewers = len(reviewers)
+                
+                print(f"{i+1}. '{title}' (ID: {paper['id']})")
+                print(f"   Field: {field}, Author: {owner}")
+                print(f"   Reviewers: {', '.join(reviewers) if reviewers else 'None'} ({num_reviewers})")
+                print(f"   Status: {paper.get('status', 'Unknown')}")
+                print()
+                
+        elif choice == "4":
+            # View papers needing reviewers
+            papers_needing_reviewers = simulation.editor.get_papers_needing_reviewers()
+            print(f"\nPapers Needing More Reviewers ({len(papers_needing_reviewers)}):")
+            
+            for i, paper in enumerate(papers_needing_reviewers):
+                title = paper.get("title", "Untitled")
+                field = paper.get("field", "Unknown")
+                owner = paper.get("owner_id", "Unknown")
+                reviewers = paper.get("review_status", {}).get("reviewers", [])
+                current_count = len(reviewers)
+                needed_count = 3 - current_count
+                
+                print(f"{i+1}. '{title}' (ID: {paper['id']})")
+                print(f"   Field: {field}, Author: {owner}")
+                print(f"   Current reviewers: {', '.join(reviewers) if reviewers else 'None'} ({current_count})")
+                print(f"   Needs {needed_count} more reviewer(s)")
+                print()
+        
+        elif choice == "5":
+            # View submission queue
+            queue_status = simulation.editor.get_submission_queue_status()
+            print(f"\nSubmission Queue ({len(queue_status)}):")
+            
+            # Sort by priority (highest first), then submission time (earliest first)
+            queue_status.sort(key=lambda x: (-x["priority_score"], x["submission_time"]))
+            
+            for i, paper in enumerate(queue_status):
+                title = paper.get("title", "Untitled")
+                author = paper.get("author", "Unknown")
+                priority = paper.get("priority_score", 0)
+                
+                print(f"{i+1}. '{title}' (ID: {paper['paper_id']})")
+                print(f"   Author: {author}")
+                print(f"   Priority Score: {priority}")
+                print()
+                
+        elif choice == "6":
+            # Process next submission
+            success, message, paper_data = simulation.editor.process_next_submission()
+            
+            if not success:
+                print("\nNo papers in submission queue.")
+            else:
+                print(f"\nProcessed paper: {paper_data['title']}")
+                print(f"Decision: {paper_data['decision']}")
+                print(f"Message: {paper_data['message']}")
+                
+                if paper_data["decision"] == "accept_for_review":
+                    paper_id = paper_data["paper_id"]
+                    researcher_names = simulation.list_researchers()
+                    researcher_data = {name: {"specialty": simulation.agents[name].specialty} 
+                                      for name in researcher_names}
+                    
+                    # Invite reviewers
+                    invitations = simulation.editor.invite_reviewers(
+                        paper_id=paper_id,
+                        potential_reviewers=researcher_names,
+                        specialty_compatibility=simulation.specialty_compatibility,
+                        reviewer_data=researcher_data,
+                        num_reviewers=3
+                    )
+                    
+                    # Count invitations
+                    num_invited = sum(1 for inv in invitations if inv.get("invited", False))
+                    print(f"Invited {num_invited} reviewers for this paper")
+                
+        elif choice == "7":
+            # Start interactive chat
+            simulation.create_group_chat()
+            
+            initial_message = (
+                "Welcome to the peer review simulation. You can interact with researcher agents "
+                "to discuss papers, request reviews, or ask about their research interests. "
+                "What would you like to discuss today?"
+            )
+            
+            simulation.start_chat(initial_message)
+            
+        elif choice == "8":
+            # Exit
+            print("Thank you for using the Peer Review Simulation System. Goodbye!")
             break
-        print("Invalid choice. Please enter 1, 2, or 3.")
-    
-    # Create researchers
-    print("\nCreating researcher agents...")
-    simulation.create_all_researchers(assign_papers=True)
-    print(f"Created {len(simulation.list_researchers())} researcher agents")
-    
-    if mode == "1":
-        # Interactive Mode
-        print("\nEntering Interactive Mode")
-        print("You can chat with the researchers and observe the peer review process")
-        
-        # Create group chat with all researchers
-        simulation.create_group_chat()
-        
-        # Start the conversation
-        initial_message = """
-        Hello researchers! I'm here to observe your peer review process.
-        You each have papers in the system and can request reviews from each other using tokens.
-        You can also review papers that have been assigned to you.
-        
-        Let's start by having each of you introduce yourself and share your current token balance
-        and papers you've authored.
-        """
-        
-        simulation.start_chat(initial_message)
-    
-    elif mode == "2":
-        # Automated Simulation
-        print("\nEntering Automated Simulation Mode")
-        
-        num_rounds = int(input("Enter number of simulation rounds: ") or "10")
-        interactions_per_round = int(input("Enter number of interactions per round: ") or "5")
-        
-        simulation.run_simulation_rounds(num_rounds, interactions_per_round)
-        
-        # Show final statistics
-        stats = simulation.get_system_stats()
-        
-        print("\nFinal System Statistics:")
-        print(f"Total Papers: {stats['paper_stats']['total_papers']}")
-        print(f"Total Reviews Requested: {stats['token_stats']['total_reviews_requested']}")
-        print(f"Total Reviews Completed: {stats['token_stats']['total_reviews_completed']}")
-        print(f"Total Tokens Spent: {stats['token_stats']['total_tokens_spent']}")
-        
-        print("\nFinal Token Leaderboard:")
-        for i, researcher in enumerate(stats["leaderboard"]):
-            print(f"{i+1}. {researcher['researcher_id']}: {researcher['balance']} tokens")
-        
-        # Display detailed statistics for each researcher
-        simulation.display_detailed_researcher_statistics()
-    
-    elif mode == "3":
-        # Hybrid Mode
-        print("\nEntering Hybrid Mode")
-        print("First, we'll run some automated interactions")
-        
-        num_rounds = int(input("Enter number of automated rounds: ") or "5")
-        interactions_per_round = int(input("Enter number of interactions per round: ") or "3")
-        
-        simulation.run_simulation_rounds(num_rounds, interactions_per_round)
-        
-        # Display detailed statistics for each researcher
-        simulation.display_detailed_researcher_statistics()
-        
-        # Then enter interactive mode
-        print("\nNow switching to interactive mode...")
-        
-        # Create group chat with all researchers
-        simulation.create_group_chat()
-        
-        # Start the conversation
-        initial_message = """
-        Hello researchers! I've been observing your peer review process.
-        
-        Now I'd like to interact with you directly. Please introduce yourselves
-        and share your experiences with the peer review system so far.
-        
-        Specifically:
-        1. How many tokens do you currently have?
-        2. What papers have you authored?
-        3. What reviews have you completed?
-        4. What reviews are still pending for you to complete?
-        """
-        
-        simulation.start_chat(initial_message)
+            
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main() 

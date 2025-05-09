@@ -1,8 +1,9 @@
 """
-Token System for managing the peer review economy.
+Reputation and Priority System for the peer review process.
 
-This module handles the token-based incentive system where researchers
-earn and spend tokens to request and provide peer reviews.
+This module handles the token-based priority system where researchers
+use reputation tokens to signal paper priority and gain visibility.
+Tokens represent academic reputation and review priority, not economic value.
 """
 
 import os
@@ -11,21 +12,29 @@ from typing import Dict, List, Optional, Any, Tuple
 
 class TokenSystem:
     """
-    Token system for managing researcher tokens.
+    Token system for managing researcher reputation and paper priority.
+    
+    Tokens represent a researcher's academic standing and can be used to:
+    - Signal priority for their own papers (spending reputation)
+    - Gain reputation by completing quality reviews (earning reputation)
+    
+    Higher reputation leads to:
+    - Papers being processed with higher priority by editors
+    - Higher likelihood of being selected as a reviewer
     """
     
     def __init__(self, data_path: str = "tokens.json", initial_tokens: int = 100):
         """
-        Initialize the token system.
+        Initialize the reputation system.
         
         Args:
             data_path: Path to the JSON file for persistent storage
-            initial_tokens: Initial token balance for new users
+            initial_tokens: Initial reputation score for new researchers
         """
         self.data_path = data_path
         self.initial_tokens = initial_tokens
-        self.token_balances = {}  # {researcher_id: token_balance}
-        self.transactions = []    # List of transaction records
+        self.token_balances = {}  # {researcher_id: reputation_score}
+        self.transactions = []    # List of reputation transaction records
         
         # Load existing data or initialize fresh
         self._load_data()
@@ -62,19 +71,19 @@ class TokenSystem:
     
     def register_researcher(self, researcher_id: str) -> int:
         """
-        Register a new researcher with initial tokens.
+        Register a new researcher with initial reputation tokens.
         
         Args:
             researcher_id: ID of the researcher
             
         Returns:
-            Current token balance
+            Current reputation score
         """
         # If researcher already exists, just return current balance
         if researcher_id in self.token_balances:
             return self.token_balances[researcher_id]
         
-        # Add new researcher with initial tokens
+        # Add new researcher with initial reputation
         self.token_balances[researcher_id] = self.initial_tokens
         
         # Record transaction
@@ -92,13 +101,13 @@ class TokenSystem:
     
     def get_balance(self, researcher_id: str) -> int:
         """
-        Get the token balance for a researcher.
+        Get the reputation score for a researcher.
         
         Args:
             researcher_id: ID of the researcher
             
         Returns:
-            Current token balance (0 if researcher not found)
+            Current reputation score (0 if researcher not found)
         """
         return self.token_balances.get(researcher_id, 0)
     
@@ -110,20 +119,21 @@ class TokenSystem:
         reason: str
     ) -> Tuple[bool, str]:
         """
-        Transfer tokens from one researcher to another.
+        Transfer reputation tokens from one researcher to another.
+        Used when requesting reviews to signal priority.
         
         Args:
-            from_researcher: ID of the sending researcher
-            to_researcher: ID of the receiving researcher
-            amount: Number of tokens to transfer
-            reason: Reason for the transfer
+            from_researcher: ID of the researcher signaling priority
+            to_researcher: ID of the researcher invited to review
+            amount: Number of reputation tokens to stake on this review
+            reason: Reason for the reputation transfer
             
         Returns:
             Tuple of (success, message)
         """
         # Validate researchers exist
         if from_researcher not in self.token_balances:
-            return False, f"Sender {from_researcher} does not exist"
+            return False, f"Researcher {from_researcher} does not exist"
         
         if to_researcher not in self.token_balances:
             # Auto-register the receiving researcher
@@ -131,19 +141,19 @@ class TokenSystem:
         
         # Validate amount
         if amount <= 0:
-            return False, "Transfer amount must be positive"
+            return False, "Priority signal must be positive"
         
-        # Check sufficient balance
+        # Check sufficient reputation
         if self.token_balances[from_researcher] < amount:
-            return False, f"Insufficient tokens. Balance: {self.token_balances[from_researcher]}, Required: {amount}"
+            return False, f"Insufficient reputation. Current: {self.token_balances[from_researcher]}, Required: {amount}"
         
-        # Perform transfer
+        # Perform transfer - author stakes reputation on priority
         self.token_balances[from_researcher] -= amount
-        self.token_balances[to_researcher] += amount
         
-        # Record transaction
+        # Record transaction - but don't add to reviewer's balance yet
+        # This happens only when review is completed
         transaction = {
-            'type': 'transfer',
+            'type': 'priority_signal',
             'from_researcher': from_researcher,
             'to_researcher': to_researcher,
             'amount': amount,
@@ -155,7 +165,7 @@ class TokenSystem:
         self.transactions.append(transaction)
         
         self._save_data()
-        return True, f"Successfully transferred {amount} tokens"
+        return True, f"Successfully signaled priority with {amount} reputation tokens"
     
     def request_review(
         self, 
@@ -165,13 +175,13 @@ class TokenSystem:
         amount: int
     ) -> Tuple[bool, str]:
         """
-        Request a review by transferring tokens to a reviewer.
+        Request a review by staking reputation tokens on paper priority.
         
         Args:
             requester_id: ID of the researcher requesting the review
             reviewer_id: ID of the researcher to review the paper
             paper_id: ID of the paper to be reviewed
-            amount: Number of tokens to offer for the review
+            amount: Reputation tokens staked to signal paper priority
             
         Returns:
             Tuple of (success, message)
@@ -181,7 +191,7 @@ class TokenSystem:
             from_researcher=requester_id,
             to_researcher=reviewer_id,
             amount=amount,
-            reason=f"Review request for paper {paper_id}"
+            reason=f"Priority signal for paper {paper_id}"
         )
         
         if success:
@@ -191,7 +201,7 @@ class TokenSystem:
                 'requester_id': requester_id,
                 'reviewer_id': reviewer_id,
                 'paper_id': paper_id,
-                'amount': amount,
+                'priority_score': amount,
                 'status': 'pending',
                 'timestamp': self._get_timestamp()
             }
@@ -202,7 +212,7 @@ class TokenSystem:
     
     def complete_review(self, reviewer_id: str, paper_id: str) -> bool:
         """
-        Mark a review as completed.
+        Mark a review as completed and award reputation to the reviewer.
         
         Args:
             reviewer_id: ID of the reviewer
@@ -222,11 +232,20 @@ class TokenSystem:
                 transaction['status'] = 'completed'
                 transaction['completion_timestamp'] = self._get_timestamp()
                 
+                # Award reputation to reviewer
+                priority_score = transaction['priority_score']
+                # Add a reputation bonus based on the priority of the paper
+                reputation_gain = priority_score + 10  # Base reputation gain + priority bonus
+                
+                # Update reviewer's reputation
+                self.token_balances[reviewer_id] += reputation_gain
+                
                 # Record completion transaction
                 completion = {
                     'type': 'review_completion',
                     'reviewer_id': reviewer_id,
                     'paper_id': paper_id,
+                    'reputation_gained': reputation_gain,
                     'related_request': transaction,
                     'timestamp': self._get_timestamp()
                 }
@@ -239,7 +258,7 @@ class TokenSystem:
     
     def cancel_review(self, requester_id: str, reviewer_id: str, paper_id: str) -> Tuple[bool, str]:
         """
-        Cancel a review request and refund tokens.
+        Cancel a review request and refund reputation tokens.
         
         Args:
             requester_id: ID of the researcher who requested the review
@@ -261,10 +280,8 @@ class TokenSystem:
                 transaction['status'] = 'cancelled'
                 transaction['cancellation_timestamp'] = self._get_timestamp()
                 
-                # Refund tokens - no balance check needed here as we're returning tokens 
-                # that were already transferred to the reviewer back to the requester
-                amount = transaction['amount']
-                self.token_balances[reviewer_id] -= amount
+                # Refund reputation tokens to requester (author)
+                amount = transaction['priority_score']
                 self.token_balances[requester_id] += amount
                 
                 # Record cancellation transaction
@@ -273,14 +290,14 @@ class TokenSystem:
                     'requester_id': requester_id,
                     'reviewer_id': reviewer_id,
                     'paper_id': paper_id,
-                    'amount_refunded': amount,
+                    'reputation_refunded': amount,
                     'related_request': transaction,
                     'timestamp': self._get_timestamp()
                 }
                 self.transactions.append(cancellation)
                 
                 self._save_data()
-                return True, f"Review cancelled and {amount} tokens refunded"
+                return True, f"Review cancelled and {amount} reputation tokens returned"
         
         return False, "Review request not found or not in pending status"
     
@@ -326,18 +343,18 @@ class TokenSystem:
     
     def get_leaderboard(self) -> List[Dict[str, Any]]:
         """
-        Get a leaderboard of researchers sorted by token balance.
+        Get a leaderboard of researchers sorted by reputation score.
         
         Returns:
-            List of researchers with their balances, sorted by balance (descending)
+            List of researchers with their reputation scores, sorted by score (descending)
         """
         leaderboard = [
-            {'researcher_id': researcher_id, 'balance': balance}
+            {'researcher_id': researcher_id, 'reputation_score': balance}
             for researcher_id, balance in self.token_balances.items()
         ]
         
-        # Sort by balance (descending)
-        leaderboard.sort(key=lambda x: x['balance'], reverse=True)
+        # Sort by reputation (descending)
+        leaderboard.sort(key=lambda x: x['reputation_score'], reverse=True)
         
         return leaderboard
     
@@ -352,8 +369,8 @@ class TokenSystem:
             'total_reviews_requested': 0,
             'total_reviews_completed': 0,
             'total_reviews_cancelled': 0,
-            'total_tokens_spent': 0,
-            'average_token_per_review': 0,
+            'total_reputation_staked': 0,
+            'average_priority_per_review': 0,
             'researchers': {}
         }
         
@@ -361,7 +378,8 @@ class TokenSystem:
         for transaction in self.transactions:
             if transaction['type'] == 'review_request':
                 stats['total_reviews_requested'] += 1
-                stats['total_tokens_spent'] += transaction['amount']
+                priority_score = transaction.get('priority_score', 0)
+                stats['total_reputation_staked'] += priority_score
                 
                 # Track per researcher
                 requester_id = transaction['requester_id']
@@ -372,33 +390,39 @@ class TokenSystem:
                     stats['researchers'][requester_id] = {
                         'reviews_requested': 0, 
                         'reviews_received': 0,
-                        'tokens_spent': 0,
-                        'tokens_earned': 0
+                        'reputation_staked': 0,
+                        'reputation_gained': 0
                     }
                 
                 if reviewer_id not in stats['researchers']:
                     stats['researchers'][reviewer_id] = {
                         'reviews_requested': 0, 
                         'reviews_received': 0,
-                        'tokens_spent': 0,
-                        'tokens_earned': 0
+                        'reputation_staked': 0,
+                        'reputation_gained': 0
                     }
                 
                 # Update stats
                 stats['researchers'][requester_id]['reviews_requested'] += 1
-                stats['researchers'][requester_id]['tokens_spent'] += transaction['amount']
+                stats['researchers'][requester_id]['reputation_staked'] += priority_score
                 stats['researchers'][reviewer_id]['reviews_received'] += 1
-                stats['researchers'][reviewer_id]['tokens_earned'] += transaction['amount']
             
             elif transaction['type'] == 'review_completion':
                 stats['total_reviews_completed'] += 1
+                # Count reputation gained by reviewer
+                if 'reputation_gained' in transaction:
+                    reviewer_id = transaction['reviewer_id']
+                    if reviewer_id in stats['researchers']:
+                        stats['researchers'][reviewer_id]['reputation_gained'] += transaction['reputation_gained']
             
             elif transaction['type'] == 'review_cancellation':
                 stats['total_reviews_cancelled'] += 1
         
         # Calculate average
         if stats['total_reviews_requested'] > 0:
-            stats['average_token_per_review'] = stats['total_tokens_spent'] / stats['total_reviews_requested']
+            stats['average_priority_per_review'] = (
+                stats['total_reputation_staked'] / stats['total_reviews_requested']
+            )
         
         return stats
     
