@@ -167,7 +167,7 @@ class EditorAgent(autogen.AssistantAgent):
         neg_priority, timestamp, paper_id = heapq.heappop(self.submission_queue)
         
         # Process the paper (screen it)
-        accepted, decision, message = self.screen_paper(paper_id)
+        accepted, decision, message, thought_process = self.screen_paper(paper_id)
         
         # Get paper data
         paper = self.paper_db.get_paper(paper_id)
@@ -178,12 +178,13 @@ class EditorAgent(autogen.AssistantAgent):
             "priority_score": -neg_priority,  # Convert back to positive
             "author": paper.get("owner_id", "Unknown"),
             "decision": decision,
-            "message": message
+            "message": message,
+            "thought_process": thought_process
         }
         
         return True, f"Processed paper {paper_id} with priority {-neg_priority}", paper_data
     
-    def screen_paper(self, paper_id: str) -> Tuple[bool, str, str]:
+    def screen_paper(self, paper_id: str) -> Tuple[bool, str, str, str]:
         """
         Screen a paper for scope fit and quality.
         
@@ -191,35 +192,124 @@ class EditorAgent(autogen.AssistantAgent):
             paper_id: ID of the paper to screen
             
         Returns:
-            Tuple of (acceptance, decision, message)
+            Tuple of (acceptance, decision, message, thought_process)
             - acceptance: True if paper is accepted for review, False otherwise
             - decision: One of "accept_for_review", "desk_reject"
             - message: Explanation of the decision
+            - thought_process: The editor's thought process for the decision
         """
         paper = self.paper_db.get_paper(paper_id)
         if not paper:
-            return False, "desk_reject", f"Paper {paper_id} not found"
+            return False, "desk_reject", f"Paper {paper_id} not found", "Cannot find the paper in the database."
         
-        # Simple screening logic based on paper field
-        # In a real implementation, this would involve LLM-based analysis
-        # or more complex criteria
-        paper_field = paper.get('field', '')
+        paper_title = paper.get('title', 'Untitled')
+        paper_abstract = paper.get('abstract', '')
+        paper_field = paper.get('field', 'Unknown')
+        paper_author = paper.get('owner_id', 'Unknown')
         
-        # Example of desk rejection criteria:
-        # 1. Paper with no title or abstract
-        if not paper.get('title', '') or not paper.get('abstract', ''):
-            return False, "desk_reject", "Paper missing essential information (title or abstract)"
-            
-        # 2. Paper with insufficient content
-        content_length = len(paper.get('abstract', ''))
-        if content_length < 100:  # arbitrary threshold
-            return False, "desk_reject", "Paper abstract too short for proper evaluation"
-            
-        # Accept paper for review
-        # Update paper status
-        self.paper_db.update_paper(paper_id, {"status": "in_review"})
+        # If paper is missing critical information, reject immediately without LLM
+        if not paper_title or not paper_abstract:
+            thought_process = "Paper is missing essential information (title or abstract). This is an immediate desk rejection."
+            return False, "desk_reject", "Paper missing essential information (title or abstract)", thought_process
         
-        return True, "accept_for_review", f"Paper accepted for review in field: {paper_field}"
+        # Construct a prompt for the LLM to evaluate the paper
+        screening_prompt = f"""
+        You are {self.name}, the editor of {self.journal}. You need to screen a paper for initial review.
+        
+        Paper Information:
+        - Title: {paper_title}
+        - Field: {paper_field}
+        - Author: {paper_author}
+        - Abstract: {paper_abstract}
+        
+        Your job is to determine if this paper should be sent out for peer review or desk-rejected.
+        
+        SCREENING GUIDELINES (BE GENEROUS):
+        1. ACCEPT FOR REVIEW if the paper:
+           - Has a clear research topic or methodology mentioned
+           - Shows any technical contribution or experimental work
+           - Mentions specific methods, algorithms, or approaches
+           - Describes results, findings, or evaluations
+           - Is within computer science scope (very broad acceptance)
+        
+        2. DESK REJECT only if the paper:
+           - Is completely off-topic (non-computer science)
+           - Has no abstract or title
+           - Is obviously spam or nonsensical
+           - Contains no research content whatsoever
+        
+        IMPORTANT: Your role is INITIAL SCREENING, not detailed evaluation. Peer reviewers will assess quality, novelty, and technical merit. You should err on the side of ACCEPTANCE unless there are clear, obvious problems.
+        
+        Most computer science papers with reasonable abstracts should be ACCEPTED FOR REVIEW.
+        
+        First, provide your THOUGHT_PROCESS about this decision.
+        Then decide: ACCEPT FOR REVIEW or DESK REJECT
+        Finally, provide brief REASONING.
+        
+        Format your response as:
+        THOUGHT_PROCESS: [Your detailed thinking]
+        DECISION: [ACCEPT FOR REVIEW/DESK REJECT]
+        REASONING: [Brief reasoning]
+        """
+        
+        # Use LLM to make the decision
+        try:
+            raw_response = self.generate_reply(messages=[{"role": "user", "content": screening_prompt}])
+        except Exception as e:
+            raw_response = "Error: Could not contact LLM"
+        
+        # Parse the response
+        decision_str = "DESK REJECT" # Default to reject if parsing fails
+        reasoning = "Could not properly evaluate paper due to an internal error."
+        thought_process = "No thought process recorded."
+        
+        # Handle different response formats (string or dictionary)
+        if isinstance(raw_response, dict) and 'content' in raw_response:
+            # The API returned a dictionary format, extract the content field
+            response_text = raw_response['content']
+        elif isinstance(raw_response, str):
+            # The API returned a string directly
+            response_text = raw_response
+        else:
+            # Unexpected format, try to convert to string
+            print(f"Warning: Unexpected response type from LLM for {self.name}: {type(raw_response)}")
+            try:
+                response_text = str(raw_response)
+            except:
+                response_text = f"Could not convert response to string: {type(raw_response)}"
+                
+        # Try to extract the thought process
+        thought_marker = "THOUGHT_PROCESS:"
+        decision_marker = "DECISION:"
+        reasoning_marker = "REASONING:"
+        
+        thought_process_start = response_text.find(thought_marker)
+        if thought_process_start != -1:
+            thought_process_end = response_text.find(decision_marker, thought_process_start)
+            if thought_process_end != -1:
+                thought_process = response_text[thought_process_start + len(thought_marker):thought_process_end].strip()
+        
+        # Extract decision and reasoning
+        response_lines = response_text.strip().split('\n')
+        for line in response_lines:
+            if line.startswith(decision_marker):
+                decision_str = line.replace(decision_marker, "").strip().upper()
+            elif line.startswith(reasoning_marker):
+                reasoning = line.replace(reasoning_marker, "").strip()
+                
+        # If unable to extract thought process with markers, use the raw response
+        if thought_process == "No thought process recorded." and len(response_text) > 0:
+            thought_process = f"Raw LLM response: {response_text[:200]}..."
+        
+        # Process decision
+        if "ACCEPT FOR REVIEW" in decision_str:
+            # Accept paper for review
+            self.paper_db.update_paper(paper_id, {"status": "in_review"})
+            return True, "accept_for_review", reasoning, thought_process
+        else:
+            # Desk reject
+            self.paper_db.update_paper(paper_id, {"status": "rejected"})
+            return False, "desk_reject", reasoning, thought_process
     
     def invite_reviewers(
         self, 
@@ -387,12 +477,12 @@ class EditorAgent(autogen.AssistantAgent):
                 if accepted:
                     invitation["status"] = "accepted"
                     
-                    # Handle token transfer
+                    # Handle token transfer - use the token_amount passed to this method
                     success, message = self.token_system.request_review(
                         requester_id=requester_id,
                         reviewer_id=reviewer_id,
                         paper_id=paper_id,
-                        amount=token_amount
+                        amount=token_amount  # This should be the priority_score from the simulation
                     )
                     
                     if success:
@@ -400,7 +490,7 @@ class EditorAgent(autogen.AssistantAgent):
                         request = {
                             'reviewer_id': reviewer_id,
                             'requester_id': requester_id,
-                            'token_amount': token_amount,
+                            'token_amount': token_amount,  # Store the actual token amount
                             'status': 'accepted',
                             'timestamp': self.token_system._get_timestamp()
                         }
@@ -408,7 +498,7 @@ class EditorAgent(autogen.AssistantAgent):
                         
                         # Update paper
                         self.paper_db.update_paper(paper_id, {"review_invitations": invitations})
-                        return True, f"Review accepted by {reviewer_id}"
+                        return True, f"Review accepted by {reviewer_id} for {token_amount} tokens"
                     else:
                         invitation["status"] = "failed"  # Failed due to token transfer issues
                         self.paper_db.update_paper(paper_id, {"review_invitations": invitations})

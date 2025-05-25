@@ -512,4 +512,46 @@ class PaperDatabase:
         Returns:
             List of all papers
         """
-        return list(self.papers.values()) 
+        return list(self.papers.values())
+    
+    def update_review_request_status(self, paper_id: str, reviewer_id: str, new_status: str) -> bool:
+        """
+        Update the status of a review request for a given paper and reviewer.
+        
+        Args:
+            paper_id: ID of the paper
+            reviewer_id: ID of the reviewer
+            new_status: New status for the review request (e.g., 'accepted', 'declined', 'completed')
+            
+        Returns:
+            True if the update was successful, False otherwise
+        """
+        paper = self.get_paper(paper_id)
+        if not paper:
+            print(f"Paper {paper_id} not found for review status update")
+            return False
+            
+        # Search for the review request
+        request_found = False
+        for request in paper.get('review_requests', []):
+            if request.get('reviewer_id') == reviewer_id and request.get('status') in ['pending', 'invited']:
+                request['status'] = new_status
+                request_found = True
+                break
+                
+        # If not found in review_requests, try review_invitations
+        if not request_found and 'review_invitations' in paper:
+            for invitation in paper['review_invitations']:
+                if invitation.get('reviewer_id') == reviewer_id and invitation.get('status') == 'invited':
+                    invitation['status'] = new_status
+                    request_found = True
+                    break
+        
+        if request_found:
+            # Save the updated data
+            self.update_paper(paper_id, paper)
+            self._save_data()
+            return True
+        
+        print(f"No pending review request found for reviewer {reviewer_id} on paper {paper_id}")
+        return False 

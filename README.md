@@ -42,29 +42,47 @@ PeerReview/
 
 ## Setup
 
-1. Install the required dependencies:
+1. Create a virtual environment:
+
+```bash
+python -m venv peerreview_env
+```
+
+2. Activate the virtual environment:
+
+On Windows:
+```bash
+peerreview_env\Scripts\activate
+```
+
+On macOS/Linux:
+```bash
+source peerreview_env/bin/activate
+```
+
+3. Install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Download the PeerRead dataset:
+4. Download the PeerRead dataset:
 
 ```bash
 git clone https://github.com/allenai/PeerRead.git
 ```
 
-3. Create a smaller test dataset for faster testing:
+5. Create a smaller test dataset for faster testing:
 
 ```bash
 cd PeerReview
 python src/data/create_test_dataset.py
 ```
 
-4. Configure your Ollama model in `config.env`:
+6. Configure your Ollama model in `config.env`:
 
 ```
-OLLAMA_MODEL=qwen3:4b
+OLLAMA_MODEL=qwen3:30b-a3b
 OLLAMA_API_BASE=http://localhost:11434
 ```
 
@@ -73,7 +91,7 @@ OLLAMA_API_BASE=http://localhost:11434
 Run the main simulation script:
 
 ```bash
-python main.py
+python src/simulation/peer_review_simulation.py
 ```
 
 The script will:

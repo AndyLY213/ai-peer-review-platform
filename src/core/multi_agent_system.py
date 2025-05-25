@@ -8,7 +8,7 @@ load_dotenv("config.env")
 # Configuration for Ollama model
 config_list = [
     {
-        "model": os.getenv("OLLAMA_MODEL", "qwen3:4b"),
+        "model": os.getenv("OLLAMA_MODEL", "qwen3:30b-a3b"),
         "api_base": os.getenv("OLLAMA_API_BASE", "http://localhost:11434"),
         "api_type": "ollama"
     }

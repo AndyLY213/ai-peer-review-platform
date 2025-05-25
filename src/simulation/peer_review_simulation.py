@@ -36,7 +36,7 @@ def create_ollama_config():
     """
     config_list = [
         {
-            "model": os.getenv("OLLAMA_MODEL", "qwen3:4b"),
+            "model": os.getenv("OLLAMA_MODEL", "qwen3:30b-a3b"),
             "base_url": os.getenv("OLLAMA_API_BASE", "http://localhost:11434"),
             "api_type": "ollama"
         }
@@ -389,17 +389,141 @@ class PeerReviewSimulation:
         
         print("\nStarting interactions...")
         for i in range(num_interactions):
-            # Select random interaction type
-            interaction_type = random.choice(["submit_paper", "process_invitations", "generate_review", "process_queue"])
+            # Select interaction type with better logic to ensure workflow progression
+            # Priority: submit papers first, then process them, then handle invitations, then reviews
+            
+            # Check current state to determine best interaction
+            queue_size = len(self.editor.submission_queue)
+            papers_in_review = len(self.editor.papers_in_review)
+            
+            # Count pending invitations across all researchers
+            total_pending_invitations = 0
+            for researcher in self.agents.values():
+                pending_invitations = researcher.get_review_invitations()
+                for invitation in pending_invitations:
+                    if invitation.get('status') == 'invited':
+                        total_pending_invitations += 1
+            
+            # Also check directly in papers for invitations (backup method)
+            if total_pending_invitations == 0:
+                for paper in self.paper_db.get_all_papers():
+                    for invitation in paper.get('review_invitations', []):
+                        if invitation.get('status') == 'invited':
+                            total_pending_invitations += 1
+            
+            # Count pending reviews (accepted invitations)
+            total_pending_reviews = 0
+            for paper in self.paper_db.get_all_papers():
+                for invitation in paper.get('review_invitations', []):
+                    if invitation.get('status') == 'accepted':
+                        total_pending_reviews += 1
+                for request in paper.get('review_requests', []):
+                    if request.get('status') == 'accepted':
+                        total_pending_reviews += 1
+            
+            # Determine interaction type based on current state and ensure workflow progression
+            if i < 3:  # First few interactions should submit papers
+                interaction_type = "submit_paper"
+            elif queue_size > 0:  # Process papers in queue first
+                interaction_type = "process_queue"
+            elif total_pending_invitations > 0:  # Then process invitations BEFORE generating reviews
+                interaction_type = "process_invitations"
+            elif total_pending_reviews > 0:  # Only then generate reviews
+                interaction_type = "generate_review"
+            else:  # Default to submitting more papers or processing queue
+                interaction_type = random.choice(["submit_paper", "process_queue"])
+            
+            print(f"\nInteraction {i+1}: {interaction_type} (Queue: {queue_size}, Invitations: {total_pending_invitations}, Reviews: {total_pending_reviews})")
+            
+            # DEBUG: Print detailed invitation status
+            if total_pending_invitations > 0:
+                print(f"  DEBUG: Found {total_pending_invitations} pending invitations")
+                for researcher_name, researcher in self.agents.items():
+                    invitations = researcher.get_review_invitations()
+                    if invitations:
+                        print(f"    {researcher_name}: {len(invitations)} invitations")
+                        for inv in invitations:
+                            print(f"      - Paper {inv['paper_id']}: {inv['status']}")
+            
+            # DEBUG: Print detailed review status  
+            if total_pending_reviews > 0:
+                print(f"  DEBUG: Found {total_pending_reviews} pending reviews")
+                for paper in self.paper_db.get_all_papers():
+                    for invitation in paper.get('review_invitations', []):
+                        if invitation.get('status') == 'accepted':
+                            print(f"    Paper {paper['id']}: {invitation['reviewer_id']} accepted")
+                    for request in paper.get('review_requests', []):
+                        if request.get('status') == 'accepted':
+                            print(f"    Paper {paper['id']}: {request['reviewer_id']} accepted request")
             
             if interaction_type == "submit_paper":
                 # Random author
                 author_name = random.choice(researcher_names)
                 author = self.agents[author_name]
                 
-                # Create a new paper
+                # Create a more realistic paper with better abstract
                 paper_title = f"Research on {author.specialty} - {i}"
-                paper_abstract = f"This paper presents research in the field of {author.specialty}."
+                
+                # Generate more detailed abstracts based on specialty
+                abstract_templates = {
+                    "Artificial Intelligence": [
+                        "This paper presents a novel deep learning architecture for improving classification accuracy on complex datasets. We introduce a new attention mechanism that reduces computational overhead by 30% while maintaining state-of-the-art performance. Experimental results on benchmark datasets demonstrate significant improvements over existing methods.",
+                        "We propose a reinforcement learning framework for multi-agent coordination in dynamic environments. Our approach combines hierarchical planning with distributed decision-making to achieve robust performance. Evaluation on simulation environments shows 25% improvement in task completion rates.",
+                        "This work introduces a new neural network architecture that integrates symbolic reasoning with connectionist learning. We demonstrate its effectiveness on logical reasoning tasks and show how it bridges the gap between neural and symbolic AI approaches."
+                    ],
+                    "Natural Language Processing": [
+                        "This paper introduces a transformer-based model for cross-lingual sentiment analysis that achieves state-of-the-art performance across 15 languages. Our approach uses multilingual pre-training with domain adaptation techniques. Results show 12% improvement over previous methods on benchmark datasets.",
+                        "We present a novel approach to neural machine translation that incorporates syntactic structure information. Our model uses graph neural networks to encode dependency trees and achieves significant improvements in translation quality, particularly for low-resource language pairs.",
+                        "This work proposes a new method for automatic text summarization using hierarchical attention mechanisms. We evaluate our approach on multiple datasets and demonstrate superior performance in both extractive and abstractive summarization tasks."
+                    ],
+                    "Computer Vision": [
+                        "This paper presents a new convolutional neural network architecture for real-time object detection in autonomous vehicles. Our method achieves 95% accuracy while maintaining 60 FPS processing speed. We evaluate on challenging driving scenarios and demonstrate robust performance in various weather conditions.",
+                        "We introduce a novel approach to image segmentation using self-supervised learning. Our method requires no labeled data and achieves competitive performance with fully supervised methods. Experiments on medical imaging datasets show promising results for clinical applications.",
+                        "This work proposes a new technique for 3D object reconstruction from single images using generative adversarial networks. We demonstrate high-quality reconstructions and evaluate on standard benchmarks with significant improvements over existing methods."
+                    ],
+                    "Robotics and Control Systems": [
+                        "This paper presents a new control algorithm for robotic manipulation in unstructured environments. Our approach combines model predictive control with machine learning to adapt to dynamic conditions. Experimental validation on a 7-DOF robotic arm shows improved task success rates.",
+                        "We introduce a novel path planning algorithm for autonomous mobile robots in crowded environments. Our method uses social force models combined with deep reinforcement learning to navigate safely among humans. Real-world experiments demonstrate effective collision avoidance.",
+                        "This work proposes a new framework for multi-robot coordination in search and rescue operations. We develop distributed algorithms that enable robots to collaborate effectively while maintaining communication constraints."
+                    ],
+                    "Theoretical Computer Science": [
+                        "This paper establishes new complexity bounds for approximation algorithms in the traveling salesman problem. We prove that our proposed algorithm achieves a 1.5-approximation ratio, improving upon previous results. The analysis uses novel techniques from linear programming relaxations.",
+                        "We present a new algorithmic framework for solving maximum flow problems in dynamic graphs. Our approach achieves O(n log n) time complexity per update operation. Theoretical analysis and experimental evaluation demonstrate significant improvements over existing methods.",
+                        "This work introduces new cryptographic protocols for secure multi-party computation. We prove security under standard assumptions and demonstrate practical efficiency improvements over existing protocols."
+                    ],
+                    "AI Ethics and Fairness": [
+                        "This paper analyzes bias in facial recognition systems across different demographic groups. We propose new fairness metrics and demonstrate how algorithmic bias can be reduced through careful dataset curation and model design. Our findings have important implications for deployment in law enforcement.",
+                        "We present a comprehensive study of algorithmic fairness in hiring systems. Our analysis reveals systematic biases against certain groups and proposes mitigation strategies. We evaluate our approaches on real-world hiring datasets with promising results.",
+                        "This work examines the ethical implications of AI decision-making in healthcare. We develop a framework for ensuring transparency and accountability in medical AI systems."
+                    ],
+                    "Computer Systems and Architecture": [
+                        "This paper presents a new memory management system for high-performance computing applications. Our approach reduces memory access latency by 40% through intelligent prefetching and caching strategies. Evaluation on scientific computing workloads shows significant performance improvements.",
+                        "We introduce a novel distributed computing framework for processing large-scale graph data. Our system achieves linear scalability and fault tolerance through innovative partitioning and replication strategies. Experiments on real-world datasets demonstrate superior performance.",
+                        "This work proposes new techniques for optimizing energy consumption in data centers. We develop algorithms that balance performance and power efficiency, achieving 25% energy savings without compromising service quality."
+                    ],
+                    "Human-Computer Interaction": [
+                        "This paper investigates user experience in virtual reality environments for educational applications. We conduct user studies with 200 participants and identify key design principles for effective VR learning interfaces. Our findings inform the development of next-generation educational technologies.",
+                        "We present a new interaction paradigm for mobile devices using gesture recognition. Our approach combines computer vision with machine learning to enable natural hand gestures for device control. User studies demonstrate improved usability and user satisfaction.",
+                        "This work examines accessibility challenges in modern web applications. We propose design guidelines and automated testing tools to improve accessibility for users with disabilities."
+                    ],
+                    "Cybersecurity and Privacy": [
+                        "This paper presents a new intrusion detection system using deep learning techniques. Our approach achieves 99.2% accuracy in detecting network attacks while maintaining low false positive rates. Evaluation on real network traffic demonstrates effectiveness against zero-day attacks.",
+                        "We introduce novel privacy-preserving techniques for machine learning on sensitive data. Our methods use differential privacy and secure multi-party computation to protect individual privacy while enabling useful analytics. Theoretical analysis proves strong privacy guarantees.",
+                        "This work proposes new cryptographic protocols for secure communication in IoT networks. We address the unique constraints of IoT devices while maintaining strong security properties."
+                    ],
+                    "Data Science and Analytics": [
+                        "This paper presents a new framework for real-time anomaly detection in streaming data. Our approach combines statistical methods with machine learning to identify unusual patterns with high accuracy. Evaluation on financial and network data shows superior performance over existing methods.",
+                        "We introduce novel techniques for handling missing data in large-scale datasets. Our methods use advanced imputation strategies that preserve statistical properties while improving analysis accuracy. Experiments on real-world datasets demonstrate significant improvements.",
+                        "This work proposes new visualization techniques for high-dimensional data analysis. We develop interactive tools that help analysts discover patterns and insights in complex datasets."
+                    ]
+                }
+                
+                # Select a random abstract template for the author's specialty
+                specialty_abstracts = abstract_templates.get(author.specialty, [
+                    f"This paper presents novel research in {author.specialty} with significant theoretical and practical contributions. We propose new methods that advance the state-of-the-art and demonstrate their effectiveness through comprehensive evaluation."
+                ])
+                
+                paper_abstract = random.choice(specialty_abstracts)
                 
                 paper_data = {
                     "title": paper_title,
@@ -416,15 +540,17 @@ class PeerReviewSimulation:
                 # Higher-reputation researchers may stake more
                 author_reputation = self.token_system.get_balance(author_name)
                 
-                # Authors stake between 10% and 30% of their reputation as priority signal
-                # With some randomness to simulate different author behaviors
-                max_stake = int(author_reputation * 0.3)
-                min_stake = min(int(author_reputation * 0.1), 10)  # At least 10 if possible
+                # Authors stake between 5% and 20% of their reputation as priority signal
+                # With a minimum of 5 tokens and maximum of 50 tokens
+                min_stake = max(5, int(author_reputation * 0.05))  # At least 5 tokens
+                max_stake = min(50, int(author_reputation * 0.20))  # At most 50 tokens or 20% of reputation
                 
-                if max_stake <= min_stake:
-                    priority_score = min_stake
-                else:
-                    priority_score = random.randint(min_stake, max_stake)
+                # Ensure max_stake is at least min_stake
+                if max_stake < min_stake:
+                    max_stake = min_stake
+                
+                # Add some randomness to simulate different author behaviors
+                priority_score = random.randint(min_stake, max_stake)
                 
                 print(f"\nAuthor {author_name} submitting paper ID {paper_id}: {paper_title}")
                 print(f"  - Author reputation: {author_reputation}")
@@ -433,12 +559,11 @@ class PeerReviewSimulation:
                 # Submit paper to editor's queue with priority score
                 self.editor.submit_paper(paper_id, priority_score)
                 
-                # Spend author's reputation tokens on priority signal
-                self.token_system.spend_tokens(
-                    researcher_id=author_name,
-                    amount=priority_score,
-                    reason=f"Priority signal for paper {paper_id}"
-                )
+                # NOTE: Tokens are NOT spent here anymore. They will only be spent when:
+                # 1. Paper passes editor screening
+                # 2. Reviewers are invited and accept
+                # 3. Actual review process begins
+                # This prevents token drain from desk-rejected papers
                 
                 outcome = {
                     "interaction": "submit_paper",
@@ -466,8 +591,9 @@ class PeerReviewSimulation:
                 
                 print(f"\nEditor processing paper: {paper_data['title']}")
                 print(f"  - Priority score: {paper_data['priority_score']}")
+                print(f"  - Editor's Thought Process: {paper_data['thought_process']}")
                 print(f"  - Decision: {paper_data['decision']}")
-                print(f"  - Message: {paper_data['message']}")
+                print(f"  - Reasoning: {paper_data['message']}")
                 
                 paper_id = paper_data["paper_id"]
                 
@@ -483,11 +609,11 @@ class PeerReviewSimulation:
                     
                     # Count invitations
                     num_invited = sum(1 for inv in invitations if inv.get("invited", False))
-                    print(f"Editor invited {num_invited} reviewers for paper {paper_id}")
+                    print(f"  Editor invited {num_invited} reviewers for paper {paper_id}")
                     
                     # Log invited reviewers
                     invited_list = [inv["reviewer_id"] for inv in invitations if inv.get("invited", False)]
-                    print(f"Invited reviewers: {', '.join(invited_list)}")
+                    print(f"  Invited reviewers: {', '.join(invited_list)}")
                     
                     outcome = {
                         "interaction": "process_queue",
@@ -496,10 +622,19 @@ class PeerReviewSimulation:
                         "author": paper_data["author"],
                         "priority_score": paper_data["priority_score"],
                         "screening": "passed",
+                        "editor_thought_process": paper_data["thought_process"],
                         "invitations_sent": num_invited,
                         "invited_reviewers": invited_list
                     }
                 else:
+                    # Paper was desk-rejected
+                    # Ensure no tokens were spent on this paper since it won't be reviewed
+                    paper_id = paper_data["paper_id"]
+                    author_name = paper_data["author"]
+                    priority_score = paper_data["priority_score"]
+                    
+                    print(f"  Paper {paper_id} was desk-rejected - no tokens spent on priority signal")
+                    
                     outcome = {
                         "interaction": "process_queue",
                         "paper_id": paper_id,
@@ -507,6 +642,7 @@ class PeerReviewSimulation:
                         "author": paper_data["author"],
                         "priority_score": paper_data["priority_score"],
                         "screening": "rejected",
+                        "editor_thought_process": paper_data["thought_process"],
                         "reason": paper_data["message"]
                     }
             
@@ -514,6 +650,7 @@ class PeerReviewSimulation:
                 # Process pending review invitations
                 invitations_processed = 0
                 accepted_invitations = 0
+                processed_invitations = []  # Track which invitations we've processed
                 
                 # For each researcher, check if they have pending invitations
                 for researcher_name in researcher_names:
@@ -523,18 +660,28 @@ class PeerReviewSimulation:
                     # Process each invitation
                     for invitation in pending_invitations:
                         paper_id = invitation["paper_id"]
-                        paper = self.paper_db.get_paper(paper_id)
                         
+                        # Skip if we've already processed this invitation
+                        invitation_key = f"{researcher_name}_{paper_id}"
+                        if invitation_key in processed_invitations:
+                            continue
+                        
+                        paper = self.paper_db.get_paper(paper_id)
                         if not paper:
                             continue
                         
                         # Get the paper's priority score to influence reviewer decisions
                         priority_score = paper.get("priority_score", 0)
                         
+                        print(f"  [DEBUG] Paper {paper_id} priority_score from database: {priority_score}")
+                        
                         # Researcher decides whether to accept invitation
-                        accepted, reason = researcher.respond_to_invitation(paper_id, priority_score)
-                        print(f"\nResearcher {researcher_name} {'accepted' if accepted else 'declined'} "
-                              f"review invitation for paper {paper_id}: {reason}")
+                        accepted, reason, thought_process = researcher.respond_to_invitation(paper_id, priority_score)
+                        
+                        print(f"\nResearcher {researcher_name} (Personality: {researcher.personality}) responding to review invitation for paper {paper_id}:")
+                        print(f"  Thought Process: {thought_process}")
+                        print(f"  Decision: {'ACCEPTED' if accepted else 'DECLINED'}")
+                        print(f"  Reasoning: {reason}")
                         
                         # Process acceptance/rejection with editor
                         requester_id = paper.get("owner_id", "Unknown")
@@ -546,8 +693,10 @@ class PeerReviewSimulation:
                             requester_id=requester_id
                         )
                         
-                        print(f"Editor processed response: {message}")
+                        print(f"  Editor processed response: {message}")
                         
+                        # Mark this invitation as processed
+                        processed_invitations.append(invitation_key)
                         invitations_processed += 1
                         if accepted:
                             accepted_invitations += 1
@@ -564,8 +713,32 @@ class PeerReviewSimulation:
                         "invitations_processed": invitations_processed,
                         "invitations_accepted": accepted_invitations,
                         "success": True,
-                        "message": f"Processed {invitations_processed} invitations, {accepted_invitations} accepted"
+                        "message": f"Processed {invitations_processed} invitations, {accepted_invitations} accepted",
+                        "thought_processes": [] # To store all thought processes from this batch
                     }
+                    
+                    # We need to collect thought processes from each invitation response
+                    for researcher_name in researcher_names:
+                        researcher = self.agents[researcher_name]
+                        pending_invitations = researcher.get_review_invitations()
+                        
+                        for invitation in pending_invitations:
+                            paper_id = invitation["paper_id"]
+                            paper = self.paper_db.get_paper(paper_id)
+                            
+                            if paper:
+                                # Add details to thought_processes list in the outcome
+                                outcome["thought_processes"].append({
+                                    "reviewer": researcher_name,
+                                    "reviewer_personality": researcher.personality,
+                                    "paper_id": paper_id,
+                                    "paper_title": paper.get("title", "Unknown Paper"),
+                                    "author": paper.get("owner_id", "Unknown Author"),
+                                    # Note: We don't have the thought process here because we've already 
+                                    # called respond_to_invitation and didn't save the results.
+                                    # The thought process is already printed to console during the interaction.
+                                    "thought_summary": f"Review invitation response from {researcher_name} for paper {paper_id}"
+                                })
             
             elif interaction_type == "generate_review":
                 # Find accepted review requests among all researchers
@@ -620,20 +793,59 @@ class PeerReviewSimulation:
                     reviewer = self.agents[reviewer_name]
                     paper_id = review_data["paper_id"]
                     
-                    print(f"Selected reviewer {reviewer_name} to complete review for paper ID {paper_id}")
+                    print(f"\nReviewer {reviewer_name} (Personality: {reviewer.personality}) is generating a review for paper ID {paper_id} by {review_data.get('author', 'Unknown Author')}...")
                     
-                    # Generate and submit review
-                    review_content = reviewer.generate_review(paper_id)
+                    # Generate review (which now includes thought process)
+                    generated_data = reviewer.generate_review(paper_id)
+                    review_content = generated_data.get("review_content", {"error": "No review content generated"})
+                    thought_process = generated_data.get("thought_process", "No thought process recorded.")
+                    
+                    print(f"  Reviewer's Thought Process: {thought_process}")
+                    # print(f"  Generated Review Content (JSON): {json.dumps(review_content, indent=2)}") # Optional: for detailed debugging
+
+                    # Submit the actual review content
                     success, message = reviewer.submit_review(
                         paper_id=paper_id,
-                        review_content=review_content
+                        review_content=review_content # Pass the parsed JSON review content
                     )
                     
-                    print(f"Review submission result: {success}, {message}")
+                    print(f"  Review submission result: {success}, {message}")
+
+                    if success:
+                        # Award tokens to the reviewer using TokenSystem
+                        # and record it in the reviewer's memory
+                        completed_successfully, reputation_gained = self.token_system.complete_review(reviewer.name, paper_id)
+                        if completed_successfully:
+                            print(f"  TokenSystem: Awarded {reputation_gained} tokens to {reviewer.name} for reviewing {paper_id}.")
+                            reviewer.record_token_award(
+                                amount=reputation_gained, 
+                                reason="review_completion_reward", 
+                                related_to=f"review_for_{paper_id}", 
+                                awarded_by="System/Editor"
+                            )
+                            
+                            # Notify the author about the review (and its outcome if available from review_content)
+                            paper_details = self.paper_db.get_paper(paper_id)
+                            if paper_details and paper_details.get('owner_id'):
+                                author_agent = self.agents.get(paper_details['owner_id'])
+                                if author_agent:
+                                    # The review_content is what the LLM generated.
+                                    # It should ideally contain structured fields like 'decision', 'score', 'comments'
+                                    # For now, we pass the whole content.
+                                    author_agent.record_review_outcome(
+                                        paper_id=paper_id, 
+                                        reviewer_id=reviewer.name, 
+                                        review_details=review_content # Pass the actual review content to the author
+                                    )
+                                    print(f"  Notified author {author_agent.name} about review for paper {paper_id} by {reviewer.name}.")
+                        else:
+                            print(f"  TokenSystem: Review completed but no matching request found for {reviewer.name}, paper {paper_id}. Awarded base reputation.")
                     
                     outcome = {
                         "interaction": "generate_review",
                         "reviewer": reviewer_name,
+                        "reviewer_personality": reviewer.personality, # Added for logging
+                        "thought_process": thought_process, # Added for logging
                         "reviewer_specialty": reviewer.specialty,
                         "paper_id": paper_id,
                         "paper_title": review_data.get("paper_title", "Unknown"),
@@ -719,7 +931,9 @@ class PeerReviewSimulation:
         print(f"Starting simulation with {num_rounds} rounds, {interactions_per_round} interactions per round")
         
         for round_num in range(1, num_rounds + 1):
-            print(f"\nRound {round_num}/{num_rounds}:")
+            print(f"\n{'-'*80}")
+            print(f"ROUND {round_num}/{num_rounds}:")
+            print(f"{'-'*80}")
             
             # Simulate interactions
             interaction_results = self.simulate_random_interactions(interactions_per_round)
@@ -735,15 +949,80 @@ class PeerReviewSimulation:
             }
             round_results.append(round_result)
             
-            # Print brief summary
+            # Print detailed interaction results with thought processes
+            print("\nInteraction Results:")
+            for i, interaction in enumerate(interaction_results, 1):
+                interaction_type = interaction.get("interaction", "unknown")
+                print(f"\n  {i}. {interaction_type.upper()}")
+                
+                if interaction_type == "generate_review":
+                    reviewer = interaction.get("reviewer", "Unknown")
+                    personality = interaction.get("reviewer_personality", "Unknown")
+                    paper_title = interaction.get("paper_title", "Unknown Paper")
+                    thought_process = interaction.get("thought_process", "No thought process recorded")
+                    
+                    print(f"    Reviewer: {reviewer} (Personality: {personality})")
+                    print(f"    Paper: {paper_title}")
+                    print(f"    Thought Process: {thought_process[:300]}..." if len(thought_process) > 300 else f"    Thought Process: {thought_process}")
+                
+                elif interaction_type == "process_invitations":
+                    if interaction.get("success", False):
+                        print(f"    Processed {interaction.get('invitations_processed', 0)} invitations")
+                        print(f"    Accepted {interaction.get('invitations_accepted', 0)} invitations")
+                        
+                        # Display individual invitation thought processes if available
+                        thought_processes = interaction.get("thought_processes", [])
+                        if thought_processes:
+                            print(f"\n    Reviewer decisions:")
+                            for idx, tp in enumerate(thought_processes, 1):
+                                reviewer = tp.get("reviewer", "Unknown")
+                                personality = tp.get("reviewer_personality", "Unknown")
+                                paper_title = tp.get("paper_title", "Unknown Paper")
+                                thought_summary = tp.get("thought_summary", "No thought process recorded")
+                                
+                                print(f"    {idx}. {reviewer} (Personality: {personality}) - Paper: {paper_title}")
+                                # Note: actual thought process text was printed during the simulation in real-time
+                                # but we can't access it here because it wasn't stored in the outcome
+                    else:
+                        print(f"    {interaction.get('message', 'No pending invitations')}")
+                
+                elif interaction_type == "process_queue":
+                    if interaction.get("success", False) != False:
+                        paper_title = interaction.get("paper_title", "Unknown Paper")
+                        decision = interaction.get("screening", "Unknown decision")
+                        editor_thought = interaction.get("editor_thought_process", "No thought process recorded")
+                        
+                        print(f"    Paper: {paper_title}")
+                        print(f"    Decision: {decision.upper()}")
+                        print(f"    Editor's Thought Process: {editor_thought[:300]}..." if len(editor_thought) > 300 else f"    Editor's Thought Process: {editor_thought}")
+                        
+                        if decision == "passed":
+                            print(f"    Invited {interaction.get('invitations_sent', 0)} reviewers")
+                    else:
+                        print(f"    {interaction.get('message', 'No papers in queue')}")
+                
+                elif interaction_type == "submit_paper":
+                    author = interaction.get("author", "Unknown")
+                    paper_title = interaction.get("paper_title", "Unknown Paper")
+                    priority = interaction.get("priority_score", 0)
+                    
+                    print(f"    Author: {author}")
+                    print(f"    Paper: {paper_title}")
+                    print(f"    Priority Score: {priority}")
+            
+            # Print summary statistics
+            print(f"\n{'-'*50}")
+            print("Round Summary:")
+            print(f"{'-'*50}")
+            
             papers_submitted = sum(1 for i in interaction_results if i["interaction"] == "submit_paper")
-            papers_accepted = sum(1 for i in interaction_results if i["interaction"] == "submit_paper" and i.get("screening") == "passed")
+            papers_accepted = sum(1 for i in interaction_results if i["interaction"] == "process_queue" and i.get("screening") == "passed")
             invitations_processed = sum(i.get("invitations_processed", 0) for i in interaction_results if i["interaction"] == "process_invitations")
             invitations_accepted = sum(i.get("invitations_accepted", 0) for i in interaction_results if i["interaction"] == "process_invitations")
             reviews_completed = sum(1 for i in interaction_results if i["interaction"] == "generate_review" and i["success"])
             
             print(f"  - Papers submitted: {papers_submitted}")
-            print(f"  - Papers passing editor screening: {papers_accepted}/{papers_submitted}")
+            print(f"  - Papers passing editor screening: {papers_accepted}/{papers_submitted if papers_submitted > 0 else 1}")
             print(f"  - Review invitations processed: {invitations_processed}")
             print(f"  - Review invitations accepted: {invitations_accepted}/{invitations_processed if invitations_processed > 0 else 1}")
             print(f"  - Reviews completed: {reviews_completed}")
@@ -1038,6 +1317,38 @@ class PeerReviewSimulation:
                     else:
                         print(f"  {i}. Unknown Paper (ID: {paper_id}, Reputation Gained: {reputation_gain})")
 
+    def clear_generic_papers(self):
+        """
+        Clear papers with generic abstracts that might interfere with simulation.
+        This ensures we start with fresh, realistic papers.
+        """
+        papers = self.paper_db.get_all_papers()
+        papers_to_remove = []
+        
+        for paper in papers:
+            abstract = paper.get('abstract', '')
+            title = paper.get('title', '')
+            
+            # Identify generic papers by checking for minimal abstracts
+            if (len(abstract) < 100 or  # Very short abstracts
+                'this paper presents research in the field' in abstract.lower() or
+                'research on' in title and len(abstract) < 150):
+                papers_to_remove.append(paper['id'])
+        
+        # Remove generic papers
+        for paper_id in papers_to_remove:
+            self.paper_db.delete_paper(paper_id)
+        
+        if papers_to_remove:
+            print(f"Cleared {len(papers_to_remove)} generic papers from database")
+            self.paper_db._save_data()
+        
+        # Clear the editor's submission queue
+        self.editor.submission_queue = []
+        
+        # Reset papers in review tracking
+        self.editor.papers_in_review = {}
+
 def main():
     """Main entry point for the peer review simulation."""
     print("Welcome to the Peer Review Simulation System!")
@@ -1047,6 +1358,9 @@ def main():
     
     # Create researcher agents from templates
     simulation.create_all_researchers(assign_papers=True)
+    
+    # Clear any existing generic papers to ensure fresh simulation
+    simulation.clear_generic_papers()
     
     while True:
         print("\nMain Menu:")
