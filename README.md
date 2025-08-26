@@ -204,17 +204,23 @@ INCLUDE_REVIEWS = True
 
 ```
 ai-peer-review-platform/
-├── src/
+├── src/                     # Source code
 │   ├── agents/              # Researcher agents and templates
 │   ├── core/                # Core systems (tokens, LLM clients)
 │   ├── data/                # Data models and database
 │   ├── enhancements/        # Advanced features (bias, networks, etc.)
 │   └── simulation/          # Main simulation engine
-├── tests/                   # Test suites
+├── tests/                   # Organized test suites
+│   ├── unit/                # Unit tests for individual components
+│   ├── integration/         # Integration and end-to-end tests
+│   └── debug/               # Debug and development test scripts
 ├── peer_review_workspace/   # Generated simulation data
-├── .env.example            # Environment template
-├── requirements.txt        # Dependencies
-└── main.py                # Entry point
+├── logs/                    # Application logs
+├── .env.example            # Environment configuration template
+├── requirements.txt        # Python dependencies
+├── pytest.ini             # Test configuration
+├── run_tests.py           # Test runner script
+└── main.py                # Application entry point
 ```
 
 ## 🔧 Configuration
@@ -250,17 +256,34 @@ Each researcher has unique characteristics:
 
 ## 🧪 Testing
 
-Run the test suite:
+The project includes a comprehensive test suite organized by type:
+
 ```bash
-# Basic tests
-python -m pytest tests/
+# Run all tests
+python run_tests.py
 
-# With coverage
-python -m pytest tests/ --cov=src --cov-report=html
+# Run only unit tests
+python run_tests.py --type unit
 
-# Specific test
-python test_simple.py
+# Run only integration tests  
+python run_tests.py --type integration
+
+# Quick test (just basic functionality)
+python run_tests.py --quick
+
+# Run with coverage report
+python run_tests.py --coverage
+
+# Using pytest directly
+python -m pytest tests/unit/          # Unit tests
+python -m pytest tests/integration/   # Integration tests
+python -m pytest tests/ -v            # All tests with verbose output
 ```
+
+### Test Structure
+- **`tests/unit/`** - Fast unit tests for individual components
+- **`tests/integration/`** - End-to-end integration tests
+- **`tests/debug/`** - Development and debugging scripts
 
 ## 🤝 Contributing
 

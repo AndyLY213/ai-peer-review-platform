@@ -6,7 +6,9 @@ This demonstrates the key functionality of the real data validation framework.
 
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
 
 import numpy as np
 from unittest.mock import Mock
