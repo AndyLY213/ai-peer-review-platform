@@ -65,6 +65,9 @@ test_dataset/
 simulation_results/
 checkpoints/
 
+# Kiro IDE specific files
+.kiro/
+
 # Ollama specific
 ollama_data/
 
