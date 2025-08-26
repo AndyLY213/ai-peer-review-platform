@@ -1,5 +1,5 @@
 """
-Enhanced Simulation Coordinator - Working Version
+Enhanced Simulation Coordinator
 
 This module implements the SimulationCoordinator class that orchestrates all enhanced systems
 in the peer review simulation. It provides comprehensive simulation state management and
@@ -18,6 +18,141 @@ from concurrent.futures import ThreadPoolExecutor
 
 from src.core.exceptions import ValidationError, SimulationError
 from src.core.logging_config import get_logger
+from src.data.enhanced_models import (
+    EnhancedResearcher, StructuredReview, EnhancedVenue, 
+    ResearcherLevel, VenueType, BiasEffect
+)
+
+# Import all enhancement systems - using try/except to handle missing imports gracefully
+try:
+    from src.enhancements.bias_engine import BiasEngine
+except ImportError:
+    BiasEngine = None
+
+try:
+    from src.enhancements.venue_system import VenueRegistry
+except ImportError:
+    VenueRegistry = None
+
+try:
+    from src.enhancements.academic_hierarchy import AcademicHierarchy
+except ImportError:
+    AcademicHierarchy = None
+
+try:
+    from src.enhancements.reputation_calculator import ReputationCalculator
+except ImportError:
+    ReputationCalculator = None
+
+try:
+    from src.enhancements.structured_review_system import StructuredReviewSystem
+except ImportError:
+    StructuredReviewSystem = None
+
+try:
+    from src.enhancements.venue_standards_enforcement import VenueStandardsEnforcement
+except ImportError:
+    VenueStandardsEnforcement = None
+
+try:
+    from src.enhancements.deadline_manager import DeadlineManager
+except ImportError:
+    DeadlineManager = None
+
+try:
+    from src.enhancements.workload_tracker import WorkloadTracker
+except ImportError:
+    WorkloadTracker = None
+
+try:
+    from src.enhancements.revision_cycle_manager import RevisionCycleManager
+except ImportError:
+    RevisionCycleManager = None
+
+try:
+    from src.enhancements.collaboration_network import CollaborationNetwork
+except ImportError:
+    CollaborationNetwork = None
+
+try:
+    from src.enhancements.citation_network import CitationNetwork
+except ImportError:
+    CitationNetwork = None
+
+try:
+    from src.enhancements.conference_community import ConferenceCommunity
+except ImportError:
+    ConferenceCommunity = None
+
+try:
+    from src.enhancements.network_influence import NetworkInfluence
+except ImportError:
+    NetworkInfluence = None
+
+try:
+    from src.enhancements.venue_shopping_tracker import VenueShoppingTracker
+except ImportError:
+    VenueShoppingTracker = None
+
+try:
+    from src.enhancements.review_trading_detector import ReviewTradingDetector
+except ImportError:
+    ReviewTradingDetector = None
+
+try:
+    from src.enhancements.citation_cartel_detector import CitationCartelDetector
+except ImportError:
+    CitationCartelDetector = None
+
+try:
+    from src.enhancements.salami_slicing_detector import SalamiSlicingDetector
+except ImportError:
+    SalamiSlicingDetector = None
+
+try:
+    from src.enhancements.funding_system import FundingSystem
+except ImportError:
+    FundingSystem = None
+
+try:
+    from src.enhancements.tenure_track_manager import TenureTrackManager
+except ImportError:
+    TenureTrackManager = None
+
+try:
+    from src.enhancements.job_market_simulator import JobMarketSimulator
+except ImportError:
+    JobMarketSimulator = None
+
+try:
+    from src.enhancements.promotion_criteria_evaluator import PromotionCriteriaEvaluator
+except ImportError:
+    PromotionCriteriaEvaluator = None
+
+try:
+    from src.enhancements.career_transition_manager import CareerTransitionManager
+except ImportError:
+    CareerTransitionManager = None
+
+try:
+    from src.enhancements.reproducibility_tracker import ReproducibilityTracker
+except ImportError:
+    ReproducibilityTracker = None
+
+try:
+    from src.enhancements.open_science_manager import OpenScienceManager
+except ImportError:
+    OpenScienceManager = None
+
+try:
+    from src.enhancements.ai_impact_simulator import AIImpactSimulator
+except ImportError:
+    AIImpactSimulator = None
+
+try:
+    from src.enhancements.publication_reform_manager import PublicationReformManager
+except ImportError:
+    PublicationReformManager = None
 
 logger = get_logger(__name__)
 
@@ -137,57 +272,66 @@ class SimulationCoordinator:
     def _initialize_systems(self):
         """Initialize all enhancement systems with proper configuration."""
         try:
-            # Initialize system placeholders - will be replaced with actual systems
-            self.systems = {
-                'review_system': None,
-                'venue_registry': None,
-                'bias_engine': None,
-                'academic_hierarchy': None,
-                'reputation_calculator': None,
-                'deadline_manager': None,
-                'workload_tracker': None,
-                'revision_cycle_manager': None,
-                'collaboration_network': None,
-                'citation_network': None,
-                'conference_community': None,
-                'network_influence': None,
-                'venue_shopping_tracker': None,
-                'review_trading_detector': None,
-                'citation_cartel_detector': None,
-                'salami_slicing_detector': None,
-                'funding_system': None,
-                'tenure_track_manager': None,
-                'job_market_simulator': None,
-                'promotion_criteria_evaluator': None,
-                'career_transition_manager': None,
-                'reproducibility_tracker': None,
-                'open_science_manager': None,
-                'ai_impact_simulator': None,
-                'publication_reform_manager': None
-            }
+            # Core review and venue systems
+            self.review_system = StructuredReviewSystem() if StructuredReviewSystem else None
+            self.venue_registry = VenueRegistry() if VenueRegistry else None
+            self.venue_standards = VenueStandardsEnforcement() if VenueStandardsEnforcement else None
             
-            # Try to initialize each system
-            self._try_initialize_system('bias_engine', 'src.enhancements.bias_engine', 'BiasEngine')
-            self._try_initialize_system('venue_registry', 'src.enhancements.venue_system', 'VenueRegistry')
-            self._try_initialize_system('academic_hierarchy', 'src.enhancements.academic_hierarchy', 'AcademicHierarchy')
+            # Hierarchy and reputation systems
+            self.academic_hierarchy = AcademicHierarchy() if AcademicHierarchy else None
+            self.reputation_calculator = ReputationCalculator() if ReputationCalculator else None
             
-            initialized_count = sum(1 for system in self.systems.values() if system is not None)
-            logger.info(f"Enhancement systems initialized: {initialized_count}/{len(self.systems)} systems available")
+            # Temporal dynamics systems
+            self.deadline_manager = DeadlineManager() if DeadlineManager else None
+            self.workload_tracker = WorkloadTracker() if WorkloadTracker else None
+            self.revision_cycle_manager = RevisionCycleManager() if RevisionCycleManager else None
+            
+            # Bias systems
+            self.bias_engine = BiasEngine() if BiasEngine else None
+            
+            # Network systems
+            self.collaboration_network = CollaborationNetwork() if CollaborationNetwork else None
+            self.citation_network = CitationNetwork() if CitationNetwork else None
+            self.conference_community = ConferenceCommunity() if ConferenceCommunity else None
+            self.network_influence = NetworkInfluence() if NetworkInfluence else None
+            
+            # Strategic behavior systems
+            self.venue_shopping_tracker = VenueShoppingTracker() if VenueShoppingTracker else None
+            self.review_trading_detector = ReviewTradingDetector() if ReviewTradingDetector else None
+            self.citation_cartel_detector = CitationCartelDetector() if CitationCartelDetector else None
+            self.salami_slicing_detector = SalamiSlicingDetector() if SalamiSlicingDetector else None
+            
+            # Funding and career systems
+            self.funding_system = FundingSystem() if FundingSystem else None
+            self.tenure_track_manager = TenureTrackManager() if TenureTrackManager else None
+            self.job_market_simulator = JobMarketSimulator() if JobMarketSimulator else None
+            self.promotion_criteria_evaluator = PromotionCriteriaEvaluator() if PromotionCriteriaEvaluator else None
+            self.career_transition_manager = CareerTransitionManager() if CareerTransitionManager else None
+            
+            # Meta-science systems
+            self.reproducibility_tracker = ReproducibilityTracker() if ReproducibilityTracker else None
+            self.open_science_manager = OpenScienceManager() if OpenScienceManager else None
+            self.ai_impact_simulator = AIImpactSimulator() if AIImpactSimulator else None
+            self.publication_reform_manager = PublicationReformManager() if PublicationReformManager else None
+            
+            # Count initialized systems
+            initialized_systems = sum(1 for system in [
+                self.review_system, self.venue_registry, self.venue_standards,
+                self.academic_hierarchy, self.reputation_calculator, self.deadline_manager,
+                self.workload_tracker, self.revision_cycle_manager, self.bias_engine,
+                self.collaboration_network, self.citation_network, self.conference_community,
+                self.network_influence, self.venue_shopping_tracker, self.review_trading_detector,
+                self.citation_cartel_detector, self.salami_slicing_detector, self.funding_system,
+                self.tenure_track_manager, self.job_market_simulator, self.promotion_criteria_evaluator,
+                self.career_transition_manager, self.reproducibility_tracker, self.open_science_manager,
+                self.ai_impact_simulator, self.publication_reform_manager
+            ] if system is not None)
+            
+            logger.info(f"Enhancement systems initialized successfully: {initialized_systems}/26 systems available")
             
         except Exception as e:
             logger.error(f"Failed to initialize enhancement systems: {e}")
             raise SimulationError(f"System initialization failed: {e}")
-    
-    def _try_initialize_system(self, system_name: str, module_path: str, class_name: str):
-        """Try to initialize a system, handling import errors gracefully."""
-        try:
-            module = __import__(module_path, fromlist=[class_name])
-            system_class = getattr(module, class_name)
-            self.systems[system_name] = system_class()
-            logger.debug(f"Initialized {system_name}")
-        except (ImportError, AttributeError) as e:
-            logger.warning(f"Could not initialize {system_name}: {e}")
-            self.systems[system_name] = None
     
     def _build_dependency_graph(self) -> Dict[str, List[str]]:
         """Build dependency graph between systems for proper coordination."""
@@ -218,23 +362,39 @@ class SimulationCoordinator:
         try:
             logger.info(f"Coordinating review process for paper {paper_id} at venue {venue_id}")
             
-            # Mock venue for now
-            venue = {'id': venue_id, 'min_reviewers': 2, 'max_reviewers': 3}
+            # Get venue information
+            venue = self.venue_registry.get_venue(venue_id)
+            if not venue:
+                raise ValidationError(f"Venue {venue_id} not found")
             
-            # Check reviewer availability (mock implementation)
-            available_reviewers = reviewer_ids[:venue['max_reviewers']]
+            # Check reviewer availability and workload
+            available_reviewers = []
+            for reviewer_id in reviewer_ids:
+                if self.workload_tracker.check_availability(reviewer_id):
+                    available_reviewers.append(reviewer_id)
+                else:
+                    logger.warning(f"Reviewer {reviewer_id} not available due to workload")
             
-            if len(available_reviewers) < venue['min_reviewers']:
+            if len(available_reviewers) < venue.min_reviewers:
                 raise ValidationError(f"Insufficient available reviewers for venue {venue_id}")
             
-            # Set deadlines (mock implementation)
-            deadline = datetime.now() + timedelta(weeks=4)
+            # Set deadlines
+            deadline = self.deadline_manager.set_review_deadline(venue_id, datetime.now())
             
-            # Generate reviews (mock implementation)
-            reviews = []
+            # Detect conflicts of interest
+            conflict_free_reviewers = []
             for reviewer_id in available_reviewers:
+                if not self._has_conflict_of_interest(paper_id, reviewer_id):
+                    conflict_free_reviewers.append(reviewer_id)
+            
+            # Generate reviews with bias application
+            reviews = []
+            for reviewer_id in conflict_free_reviewers[:venue.max_reviewers]:
                 review = self._generate_enhanced_review(paper_id, venue_id, reviewer_id, deadline)
                 reviews.append(review)
+                
+                # Update workload
+                self.workload_tracker.assign_review(reviewer_id, paper_id, deadline)
             
             # Aggregate results
             result = {
@@ -242,7 +402,7 @@ class SimulationCoordinator:
                 'venue_id': venue_id,
                 'reviews': reviews,
                 'deadline': deadline,
-                'assigned_reviewers': [r['reviewer_id'] for r in reviews],
+                'assigned_reviewers': [r.reviewer_id for r in reviews],
                 'coordination_timestamp': datetime.now(),
                 'systems_involved': self._get_involved_systems()
             }
@@ -271,13 +431,35 @@ class SimulationCoordinator:
         try:
             logger.info(f"Coordinating researcher lifecycle for {researcher_id}")
             
-            # Mock implementation
+            # Get researcher information
+            researcher = self._get_researcher(researcher_id)
+            if not researcher:
+                raise ValidationError(f"Researcher {researcher_id} not found")
+            
+            # Career progression evaluation
+            career_status = self._evaluate_career_progression(researcher)
+            
+            # Funding status evaluation
+            funding_status = self.funding_system.evaluate_funding_status(researcher_id)
+            
+            # Network position analysis
+            network_position = self._analyze_network_position(researcher_id)
+            
+            # Strategic behavior analysis
+            strategic_behavior = self._analyze_strategic_behavior(researcher_id)
+            
+            # Update researcher profile
+            updated_researcher = self._update_researcher_profile(
+                researcher, career_status, funding_status, network_position, strategic_behavior
+            )
+            
             result = {
                 'researcher_id': researcher_id,
-                'career_status': {'tenure_status': 'on_track'},
-                'funding_status': {'current_funding': 100000},
-                'network_position': {'collaboration_centrality': 0.6},
-                'strategic_behavior': {'venue_shopping_pattern': 'normal'},
+                'career_status': career_status,
+                'funding_status': funding_status,
+                'network_position': network_position,
+                'strategic_behavior': strategic_behavior,
+                'updated_profile': updated_researcher,
                 'coordination_timestamp': datetime.now()
             }
             
@@ -301,12 +483,35 @@ class SimulationCoordinator:
         try:
             logger.info(f"Coordinating venue management for {venue_id}")
             
-            # Mock implementation
+            venue = self.venue_registry.get_venue(venue_id)
+            if not venue:
+                raise ValidationError(f"Venue {venue_id} not found")
+            
+            # Update venue statistics
+            venue_stats = self._calculate_venue_statistics(venue_id)
+            
+            # Calibrate venue standards
+            if self.config.venue_calibration_enabled:
+                calibration_results = self._calibrate_venue_standards(venue_id)
+            else:
+                calibration_results = None
+            
+            # Update acceptance rates
+            if self.config.dynamic_acceptance_rates:
+                new_acceptance_rate = self._calculate_dynamic_acceptance_rate(venue_id)
+                self.venue_registry.update_acceptance_rate(venue_id, new_acceptance_rate)
+            
+            # Optimize reviewer assignment
+            if self.config.reviewer_assignment_optimization:
+                assignment_optimization = self._optimize_reviewer_assignment(venue_id)
+            else:
+                assignment_optimization = None
+            
             result = {
                 'venue_id': venue_id,
-                'statistics': {'submission_count': 100, 'acceptance_rate': 0.25},
-                'calibration_results': {'calibration_accuracy': 0.95},
-                'assignment_optimization': {'optimization_score': 0.85},
+                'statistics': venue_stats,
+                'calibration_results': calibration_results,
+                'assignment_optimization': assignment_optimization,
                 'coordination_timestamp': datetime.now()
             }
             
@@ -327,13 +532,30 @@ class SimulationCoordinator:
         try:
             logger.info("Coordinating system evolution")
             
-            # Mock implementation
+            # Track reproducibility trends
+            reproducibility_trends = self.reproducibility_tracker.analyze_trends()
+            
+            # Evaluate open science adoption
+            open_science_adoption = self.open_science_manager.evaluate_adoption_rates()
+            
+            # Assess AI impact
+            ai_impact_assessment = self.ai_impact_simulator.assess_current_impact()
+            
+            # Evaluate publication reforms
+            reform_impact = self.publication_reform_manager.evaluate_reform_impact()
+            
+            # Coordinate system-wide changes
+            system_changes = self._coordinate_system_changes(
+                reproducibility_trends, open_science_adoption, 
+                ai_impact_assessment, reform_impact
+            )
+            
             result = {
-                'reproducibility_trends': {'replication_rate': 0.4},
-                'open_science_adoption': {'preprint_usage': 0.6},
-                'ai_impact_assessment': {'ai_assistance_usage': 0.2},
-                'reform_impact': {'alternative_metrics_adoption': 0.1},
-                'system_changes': {'changes_implemented': []},
+                'reproducibility_trends': reproducibility_trends,
+                'open_science_adoption': open_science_adoption,
+                'ai_impact_assessment': ai_impact_assessment,
+                'reform_impact': reform_impact,
+                'system_changes': system_changes,
                 'coordination_timestamp': datetime.now()
             }
             
@@ -390,23 +612,188 @@ class SimulationCoordinator:
     # Private helper methods
     
     def _generate_enhanced_review(self, paper_id: str, venue_id: str, 
-                                reviewer_id: str, deadline: datetime) -> Dict[str, Any]:
+                                reviewer_id: str, deadline: datetime):
         """Generate an enhanced review with all bias and system effects applied."""
-        # Mock implementation
+        # Get base review from structured review system
+        if self.review_system:
+            base_review = self.review_system.generate_review(paper_id, venue_id, reviewer_id)
+        else:
+            # Create a mock review if system not available
+            from src.data.enhanced_models import StructuredReview
+            base_review = StructuredReview(
+                reviewer_id=reviewer_id,
+                paper_id=paper_id,
+                venue_id=venue_id,
+                criteria_scores=None,
+                confidence_level=3,
+                recommendation=None,
+                executive_summary="Mock review",
+                detailed_strengths=[],
+                detailed_weaknesses=[],
+                technical_comments="",
+                presentation_comments="",
+                questions_for_authors=[],
+                suggestions_for_improvement=[],
+                review_length=100,
+                time_spent_minutes=60,
+                quality_score=3.0,
+                completeness_score=0.8,
+                applied_biases=[],
+                bias_adjusted_scores={},
+                submission_timestamp=datetime.now(),
+                deadline=deadline,
+                is_late=False,
+                revision_round=1
+            )
+        
+        # Apply cognitive biases
+        if self.bias_engine:
+            biased_review = self.bias_engine.apply_biases(base_review, reviewer_id, paper_id)
+        else:
+            biased_review = base_review
+        
+        # Apply network effects
+        if self.network_influence:
+            network_adjusted_review = self.network_influence.apply_network_effects(
+                biased_review, reviewer_id, paper_id
+            )
+        else:
+            network_adjusted_review = biased_review
+        
+        # Apply venue standards
+        if self.venue_standards:
+            final_review = self.venue_standards.enforce_standards(
+                network_adjusted_review, venue_id
+            )
+        else:
+            final_review = network_adjusted_review
+        
+        return final_review
+    
+    def _has_conflict_of_interest(self, paper_id: str, reviewer_id: str) -> bool:
+        """Check for conflicts of interest using network systems."""
+        # Check collaboration network
+        if self.collaboration_network and self.collaboration_network.has_recent_collaboration(paper_id, reviewer_id):
+            return True
+        
+        # Check citation network
+        if self.citation_network and self.citation_network.has_citation_relationship(paper_id, reviewer_id):
+            return True
+        
+        # Check conference community relationships
+        if self.conference_community and self.conference_community.has_close_community_ties(paper_id, reviewer_id):
+            return True
+        
+        return False
+    
+    def _evaluate_career_progression(self, researcher: EnhancedResearcher) -> Dict[str, Any]:
+        """Evaluate career progression across all career systems."""
+        results = {}
+        
+        # Tenure track evaluation
+        if researcher.level in [ResearcherLevel.ASSISTANT_PROF]:
+            results['tenure_status'] = self.tenure_track_manager.evaluate_tenure_progress(researcher.id)
+        
+        # Job market evaluation
+        results['job_market_position'] = self.job_market_simulator.evaluate_market_position(researcher.id)
+        
+        # Promotion evaluation
+        results['promotion_readiness'] = self.promotion_criteria_evaluator.evaluate_promotion_readiness(researcher.id)
+        
+        # Career transition opportunities
+        results['transition_opportunities'] = self.career_transition_manager.evaluate_transition_opportunities(researcher.id)
+        
+        return results
+    
+    def _analyze_network_position(self, researcher_id: str) -> Dict[str, Any]:
+        """Analyze researcher's position in various networks."""
         return {
-            'reviewer_id': reviewer_id,
-            'paper_id': paper_id,
-            'venue_id': venue_id,
-            'score': 3.5,
-            'confidence': 3,
-            'recommendation': 'accept',
-            'deadline': deadline,
-            'timestamp': datetime.now()
+            'collaboration_centrality': self.collaboration_network.calculate_centrality(researcher_id),
+            'citation_influence': self.citation_network.calculate_influence(researcher_id),
+            'community_membership': self.conference_community.get_community_memberships(researcher_id),
+            'network_reach': self.network_influence.calculate_network_reach(researcher_id)
         }
+    
+    def _analyze_strategic_behavior(self, researcher_id: str) -> Dict[str, Any]:
+        """Analyze strategic behavior patterns."""
+        return {
+            'venue_shopping_pattern': self.venue_shopping_tracker.analyze_shopping_pattern(researcher_id),
+            'review_trading_involvement': self.review_trading_detector.check_trading_involvement(researcher_id),
+            'citation_cartel_membership': self.citation_cartel_detector.check_cartel_membership(researcher_id),
+            'salami_slicing_tendency': self.salami_slicing_detector.analyze_slicing_pattern(researcher_id)
+        }
+    
+    def _update_researcher_profile(self, researcher: EnhancedResearcher, 
+                                 career_status: Dict, funding_status: Dict,
+                                 network_position: Dict, strategic_behavior: Dict) -> EnhancedResearcher:
+        """Update researcher profile based on all system evaluations."""
+        # Update reputation based on career progression
+        new_reputation = self.reputation_calculator.calculate_updated_reputation(
+            researcher, career_status, network_position
+        )
+        
+        # Update hierarchy level if promotion occurred
+        if career_status.get('promotion_readiness', {}).get('promoted', False):
+            new_level = self.academic_hierarchy.promote_researcher(researcher.id)
+            researcher.level = new_level
+        
+        researcher.reputation_score = new_reputation
+        return researcher
+    
+    def _calculate_venue_statistics(self, venue_id: str) -> Dict[str, Any]:
+        """Calculate comprehensive venue statistics."""
+        # This would integrate with venue statistics system
+        return {
+            'submission_count': 0,  # Placeholder
+            'acceptance_rate': 0.0,
+            'average_review_quality': 0.0,
+            'reviewer_satisfaction': 0.0
+        }
+    
+    def _calibrate_venue_standards(self, venue_id: str) -> Dict[str, Any]:
+        """Calibrate venue standards based on real data."""
+        # This would integrate with PeerRead calibration
+        return {
+            'calibration_accuracy': 0.95,
+            'adjustments_made': [],
+            'confidence_level': 0.9
+        }
+    
+    def _calculate_dynamic_acceptance_rate(self, venue_id: str) -> float:
+        """Calculate dynamic acceptance rate based on current conditions."""
+        # This would use venue statistics and trends
+        return 0.25  # Placeholder
+    
+    def _optimize_reviewer_assignment(self, venue_id: str) -> Dict[str, Any]:
+        """Optimize reviewer assignment for the venue."""
+        return {
+            'optimization_score': 0.85,
+            'improvements': [],
+            'efficiency_gain': 0.15
+        }
+    
+    def _coordinate_system_changes(self, reproducibility_trends: Dict, 
+                                 open_science_adoption: Dict,
+                                 ai_impact_assessment: Dict, 
+                                 reform_impact: Dict) -> Dict[str, Any]:
+        """Coordinate system-wide changes based on meta-science trends."""
+        return {
+            'changes_implemented': [],
+            'system_adaptations': [],
+            'future_projections': {}
+        }
+    
+    def _get_researcher(self, researcher_id: str) -> Optional[EnhancedResearcher]:
+        """Get researcher from the system."""
+        # This would integrate with the researcher database
+        return None  # Placeholder
     
     def _get_involved_systems(self) -> List[str]:
         """Get list of systems involved in current operation."""
-        return [name for name, system in self.systems.items() if system is not None]
+        return [
+            'review_system', 'bias_engine', 'venue_standards', 
+            'network_influence', 'workload_tracker', 'deadline_manager'
+        ]
     
     def _update_performance_metrics(self):
         """Update performance metrics."""
@@ -422,22 +809,18 @@ class SimulationCoordinator:
         self.state.current_time = datetime.now()
         self._update_performance_metrics()
         
-        # Update system status based on available systems
-        self.state.bias_system_active = self.systems.get('bias_engine') is not None
-        self.state.network_system_active = any(
-            self.systems.get(name) is not None 
-            for name in ['collaboration_network', 'citation_network', 'conference_community']
-        )
-        self.state.career_system_active = any(
-            self.systems.get(name) is not None 
-            for name in ['tenure_track_manager', 'job_market_simulator', 'promotion_criteria_evaluator']
-        )
-        self.state.funding_system_active = self.systems.get('funding_system') is not None
-        self.state.venue_system_active = self.systems.get('venue_registry') is not None
-        self.state.temporal_system_active = any(
-            self.systems.get(name) is not None 
-            for name in ['deadline_manager', 'workload_tracker', 'revision_cycle_manager']
-        )
+        # Update system status
+        self.state.bias_system_active = self._check_system_health('bias_engine')
+        self.state.network_system_active = self._check_system_health('network_systems')
+        self.state.career_system_active = self._check_system_health('career_systems')
+        self.state.funding_system_active = self._check_system_health('funding_system')
+        self.state.venue_system_active = self._check_system_health('venue_system')
+        self.state.temporal_system_active = self._check_system_health('temporal_system')
+    
+    def _check_system_health(self, system_name: str) -> bool:
+        """Check if a system is healthy and operational."""
+        # This would implement actual health checks
+        return True  # Placeholder
     
     def _handle_coordination_error(self, operation: str, error: Exception):
         """Handle coordination errors with proper logging and recovery."""
@@ -460,9 +843,14 @@ class SimulationCoordinator:
     
     def _cleanup_systems(self):
         """Cleanup all systems during shutdown."""
-        for system_name, system in self.systems.items():
+        systems_to_cleanup = [
+            self.bias_engine, self.venue_registry, self.academic_hierarchy,
+            self.collaboration_network, self.citation_network, self.funding_system
+        ]
+        
+        for system in systems_to_cleanup:
             try:
-                if system and hasattr(system, 'cleanup'):
+                if hasattr(system, 'cleanup'):
                     system.cleanup()
             except Exception as e:
-                logger.warning(f"Error cleaning up system {system_name}: {e}")
+                logger.warning(f"Error cleaning up system {system.__class__.__name__}: {e}")
