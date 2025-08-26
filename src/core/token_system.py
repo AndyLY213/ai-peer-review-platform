@@ -8,6 +8,15 @@ earn and spend tokens to request and provide peer reviews.
 import os
 import json
 from typing import Dict, List, Optional, Any, Tuple
+from src.core.exceptions import (
+    TokenError, InsufficientTokensError, InvalidTokenAmountError, 
+    ResearcherNotFoundError, FileOperationError
+)
+from src.core.logging_config import get_logger, log_error_with_context
+from src.core.validators import validate_researcher_id, validate_token_amount, sanitize_string
+
+# Initialize logger for this module
+logger = get_logger(__name__)
 
 class TokenSystem:
     """
@@ -38,12 +47,19 @@ class TokenSystem:
                     data = json.load(f)
                     self.token_balances = data.get('token_balances', {})
                     self.transactions = data.get('transactions', [])
-            except (json.JSONDecodeError, FileNotFoundError):
+                logger.info(f"Loaded token data from {self.data_path}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Corrupted token data file {self.data_path}: {e}")
                 # Initialize with empty data if file is corrupt
+                self.token_balances = {}
+                self.transactions = []
+            except FileNotFoundError as e:
+                log_error_with_context(e, f"loading token data from {self.data_path}", logger)
                 self.token_balances = {}
                 self.transactions = []
         else:
             # Initialize with empty data
+            logger.info(f"Token data file {self.data_path} not found, initializing with empty data")
             self.token_balances = {}
             self.transactions = []
     
@@ -57,8 +73,14 @@ class TokenSystem:
         try:
             with open(self.data_path, 'w') as f:
                 json.dump(data, f, indent=2)
+            logger.debug(f"Saved token data to {self.data_path}")
+        except (IOError, OSError) as e:
+            error = FileOperationError("save", self.data_path, e)
+            log_error_with_context(error, "saving token data", logger)
+            raise error
         except Exception as e:
-            print(f"Error saving token data: {e}")
+            log_error_with_context(e, f"saving token data to {self.data_path}", logger)
+            raise
     
     def register_researcher(self, researcher_id: str) -> int:
         """
@@ -70,6 +92,9 @@ class TokenSystem:
         Returns:
             Current token balance
         """
+        # Validate researcher ID
+        researcher_id = validate_researcher_id(researcher_id)
+        
         # If researcher already exists, just return current balance
         if researcher_id in self.token_balances:
             return self.token_balances[researcher_id]
@@ -120,22 +145,41 @@ class TokenSystem:
             
         Returns:
             Tuple of (success, message)
+            
+        Raises:
+            ResearcherNotFoundError: If sender doesn't exist
+            InvalidTokenAmountError: If amount is invalid
+            InsufficientTokensError: If sender doesn't have enough tokens
         """
+        # Validate inputs
+        from_researcher = validate_researcher_id(from_researcher)
+        to_researcher = validate_researcher_id(to_researcher)
+        amount = validate_token_amount(amount)
+        reason = sanitize_string(reason, 200)
+        
         # Validate researchers exist
         if from_researcher not in self.token_balances:
-            return False, f"Sender {from_researcher} does not exist"
+            error = ResearcherNotFoundError(from_researcher)
+            logger.error(str(error))
+            return False, str(error)
         
         if to_researcher not in self.token_balances:
             # Auto-register the receiving researcher
+            logger.info(f"Auto-registering researcher {to_researcher}")
             self.register_researcher(to_researcher)
         
         # Validate amount
         if amount <= 0:
-            return False, "Transfer amount must be positive"
+            error = InvalidTokenAmountError(amount)
+            logger.error(str(error))
+            return False, str(error)
         
         # Check sufficient balance
-        if self.token_balances[from_researcher] < amount:
-            return False, f"Insufficient tokens. Balance: {self.token_balances[from_researcher]}, Required: {amount}"
+        current_balance = self.token_balances[from_researcher]
+        if current_balance < amount:
+            error = InsufficientTokensError(from_researcher, amount, current_balance)
+            logger.warning(str(error))
+            return False, str(error)
         
         # Perform transfer
         self.token_balances[from_researcher] -= amount
@@ -154,7 +198,17 @@ class TokenSystem:
         }
         self.transactions.append(transaction)
         
-        self._save_data()
+        logger.info(f"Transferred {amount} tokens from {from_researcher} to {to_researcher} for: {reason}")
+        
+        try:
+            self._save_data()
+        except FileOperationError:
+            # Rollback the transfer if save fails
+            self.token_balances[from_researcher] += amount
+            self.token_balances[to_researcher] -= amount
+            self.transactions.pop()  # Remove the transaction record
+            return False, "Transfer failed due to save error"
+        
         return True, f"Successfully transferred {amount} tokens"
     
     def request_review(

@@ -2,30 +2,10 @@ import os
 import autogen
 from dotenv import load_dotenv
 from agent_factory import AgentFactory
+from src.core.llm_config import get_llm_config, get_llm_provider_info
 
 # Load environment variables
 load_dotenv("config.env")
-
-def create_ollama_config():
-    """
-    Create configuration for Ollama model.
-    
-    Returns:
-        Dictionary with LLM configuration
-    """
-    config_list = [
-        {
-            "model": os.getenv("OLLAMA_MODEL", "qwen3:4b"),
-            "api_base": os.getenv("OLLAMA_API_BASE", "http://localhost:11434"),
-            "api_type": "ollama"
-        }
-    ]
-
-    return {
-        "config_list": config_list,
-        "temperature": 0.7,
-        "timeout": 120,
-    }
 
 def setup_agent_system():
     """
@@ -34,8 +14,12 @@ def setup_agent_system():
     Returns:
         Tuple of (user_proxy, manager) for starting conversations
     """
-    # Create LLM configuration
-    llm_config = create_ollama_config()
+    # Create LLM configuration using centralized system
+    llm_config = get_llm_config()
+    
+    # Print provider info for debugging
+    provider_info = get_llm_provider_info()
+    print(f"Enhanced Multi-Agent System using LLM Provider: {provider_info['provider']} - Model: {provider_info['model']}")
     
     # Create agent factory
     factory = AgentFactory(llm_config)

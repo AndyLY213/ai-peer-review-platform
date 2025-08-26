@@ -23,14 +23,19 @@ wheels/
 # Virtual Environment
 peerreview_env/
 venv/
+.venv/
 ENV/
 env/
 
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+config.env
+
 # Distribution / packaging
 .Python
-env/
-.env
-.venv
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -54,9 +59,34 @@ Desktop.ini
 
 # Project specific
 peer_review_workspace/
+logs/
 *.log
-config.env
 test_dataset/
+simulation_results/
+checkpoints/
 
 # Ollama specific
-ollama_data/ 
+ollama_data/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories
+.cache/
+__pycache__/
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/ 

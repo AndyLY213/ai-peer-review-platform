@@ -11,6 +11,18 @@ import glob
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from src.core.exceptions import (
+    DatabaseError, PaperNotFoundError, FileOperationError, 
+    DatasetError, ValidationError
+)
+from src.core.logging_config import get_logger, log_error_with_context
+from src.core.validators import (
+    validate_paper_id, validate_paper_data, validate_research_field, 
+    validate_paper_status, validate_file_path, sanitize_string
+)
+
+# Initialize logger for this module
+logger = get_logger(__name__)
 
 # Structure for paper metadata
 PAPER_SCHEMA = {
@@ -58,17 +70,23 @@ class PaperDatabase:
                     self.papers = data.get('papers', {})
                     self.next_id = data.get('next_id', 1)
                 
+                logger.info(f"Loaded {len(self.papers)} papers from {self.data_path}")
+                
                 # If no papers loaded, try loading from PeerRead
                 if not self.papers:
-                    print("Papers database is empty. Loading from PeerRead test dataset...")
+                    logger.info("Papers database is empty. Loading from PeerRead test dataset...")
                     self.load_peerread_dataset(use_test_dataset=True)
-            except (json.JSONDecodeError, FileNotFoundError) as e:
-                print(f"Error loading papers data: {e}")
-                print("Loading from PeerRead test dataset instead...")
+            except json.JSONDecodeError as e:
+                logger.error(f"Corrupted papers data file {self.data_path}: {e}")
+                logger.info("Loading from PeerRead test dataset instead...")
+                self.load_peerread_dataset(use_test_dataset=True)
+            except FileNotFoundError as e:
+                log_error_with_context(e, f"loading papers data from {self.data_path}", logger)
+                logger.info("Loading from PeerRead test dataset instead...")
                 self.load_peerread_dataset(use_test_dataset=True)
         else:
             # Initialize with PeerRead dataset
-            print("Papers database not found. Loading from PeerRead test dataset...")
+            logger.info("Papers database not found. Loading from PeerRead test dataset...")
             self.load_peerread_dataset(use_test_dataset=True)
     
     def load_peerread_dataset(self, folder_path: str = None, limit: int = 100, use_test_dataset: bool = True):
@@ -141,10 +159,11 @@ class PaperDatabase:
                 folder_path = os.path.abspath("PeerRead/data")
         
         if not os.path.exists(folder_path):
-            print(f"PeerRead dataset folder '{folder_path}' not found")
-            return
+            error = DatasetError(folder_path, "folder not found")
+            logger.error(str(error))
+            raise error
         
-        print(f"Loading papers from {'test' if use_test_dataset else 'full'} PeerRead dataset at '{folder_path}'...")
+        logger.info(f"Loading papers from {'test' if use_test_dataset else 'full'} PeerRead dataset at '{folder_path}'...")
         
         # Counter for loaded papers
         papers_loaded = 0
@@ -238,16 +257,16 @@ class PaperDatabase:
                 self.add_paper(paper)
                 papers_loaded += 1
                 
-                # Print progress every 10 papers
+                # Log progress every 10 papers
                 if papers_loaded % 10 == 0:
-                    print(f"Loaded {papers_loaded} papers...")
+                    logger.info(f"Loaded {papers_loaded} papers...")
                 
                 # Break if limit reached
                 if papers_loaded >= limit:
                     break
                 
             except Exception as e:
-                print(f"Error processing {json_path}: {e}")
+                log_error_with_context(e, f"processing paper file {json_path}", logger)
         
         # Also process any review JSON files to add reviews to papers
         for review_path in glob.glob(os.path.join(folder_path, "**", "reviews", "*.json"), recursive=True):
@@ -281,19 +300,19 @@ class PaperDatabase:
                         self.add_review(paper_id, review_obj)
             
             except Exception as e:
-                print(f"Error processing review {review_path}: {e}")
+                log_error_with_context(e, f"processing review file {review_path}", logger)
         
-        # Print field distribution for loaded papers
+        # Log field distribution for loaded papers
         field_counts = {}
         for paper in self.papers.values():
             field = paper.get('field', 'Unknown')
             field_counts[field] = field_counts.get(field, 0) + 1
         
-        print("\nField distribution of loaded papers:")
+        logger.info("Field distribution of loaded papers:")
         for field, count in sorted(field_counts.items(), key=lambda x: x[1], reverse=True):
-            print(f"  {field}: {count} papers")
+            logger.info(f"  {field}: {count} papers")
         
-        print(f"\nLoaded {papers_loaded} papers from PeerRead dataset")
+        logger.info(f"Successfully loaded {papers_loaded} papers from PeerRead dataset")
         self._save_data()
     
     def _save_data(self):
@@ -306,8 +325,14 @@ class PaperDatabase:
         try:
             with open(self.data_path, 'w') as f:
                 json.dump(data, f, indent=2)
+            logger.debug(f"Saved paper data to {self.data_path}")
+        except (IOError, OSError) as e:
+            error = FileOperationError("save", self.data_path, e)
+            log_error_with_context(error, "saving paper data", logger)
+            raise error
         except Exception as e:
-            print(f"Error saving paper data: {e}")
+            log_error_with_context(e, f"saving paper data to {self.data_path}", logger)
+            raise
     
     def add_paper(self, paper_data: Dict[str, Any]) -> str:
         """
@@ -318,14 +343,20 @@ class PaperDatabase:
             
         Returns:
             ID of the newly added paper
+            
+        Raises:
+            ValidationError: If paper data is invalid
         """
+        # Validate paper data
+        validated_data = validate_paper_data(paper_data)
+        
         # Create a new paper ID
         paper_id = f"paper_{self.next_id:03}"
         self.next_id += 1
         
         # Create complete paper entry with default values
         paper = PAPER_SCHEMA.copy()
-        for key, value in paper_data.items():
+        for key, value in validated_data.items():
             if key in paper:
                 paper[key] = value
         
@@ -334,6 +365,8 @@ class PaperDatabase:
         
         # Add to the database
         self.papers[paper_id] = paper
+        
+        logger.info(f"Added paper {paper_id}: {paper.get('title', 'Untitled')}")
         
         # Save to disk
         self._save_data()
@@ -349,7 +382,13 @@ class PaperDatabase:
             
         Returns:
             Paper data or None if not found
+            
+        Raises:
+            ValidationError: If paper_id is invalid
         """
+        # Validate paper ID
+        paper_id = validate_paper_id(paper_id)
+        
         return self.papers.get(paper_id)
     
     def update_paper(self, paper_id: str, updates: Dict[str, Any]) -> bool:

@@ -1,12 +1,26 @@
-# Peer Review Simulation System
+# AI Peer Review Platform
 
-A multi-agent simulation of the academic peer review process using AutoGen and Ollama.
+A comprehensive multi-agent simulation of the academic peer review process using AutoGen and Google Gemini AI.
 
-## Overview
+## 🎯 Overview
 
-This system simulates a token-based peer review economy where AI researchers publish papers and review each other's work. Researchers spend tokens to request reviews and earn tokens by completing reviews, creating an economic cycle.
+This platform simulates a realistic academic peer review ecosystem where AI-powered researchers:
+- **Publish papers** in their areas of expertise
+- **Review papers** from other researchers
+- **Participate in a token-based economy** (spend tokens to request reviews, earn tokens by reviewing)
+- **Exhibit realistic biases and behaviors** based on their specialties and career stages
+- **Navigate complex academic dynamics** including funding, career progression, and institutional pressures
 
-The system uses AutoGen to create a multi-agent environment with specialized researcher agents who have different areas of expertise and biases.
+## ✨ Key Features
+
+- **🤖 Multi-Agent System**: 10+ specialized researcher agents with distinct personalities and biases
+- **🧠 AI-Powered Reviews**: Realistic peer reviews generated using Google Gemini 2.0 Flash
+- **💰 Token Economy**: Economic simulation of review requests and completions
+- **📊 Advanced Analytics**: Comprehensive metrics and performance tracking
+- **🎭 Bias Simulation**: Models real academic biases (confirmation bias, halo effect, etc.)
+- **🏛️ Institutional Dynamics**: Career progression, funding systems, and venue prestige
+- **📈 Network Effects**: Citation networks, collaboration patterns, and academic communities
+- **🔄 Reproducibility Tracking**: Research reproducibility and validation systems
 
 ## New Feature: PeerRead Dataset Integration
 
@@ -40,46 +54,102 @@ PeerReview/
 └── README.md                # This file
 ```
 
-## Setup
+## 🚀 Quick Start
 
-1. Install the required dependencies:
+### Prerequisites
 
+- **Python 3.8+** (recommended: Python 3.10+)
+- **Google Gemini API Key** (get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
+
+### Installation
+
+1. **Clone the repository**:
+```bash
+git clone https://github.com/yourusername/ai-peer-review-platform.git
+cd ai-peer-review-platform
+```
+
+2. **Create and activate a virtual environment**:
+```bash
+python -m venv .venv
+
+# On Windows
+.venv\Scripts\activate
+
+# On macOS/Linux
+source .venv/bin/activate
+```
+
+3. **Install dependencies**:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Download the PeerRead dataset:
-
+4. **Configure environment**:
 ```bash
-git clone https://github.com/allenai/PeerRead.git
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit .env.local and add your Gemini API key
+# GEMINI_API_KEY=your_actual_api_key_here
 ```
 
-3. Create a smaller test dataset for faster testing:
-
+5. **Run the simulation**:
 ```bash
-cd PeerReview
-python src/data/create_test_dataset.py
+python main.py
 ```
 
-4. Configure your Ollama model in `config.env`:
+### Alternative Installation Methods
 
+**Using pip (development install)**:
+```bash
+pip install -e .
 ```
-OLLAMA_MODEL=qwen3:4b
-OLLAMA_API_BASE=http://localhost:11434
+
+**With optional dependencies**:
+```bash
+pip install -e ".[dev,viz,analysis]"
 ```
 
-## Running the Simulation
+## 🎮 Running Simulations
 
-Run the main simulation script:
+### Basic Usage
 
 ```bash
 python main.py
 ```
 
-The script will:
-1. Load papers from the test dataset (or full dataset if test dataset not found)
-2. Initialize researcher agents with specialties
-3. Provide options for interactive mode, automated simulation, or hybrid mode
+The platform offers three simulation modes:
+
+1. **🤖 Automated Mode**: Run multiple rounds of interactions automatically
+2. **💬 Interactive Mode**: Chat directly with researcher agents
+3. **🔄 Hybrid Mode**: Set up researchers then interact manually
+
+### Example Simulation Output
+
+```
+🔬 Peer Review Simulation System
+--------------------------------
+Simulation Modes:
+1. Interactive Mode (chat with researchers)
+2. Automated Simulation (run rounds of interactions)
+3. Hybrid Mode (setup researchers and then interact)
+
+Enter simulation mode (1-3): 2
+Enter number of simulation rounds: 3
+Enter number of interactions per round: 15
+
+Creating researcher agents...
+✓ Added AI_Researcher (Artificial Intelligence)
+✓ Added NLP_Researcher (Natural Language Processing)
+✓ Added CV_Researcher (Computer Vision)
+...
+
+Final Results:
+- Total Reviews Completed: 42
+- Total Tokens Exchanged: 1,250
+- Top Performer: AI_Researcher (350 tokens)
+```
 
 ### Testing the Paper Database
 
@@ -130,14 +200,111 @@ PAPERS_PER_CONFERENCE = 10  # Adjust number of papers per conference
 INCLUDE_REVIEWS = True
 ```
 
-## Contribution
+## 🏗️ Architecture
 
-Feel free to contribute to this project by:
-- Adding new features to the simulation
-- Improving agent behaviors
-- Enhancing the PeerRead integration
-- Adding support for other datasets
+```
+ai-peer-review-platform/
+├── src/
+│   ├── agents/              # Researcher agents and templates
+│   ├── core/                # Core systems (tokens, LLM clients)
+│   ├── data/                # Data models and database
+│   ├── enhancements/        # Advanced features (bias, networks, etc.)
+│   └── simulation/          # Main simulation engine
+├── tests/                   # Test suites
+├── peer_review_workspace/   # Generated simulation data
+├── .env.example            # Environment template
+├── requirements.txt        # Dependencies
+└── main.py                # Entry point
+```
 
-## License
+## 🔧 Configuration
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+### Environment Variables
+
+Key configuration options in `.env.local`:
+
+```bash
+# AI Provider
+GEMINI_API_KEY=your_key_here
+GEMINI_MODEL=gemini-2.0-flash
+LLM_TEMPERATURE=0.7
+
+# Simulation Settings
+DEFAULT_RESEARCHERS=10
+DEFAULT_TOKENS=100
+ENABLE_BIAS_SIMULATION=true
+
+# Performance
+MAX_CONCURRENT_CALLS=5
+REQUEST_TIMEOUT=30
+```
+
+### Researcher Personalities
+
+Each researcher has unique characteristics:
+- **AI_Researcher**: Prefers practical applications
+- **Theory_Researcher**: Values mathematical rigor
+- **Ethics_Researcher**: Emphasizes societal impact
+- **Security_Researcher**: Focuses on threat models
+- And 6 more specialized researchers...
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+# Basic tests
+python -m pytest tests/
+
+# With coverage
+python -m pytest tests/ --cov=src --cov-report=html
+
+# Specific test
+python test_simple.py
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our contributing guidelines:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and add tests
+4. **Run tests**: `pytest tests/`
+5. **Submit a pull request**
+
+### Development Setup
+
+```bash
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Run code formatting
+black src/ tests/
+
+# Run linting
+flake8 src/ tests/
+
+# Run type checking
+mypy src/
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **AutoGen/AG2** for the multi-agent framework
+- **Google Gemini** for AI-powered review generation
+- **PeerRead Dataset** for real academic paper data
+- The academic community for inspiration and validation
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/ai-peer-review-platform/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ai-peer-review-platform/discussions)
+- **Email**: contact@example.com
+
+---
+
+**⭐ Star this repository if you find it useful!** 

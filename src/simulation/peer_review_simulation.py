@@ -19,32 +19,16 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 # Update imports to use proper paths
 from src.data.paper_database import PaperDatabase
 from src.core.token_system import TokenSystem
+from src.core.llm_config import get_llm_config, get_llm_provider_info
+from src.core.logging_config import get_logger, get_simulation_logger, log_llm_config, log_simulation_start, log_simulation_end, log_researcher_action
 from src.agents.researcher_agent import ResearcherAgent
 from src.agents.researcher_templates import get_researcher_template, list_researcher_templates
 
 # Load environment variables
 load_dotenv("config.env")
 
-def create_ollama_config():
-    """
-    Create configuration for Ollama model.
-    
-    Returns:
-        Dictionary with LLM configuration
-    """
-    config_list = [
-        {
-            "model": os.getenv("OLLAMA_MODEL", "qwen3:4b"),
-            "base_url": os.getenv("OLLAMA_API_BASE", "http://localhost:11434"),
-            "api_type": "ollama"
-        }
-    ]
-
-    return {
-        "config_list": config_list,
-        "temperature": 0.7,
-        "timeout": 120,
-    }
+# Initialize logger for this module
+logger = get_logger(__name__)
 
 class PeerReviewSimulation:
     """
@@ -69,11 +53,11 @@ class PeerReviewSimulation:
         
         # Check if papers were loaded, if not, load from test dataset
         if not self.paper_db.get_all_papers():
-            print("No papers found in the database.")
+            logger.info("No papers found in the database.")
             # Try to load from test dataset first
             test_dataset_path = os.path.abspath("test_dataset")
             if os.path.exists(test_dataset_path):
-                print(f"Loading papers from test dataset at '{test_dataset_path}'...")
+                logger.info(f"Loading papers from test dataset at '{test_dataset_path}'...")
                 self.paper_db.load_peerread_dataset(folder_path=test_dataset_path)
                 
                 # Assign fields to papers based on conference/venue
@@ -121,15 +105,19 @@ class PeerReviewSimulation:
         
         # Double check if we have papers, if not create test papers
         if not self.paper_db.get_all_papers():
-            print("Still no papers found. Creating test papers directly...")
+            logger.warning("Still no papers found. Creating test papers directly...")
             self.create_test_papers()
         
         # Create token system
         tokens_path = os.path.join(workspace_dir, "tokens.json")
         self.token_system = TokenSystem(data_path=tokens_path)
         
-        # LLM configuration
-        self.llm_config = create_ollama_config()
+        # LLM configuration - now uses centralized config system
+        self.llm_config = get_llm_config()
+        
+        # Log LLM provider info
+        provider_info = get_llm_provider_info()
+        log_llm_config(provider_info, logger)
         
         # Initialize agents dictionary
         self.agents = {}

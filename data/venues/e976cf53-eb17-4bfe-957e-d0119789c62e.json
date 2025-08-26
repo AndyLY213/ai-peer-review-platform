@@ -1,0 +1,95 @@
+{
+  "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+  "name": "CoNLL",
+  "venue_type": "Mid Conference",
+  "field": "Natural Language Processing",
+  "acceptance_rate": 0.35,
+  "prestige_score": 7,
+  "impact_factor": null,
+  "review_requirements": {
+    "min_word_count": 300,
+    "max_word_count": 600,
+    "required_sections": [
+      "summary",
+      "strengths",
+      "weaknesses",
+      "detailed_comments"
+    ],
+    "min_strengths": 2,
+    "min_weaknesses": 1,
+    "requires_questions": false,
+    "requires_suggestions": false
+  },
+  "quality_standards": {
+    "min_technical_depth": 4.0,
+    "min_novelty_threshold": 3.0,
+    "min_significance_threshold": 3.0,
+    "acceptance_threshold": 6.5,
+    "requires_reproducibility": false
+  },
+  "reviewer_selection_criteria": {
+    "min_h_index": 8,
+    "min_years_experience": 2,
+    "preferred_institution_tiers": [
+      1,
+      2,
+      3
+    ],
+    "min_reputation_score": 0.3,
+    "max_reviews_per_reviewer": 3
+  },
+  "review_deadline_weeks": 4,
+  "revision_cycles_allowed": 1,
+  "submission_history": [],
+  "acceptance_trends": [],
+  "reviewer_pool": [],
+  "score_distributions": {
+    "IMPACT": [
+      2.6,
+      3.0,
+      3.3,
+      2.8,
+      3.1
+    ],
+    "SUBSTANCE": [
+      2.9,
+      3.3,
+      3.6,
+      3.1,
+      3.4
+    ],
+    "SOUNDNESS_CORRECTNESS": [
+      3.0,
+      3.4,
+      3.7,
+      3.2,
+      3.5
+    ],
+    "ORIGINALITY": [
+      2.7,
+      3.1,
+      3.4,
+      2.9,
+      3.2
+    ],
+    "CLARITY": [
+      3.1,
+      3.5,
+      3.8,
+      3.3,
+      3.6
+    ],
+    "MEANINGFUL_COMPARISON": [
+      2.8,
+      3.2,
+      3.5,
+      3.0,
+      3.3
+    ]
+  },
+  "review_length_stats": {
+    "avg_length": 500,
+    "min_length": 300,
+    "max_length": 600
+  }
+}

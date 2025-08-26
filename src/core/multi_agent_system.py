@@ -1,25 +1,17 @@
 import os
 import autogen
 from dotenv import load_dotenv
+from src.core.llm_config import get_llm_config, get_llm_provider_info
 
 # Load environment variables
 load_dotenv("config.env")
 
-# Configuration for Ollama model
-config_list = [
-    {
-        "model": os.getenv("OLLAMA_MODEL", "qwen3:4b"),
-        "api_base": os.getenv("OLLAMA_API_BASE", "http://localhost:11434"),
-        "api_type": "ollama"
-    }
-]
+# Get LLM configuration from centralized system
+llm_config = get_llm_config()
 
-# You can customize these parameters based on your requirements
-llm_config = {
-    "config_list": config_list,
-    "temperature": 0.7,
-    "timeout": 120,
-}
+# Print provider info for debugging
+provider_info = get_llm_provider_info()
+print(f"Multi-Agent System using LLM Provider: {provider_info['provider']} - Model: {provider_info['model']}")
 
 # Define agent systems
 user_proxy = autogen.UserProxyAgent(
