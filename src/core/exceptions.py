@@ -164,11 +164,7 @@ class CareerSystemError(PeerReviewError):
         self.issue = issue
         super().__init__(f"Career system error: {issue}")
 
-class ValidationError(PeerReviewError):
-    """Raised when validation fails."""
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(message)
+# ValidationError is already defined above - removed duplicate
 
 class SimulationError(PeerReviewError):
     """Raised when there's an error in simulation execution."""

@@ -134,16 +134,30 @@ class Venue:
     allows_borderline_reviews: bool
     
     def get_acceptance_threshold(self) -> float:
-        """Get score threshold for acceptance."""
-        thresholds = {
-            VenueType.TOP_CONFERENCE: 8.0,
-            VenueType.MID_CONFERENCE: 6.5,
-            VenueType.LOW_CONFERENCE: 5.0,
-            VenueType.TOP_JOURNAL: 8.5,
-            VenueType.SPECIALIZED_JOURNAL: 7.0,
-            VenueType.GENERAL_JOURNAL: 5.5
+        """Get score threshold for acceptance based on venue prestige and acceptance rate."""
+        # Base thresholds calibrated against PeerRead data
+        base_thresholds = {
+            VenueType.TOP_CONFERENCE: 8.5,      # NeurIPS, ICML (5-8% acceptance)
+            VenueType.MID_CONFERENCE: 6.5,      # AAAI (25% acceptance)
+            VenueType.LOW_CONFERENCE: 5.0,      # Lower tier conferences
+            VenueType.TOP_JOURNAL: 9.0,         # Nature, Science (2% acceptance)
+            VenueType.SPECIALIZED_JOURNAL: 7.5,  # Field-specific journals
+            VenueType.GENERAL_JOURNAL: 6.0      # General journals
         }
-        return thresholds.get(self.venue_type, 6.0)
+        
+        base_threshold = base_thresholds.get(self.venue_type, 6.0)
+        
+        # Adjust based on acceptance rate for more realistic calibration
+        if self.acceptance_rate <= 0.05:  # Ultra-competitive (≤5%)
+            return min(9.5, base_threshold + 1.0)
+        elif self.acceptance_rate <= 0.10:  # Very competitive (≤10%)
+            return min(9.0, base_threshold + 0.5)
+        elif self.acceptance_rate <= 0.20:  # Competitive (≤20%)
+            return base_threshold
+        elif self.acceptance_rate <= 0.30:  # Moderate (≤30%)
+            return max(5.0, base_threshold - 0.5)
+        else:  # Less competitive (>30%)
+            return max(4.0, base_threshold - 1.0)
 
 @dataclass
 class EnhancedResearcher:
@@ -203,21 +217,32 @@ class EnhancedResearcher:
             'related_work': random.randint(5, 8)
         }
         
-        # Apply biases
-        if self.prestige_bias > 0.5 and author_reputation > 0.7:
-            # Boost scores for prestigious authors
+        # Apply biases with stronger effects
+        # Prestige bias - much stronger effect for high-reputation authors
+        if author_reputation > 0.5:  # Lower threshold
+            prestige_boost = int(self.prestige_bias * author_reputation * 3)  # Increased from +1 to +3 max
             for key in base_scores:
-                base_scores[key] = min(10, base_scores[key] + 1)
+                base_scores[key] = min(10, base_scores[key] + prestige_boost)
         
-        if self.novelty_bias > 0.7:
-            # Heavily weight novelty
-            base_scores['novelty'] = min(10, base_scores['novelty'] + 1)
-            base_scores['significance'] = min(10, base_scores['significance'] + 1)
+        # Novelty bias - stronger effect based on paper novelty
+        paper_novelty = paper.get('novelty_level', 5) / 10.0  # Normalize to 0-1
+        if self.novelty_bias > 0.5:
+            novelty_boost = int(self.novelty_bias * paper_novelty * 2.5)  # Up to +2.5 boost
+            base_scores['novelty'] = min(10, base_scores['novelty'] + novelty_boost)
+            base_scores['significance'] = min(10, base_scores['significance'] + novelty_boost)
         
-        # Apply harshness
-        if self.review_harshness > 0.6:
+        # Confirmation bias - penalize work that conflicts with reviewer's views
+        # (Simplified: assume random conflict for now)
+        if self.confirmation_bias > 0.5 and random.random() < 0.3:  # 30% chance of conflict
+            conflict_penalty = int(self.confirmation_bias * 2)  # Up to -2 penalty
+            for key in ['novelty', 'significance']:
+                base_scores[key] = max(1, base_scores[key] - conflict_penalty)
+        
+        # Apply harshness with stronger effect
+        if self.review_harshness > 0.5:
+            harshness_penalty = int((self.review_harshness - 0.5) * 4)  # Up to -2 penalty
             for key in base_scores:
-                base_scores[key] = max(1, base_scores[key] - 1)
+                base_scores[key] = max(1, base_scores[key] - harshness_penalty)
         
         criteria = ReviewCriteria(**base_scores)
         

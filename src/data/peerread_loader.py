@@ -155,7 +155,7 @@ class PeerReadLoader:
     venue characteristics with real acceptance rates.
     """
     
-    def __init__(self, peerread_path: str = "../PeerRead"):
+    def __init__(self, peerread_path: str = "dataset"):
         """
         Initialize PeerRead loader.
         

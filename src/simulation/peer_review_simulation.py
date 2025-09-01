@@ -51,56 +51,50 @@ class PeerReviewSimulation:
         papers_path = os.path.join(workspace_dir, "papers.json")
         self.paper_db = PaperDatabase(data_path=papers_path)
         
-        # Check if papers were loaded, if not, load from test dataset
+        # Check if papers were loaded, if not, load from PeerRead dataset
         if not self.paper_db.get_all_papers():
             logger.info("No papers found in the database.")
-            # Try to load from test dataset first
-            test_dataset_path = os.path.abspath("test_dataset")
-            if os.path.exists(test_dataset_path):
-                logger.info(f"Loading papers from test dataset at '{test_dataset_path}'...")
-                self.paper_db.load_peerread_dataset(folder_path=test_dataset_path)
+            # Try to load from PeerRead dataset first
+            try:
+                logger.info("Loading papers from PeerRead dataset...")
+                self.paper_db.load_peerread_dataset(use_test_dataset=False, limit=500)  # Load 500 real papers for diversity
                 
-                # Assign fields to papers based on conference/venue
+                # Assign fields to papers based on conference/venue to match researcher specialties
                 field_mappings = {
-                    "acl": "NLP", 
-                    "cl": "NLP",
-                    "conll": "NLP",
-                    "iclr": "AI",
-                    "nips": "AI",
-                    "cs.ai": "AI",
-                    "cs.lg": "AI",
-                    "cs.cv": "CV",
-                    "cs.ro": "Robotics",
-                    "cs.se": "Systems",
-                    "cs.hc": "HCI",
-                    "cs.cr": "Security",
-                    "cs.et": "Ethics",
-                    "cs.ds": "Data_Science",
-                    "cs.cc": "Theory"
+                    "acl": "Natural Language Processing", 
+                    "cl": "Natural Language Processing",
+                    "conll": "Natural Language Processing",
+                    "iclr": "Artificial Intelligence",
+                    "nips": "Artificial Intelligence",
+                    "neurips": "Artificial Intelligence",
+                    "cs.ai": "Artificial Intelligence",
+                    "cs.lg": "Artificial Intelligence",
+                    "cs.cv": "Computer Vision",
+                    "cs.ro": "Robotics and Control Systems",
+                    "cs.se": "Computer Systems and Architecture",
+                    "cs.hc": "Human-Computer Interaction",
+                    "cs.cr": "Cybersecurity and Privacy",
+                    "cs.et": "AI Ethics and Fairness",
+                    "cs.ds": "Data Science and Analytics",
+                    "cs.cc": "Theoretical Computer Science"
                 }
                 
-                # Assign fields to papers
+                # Papers already have fields assigned during loading, no need to reassign
+                # The field assignment is handled in paper_database.py during load_peerread_dataset()
                 papers = self.paper_db.get_all_papers()
+                logger.info(f"Loaded papers with field distribution:")
+                field_counts = {}
                 for paper in papers:
-                    if "venue" in paper:
-                        venue_lower = paper["venue"].lower()
-                        for key, field in field_mappings.items():
-                            if key in venue_lower:
-                                paper["field"] = field
-                                break
-                        else:
-                            # Default field if no match
-                            paper["field"] = "AI"
-                    else:
-                        paper["field"] = "AI"  # Default field
-                    
-                    # Update paper in database
-                    self.paper_db.update_paper(paper["id"], {"field": paper["field"]})
+                    field = paper.get("field", "Unknown")
+                    field_counts[field] = field_counts.get(field, 0) + 1
+                for field, count in field_counts.items():
+                    logger.info(f"  {field}: {count} papers")
                 
                 # Save changes
                 self.paper_db._save_data()
-            else:
-                # If test dataset doesn't exist, create test papers directly
+            except Exception as e:
+                logger.warning(f"Failed to load PeerRead dataset: {e}")
+                logger.info("Creating synthetic test papers as fallback...")
                 self.create_test_papers()
         
         # Double check if we have papers, if not create test papers
@@ -422,45 +416,86 @@ class PeerReviewSimulation:
                         }
             
             elif interaction_type == "generate_review":
-                # Find pending reviews
-                pending_reviews = []
+                # First, try to accept pending review requests
+                pending_requests = []
                 for agent_name, agent in self.agents.items():
-                    agent_pending = agent.get_pending_reviews()
-                    for review in agent_pending:
-                        pending_reviews.append((agent_name, review))
+                    # Get papers with pending review requests for this agent
+                    all_papers = self.paper_db.get_all_papers()
+                    for paper in all_papers:
+                        for request in paper.get('review_requests', []):
+                            if request.get('reviewer_id') == agent_name and request.get('status') == 'pending':
+                                pending_requests.append((agent_name, paper, request))
                 
-                print(f"\nFound {len(pending_reviews)} pending reviews")
+                print(f"\nFound {len(pending_requests)} pending review requests")
                 
-                if not pending_reviews:
-                    outcome = {
-                        "interaction": "generate_review",
-                        "success": False,
-                        "message": "No pending reviews found"
-                    }
-                else:
-                    # Select random pending review
-                    reviewer_name, paper = random.choice(pending_reviews)
+                # Try to accept a pending request first
+                if pending_requests:
+                    reviewer_name, paper, request = random.choice(pending_requests)
                     reviewer = self.agents[reviewer_name]
-                    print(f"Selected reviewer {reviewer_name} to complete review for paper ID {paper['id']}")
+                    print(f"Reviewer {reviewer_name} considering review request for paper ID {paper['id']}")
                     
-                    # Generate and submit review
-                    review_content = reviewer.generate_review(paper["id"])
-                    success, message = reviewer.submit_review(
+                    # Have the reviewer respond to the invitation
+                    accepted, response_message, thought_process = reviewer.respond_to_invitation(
                         paper_id=paper["id"],
-                        review_content=review_content
+                        token_amount=request.get('token_amount', 0)
                     )
                     
-                    print(f"Review submission result: {success}, {message}")
+                    print(f"Review invitation response: {accepted}, {response_message}")
                     
                     outcome = {
-                        "interaction": "generate_review",
+                        "interaction": "respond_to_review_request",
                         "reviewer": reviewer_name,
                         "reviewer_specialty": reviewer.specialty,
                         "paper_id": paper["id"],
                         "paper_field": paper.get('field', 'Unknown'),
-                        "success": success,
-                        "message": message
+                        "accepted": accepted,
+                        "success": True,
+                        "message": response_message,
+                        "thought_process": thought_process
                     }
+                else:
+                    # If no pending requests, try to complete accepted reviews
+                    accepted_reviews = []
+                    for agent_name, agent in self.agents.items():
+                        all_papers = self.paper_db.get_all_papers()
+                        for paper in all_papers:
+                            for request in paper.get('review_requests', []):
+                                if request.get('reviewer_id') == agent_name and request.get('status') == 'accepted':
+                                    accepted_reviews.append((agent_name, paper))
+                    
+                    print(f"Found {len(accepted_reviews)} accepted reviews to complete")
+                    
+                    if not accepted_reviews:
+                        outcome = {
+                            "interaction": "generate_review",
+                            "success": False,
+                            "message": "No pending requests or accepted reviews found"
+                        }
+                    else:
+                        # Select random accepted review to complete
+                        reviewer_name, paper = random.choice(accepted_reviews)
+                        reviewer = self.agents[reviewer_name]
+                        print(f"Selected reviewer {reviewer_name} to complete review for paper ID {paper['id']}")
+                        
+                        # Generate and submit review
+                        review_result = reviewer.generate_review(paper["id"])
+                        success, message = reviewer.submit_review(
+                            paper_id=paper["id"],
+                            review_content=review_result.get("review_content", {})
+                        )
+                        
+                        print(f"Review submission result: {success}, {message}")
+                        
+                        outcome = {
+                            "interaction": "generate_review",
+                            "reviewer": reviewer_name,
+                            "reviewer_specialty": reviewer.specialty,
+                            "paper_id": paper["id"],
+                            "paper_field": paper.get('field', 'Unknown'),
+                            "success": success,
+                            "message": message,
+                            "thought_process": review_result.get("thought_process", "")
+                        }
             
             outcomes.append(outcome)
             
@@ -547,9 +582,12 @@ class PeerReviewSimulation:
             
             # Print brief summary
             review_requests = sum(1 for i in interaction_results if i["interaction"] == "request_review" and i["success"])
+            review_responses = sum(1 for i in interaction_results if i["interaction"] == "respond_to_review_request" and i["success"])
+            review_acceptances = sum(1 for i in interaction_results if i["interaction"] == "respond_to_review_request" and i.get("accepted", False))
             reviews_completed = sum(1 for i in interaction_results if i["interaction"] == "generate_review" and i["success"])
             
             print(f"  - Review requests: {review_requests}/{sum(1 for i in interaction_results if i['interaction'] == 'request_review')}")
+            print(f"  - Review responses: {review_responses} (accepted: {review_acceptances})")
             print(f"  - Reviews completed: {reviews_completed}/{sum(1 for i in interaction_results if i['interaction'] == 'generate_review')}")
             
             # Print token balances
@@ -610,34 +648,95 @@ class PeerReviewSimulation:
         # Get all papers
         papers = self.paper_db.get_all_papers()
         
-        # Loop through papers and reassign those with "Imported_PeerRead" owner
+        # First pass: Ensure every researcher gets at least 5 papers
+        min_papers_per_researcher = 5
+        papers_per_researcher = {agent_name: 0 for agent_name in self.agents.keys()}
+        unassigned_papers = []
+        
+        # Collect all papers that need assignment
         for paper in papers:
             if paper["owner_id"] == "Imported_PeerRead":
-                # Get paper field, defaulting to "AI" if not set
-                paper_field = paper.get("field", "AI")
-                
-                # Find agents with compatible specialties
-                compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
-                matching_agents = []
-                
-                for specialty in compatible_specialties:
-                    if specialty in agents_by_specialty:
-                        matching_agents.extend(agents_by_specialty[specialty])
-                
-                # If no matching agents, fall back to any agent
-                if not matching_agents:
-                    new_owner = random.choice(list(self.agents.keys()))
-                    paper_field = self.agents[new_owner].specialty  # Update paper field to match new owner
-                else:
-                    new_owner = random.choice(matching_agents)
-                
-                # Update the paper's owner and field
-                paper["owner_id"] = new_owner
-                paper["field"] = paper_field
-                self.paper_db.update_paper(paper["id"], {"owner_id": new_owner, "field": paper_field})
-                reassigned_count += 1
-                
-                print(f"Assigned paper '{paper.get('title', 'Untitled')}' (field: {paper_field}) to {new_owner}")
+                unassigned_papers.append(paper)
+        
+        print(f"Found {len(unassigned_papers)} papers to assign to {len(self.agents)} researchers")
+        print(f"Target: {min_papers_per_researcher} papers minimum per researcher")
+        
+        # First pass: Assign papers to researchers with 0 papers, prioritizing field matches
+        for paper in unassigned_papers[:]:  # Use slice to allow modification during iteration
+            paper_field = paper.get("field", "Artificial Intelligence")
+            
+            # Find researchers who need more papers
+            researchers_needing_papers = [
+                agent_name for agent_name, count in papers_per_researcher.items() 
+                if count < min_papers_per_researcher
+            ]
+            
+            if not researchers_needing_papers:
+                break  # All researchers have minimum papers
+            
+            # Find compatible researchers among those who need papers
+            compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
+            compatible_and_needy = []
+            
+            for specialty in compatible_specialties:
+                if specialty in agents_by_specialty:
+                    for agent_name in agents_by_specialty[specialty]:
+                        if agent_name in researchers_needing_papers:
+                            compatible_and_needy.append(agent_name)
+            
+            # If no compatible researchers need papers, assign to any researcher who needs papers
+            if not compatible_and_needy:
+                new_owner = random.choice(researchers_needing_papers)
+            else:
+                new_owner = random.choice(compatible_and_needy)
+            
+            # Assign the paper
+            paper["owner_id"] = new_owner
+            self.paper_db.update_paper(paper["id"], {"owner_id": new_owner})
+            papers_per_researcher[new_owner] += 1
+            reassigned_count += 1
+            unassigned_papers.remove(paper)
+            
+            print(f"[PRIORITY] Assigned '{paper.get('title', 'Untitled')[:50]}...' (field: {paper_field}) to {new_owner} (now has {papers_per_researcher[new_owner]} papers)")
+        
+        # Second pass: Distribute remaining papers normally
+        for paper in unassigned_papers:
+            paper_field = paper.get("field", "Artificial Intelligence")
+            
+            # Find agents with compatible specialties
+            compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
+            matching_agents = []
+            
+            for specialty in compatible_specialties:
+                if specialty in agents_by_specialty:
+                    matching_agents.extend(agents_by_specialty[specialty])
+            
+            # If no matching agents, fall back to any agent
+            if not matching_agents:
+                new_owner = random.choice(list(self.agents.keys()))
+            else:
+                new_owner = random.choice(matching_agents)
+            
+            # Update the paper's owner (keep original field)
+            paper["owner_id"] = new_owner
+            self.paper_db.update_paper(paper["id"], {"owner_id": new_owner})
+            papers_per_researcher[new_owner] += 1
+            reassigned_count += 1
+            
+            print(f"[NORMAL] Assigned '{paper.get('title', 'Untitled')[:50]}...' (field: {paper_field}) to {new_owner} (now has {papers_per_researcher[new_owner]} papers)")
+        
+        # Report final distribution
+        print(f"\nFinal paper distribution:")
+        for agent_name, count in sorted(papers_per_researcher.items()):
+            status = "✅" if count >= min_papers_per_researcher else "❌"
+            print(f"  {agent_name}: {count} papers {status}")
+        
+        # Verify no researcher has 0 papers
+        zero_paper_researchers = [name for name, count in papers_per_researcher.items() if count == 0]
+        if zero_paper_researchers:
+            print(f"❌ WARNING: {len(zero_paper_researchers)} researchers still have 0 papers: {zero_paper_researchers}")
+        else:
+            print(f"✅ SUCCESS: All researchers have papers")
         
         # Save changes to disk
         self.paper_db._save_data()

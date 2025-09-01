@@ -65,8 +65,59 @@ test_dataset/
 simulation_results/
 checkpoints/
 
-# Kiro IDE specific files
-.kiro/
+# Dataset directories (can be large)
+dataset/
+data/
+PeerRead/
+../PeerRead/
+
+# Generated analysis files
+*_ANALYSIS.md
+*_SUMMARY.md
+CRITICAL_*.md
+EXECUTIVE_SUMMARY.md
+PROJECT_TEST_RESULTS.md
+simulation_results.md
+
+# Temporary fix scripts
+fix_*.py
+reset_*.py
+analyze_*.py
+test_*.py
+organize_dataset*.py
+complete_peerread_loading.py
+load_missing_peerread_papers.py
+
+# Backup files
+*.backup
+*.bak
+*.json.backup
+
+# Large data files
+*.csv
+*.tsv
+*.jsonl
+*.parquet
+
+# Model files and checkpoints
+*.pkl
+*.pickle
+*.pt
+*.pth
+*.h5
+*.hdf5
+models/
+checkpoints/
+
+# Output and result files
+output/
+results/
+exports/
+simulation_analytics/
+
+# Kiro IDE specific files (keep specs but exclude other generated content)
+.kiro/steering/
+.kiro/settings/
 
 # Ollama specific
 ollama_data/
