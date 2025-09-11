@@ -256,7 +256,7 @@ class TokenSystem:
     
     def complete_review(self, reviewer_id: str, paper_id: str) -> bool:
         """
-        Mark a review as completed.
+        Mark a review as completed and award completion bonus tokens.
         
         Args:
             reviewer_id: ID of the reviewer
@@ -265,6 +265,8 @@ class TokenSystem:
         Returns:
             True if review was found and marked completed, False otherwise
         """
+        from src.core.constants import REVIEW_COMPLETION_BONUS
+        
         # Find the pending review request
         for transaction in self.transactions:
             if (transaction['type'] == 'review_request' and
@@ -275,6 +277,26 @@ class TokenSystem:
                 # Mark as completed
                 transaction['status'] = 'completed'
                 transaction['completion_timestamp'] = self._get_timestamp()
+                
+                # Award completion bonus tokens
+                if REVIEW_COMPLETION_BONUS > 0:
+                    if reviewer_id not in self.token_balances:
+                        self.token_balances[reviewer_id] = self.initial_tokens
+                    
+                    self.token_balances[reviewer_id] += REVIEW_COMPLETION_BONUS
+                    
+                    # Record bonus transaction
+                    bonus_transaction = {
+                        'type': 'review_completion_bonus',
+                        'reviewer_id': reviewer_id,
+                        'paper_id': paper_id,
+                        'amount': REVIEW_COMPLETION_BONUS,
+                        'timestamp': self._get_timestamp(),
+                        'related_request': transaction
+                    }
+                    self.transactions.append(bonus_transaction)
+                    
+                    logger.info(f"Awarded {REVIEW_COMPLETION_BONUS} tokens to {reviewer_id} for completing review of paper {paper_id}")
                 
                 # Record completion transaction
                 completion = {

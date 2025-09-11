@@ -142,8 +142,8 @@ MAX_REVIEW_LENGTH = 5000
 DEFAULT_REVIEW_RATING_SCALE = (1, 10)
 
 # Token Economics Constants
-REVIEW_REQUEST_TOKEN_RANGE = (10, 50)  # Min and max tokens for review requests
-REVIEW_COMPLETION_BONUS = 0  # Additional tokens for completing reviews
+REVIEW_REQUEST_TOKEN_RANGE = (5, 25)  # Min and max tokens for review requests (reduced from 10-50)
+REVIEW_COMPLETION_BONUS = 15  # Additional tokens for completing reviews (increased from 0)
 TOKEN_DECAY_RATE = 0.0  # Rate at which unused tokens decay (0 = no decay)
 
 # Progress Reporting Constants
