@@ -115,9 +115,8 @@ results/
 exports/
 simulation_analytics/
 
-# Kiro IDE specific files (keep specs but exclude other generated content)
-.kiro/steering/
-.kiro/settings/
+# Kiro IDE specific files
+.kiro/
 
 # Ollama specific
 ollama_data/
