@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from src.data.paper_database import PaperDatabase
 from src.core.token_system import TokenSystem
+from src.logging.thought_logger import get_thought_logger
 
 
 class EditorAgent(autogen.AssistantAgent):
@@ -77,6 +78,7 @@ class EditorAgent(autogen.AssistantAgent):
         self.journal = journal
         self.paper_db = paper_db
         self.token_system = token_system
+        self.thought_logger = get_thought_logger()
         
         # Register with token system
         self.token_system.register_researcher(self.name)
@@ -162,26 +164,21 @@ class EditorAgent(autogen.AssistantAgent):
         """
         if not self.submission_queue:
             return False, "No papers in submission queue", {}
-            
-        # Get the highest priority paper
+
         neg_priority, timestamp, paper_id = heapq.heappop(self.submission_queue)
-        
-        # Process the paper (screen it)
         accepted, decision, message, thought_process = self.screen_paper(paper_id)
-        
-        # Get paper data
-        paper = self.paper_db.get_paper(paper_id)
-        
+
+        paper = self.paper_db.get_paper(paper_id) or {}
         paper_data = {
             "paper_id": paper_id,
             "title": paper.get("title", "Untitled"),
-            "priority_score": -neg_priority,  # Convert back to positive
+            "priority_score": -neg_priority,
             "author": paper.get("owner_id", "Unknown"),
             "decision": decision,
             "message": message,
-            "thought_process": thought_process
+            "thought_process": thought_process,
         }
-        
+
         return True, f"Processed paper {paper_id} with priority {-neg_priority}", paper_data
     
     def screen_paper(self, paper_id: str) -> Tuple[bool, str, str, str]:
@@ -302,14 +299,26 @@ class EditorAgent(autogen.AssistantAgent):
             thought_process = f"Raw LLM response: {response_text[:200]}..."
         
         # Process decision
-        if "ACCEPT FOR REVIEW" in decision_str:
-            # Accept paper for review
-            self.paper_db.update_paper(paper_id, {"status": "in_review"})
-            return True, "accept_for_review", reasoning, thought_process
-        else:
-            # Desk reject
-            self.paper_db.update_paper(paper_id, {"status": "rejected"})
-            return False, "desk_reject", reasoning, thought_process
+        accepted = "ACCEPT FOR REVIEW" in decision_str
+        new_status = "in_review" if accepted else "rejected"
+        self.paper_db.update_paper(paper_id, {"status": new_status})
+
+        self.thought_logger.log(
+            event_type="editor_screening",
+            agent_name=self.name,
+            agent_role="editor",
+            personality=None,
+            specialty=self.journal,
+            context={
+                "paper_id": paper_id,
+                "decision": "accept_for_review" if accepted else "desk_reject",
+                "reasoning": reasoning,
+            },
+            thought_process=thought_process,
+            raw_response=response_text,
+        )
+
+        return accepted, ("accept_for_review" if accepted else "desk_reject"), reasoning, thought_process
     
     def invite_reviewers(
         self, 

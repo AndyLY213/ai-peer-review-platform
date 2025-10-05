@@ -82,7 +82,16 @@ class PeerReviewSimulation:
     Main simulation system for the peer review process.
     """
     
-    def __init__(self, workspace_dir: str = "peer_review_workspace", assign_papers: bool = False, enhanced_mode: bool = False):
+    def __init__(
+        self,
+        workspace_dir: str = "peer_review_workspace",
+        assign_papers: bool = False,
+        *,
+        legacy_basic_mode: bool = False,
+        scenario: Optional[str] = None,
+        config_path: Optional[str] = None,
+        coordinator: Optional[SimulationCoordinator] = None,
+    ):
         """
         Initialize the peer review simulation.
         
@@ -90,19 +99,23 @@ class PeerReviewSimulation:
             workspace_dir: Directory for storing simulation data
             assign_papers: Whether to automatically assign papers after initialization
                           (only effective if researchers are added before this call)
-            enhanced_mode: Whether to enable enhanced features (biases, networks, career progression, etc.)
         """
         self.workspace_dir = workspace_dir
-        self.enhanced_mode = enhanced_mode
         os.makedirs(workspace_dir, exist_ok=True)
         
-        # Initialize enhancement systems if enhanced mode is enabled
-        self.enhancement_systems = {}
-        if enhanced_mode:
-            logger.info("Initializing enhanced mode with all enhancement systems...")
-            self._initialize_enhancement_systems()
+        # Initialize enhancement systems (always enabled unless forced legacy)
+        self.enhancement_systems: Dict[str, Any] = {}
+        self.enhancements_active = False
+        self.coordinator: Optional[SimulationCoordinator] = coordinator
+        self.legacy_basic_mode = legacy_basic_mode
+        self.scenario_name = scenario
+        self.config_path = config_path
+
+        if self.legacy_basic_mode:
+            logger.warning("Legacy basic mode requested; enhancement systems will not be activated.")
         else:
-            logger.info("Running in basic mode (no enhancements)")
+            logger.info("Initializing peer review simulation with enhanced systems...")
+            self._initialize_enhancement_systems()
         
         # Create paper database
         papers_path = os.path.join(workspace_dir, "papers.json")
@@ -181,7 +194,7 @@ class PeerReviewSimulation:
         self.manager = None
         
         # Initialize standard venues if in enhanced mode (only if not already created)
-        if self.enhanced_mode and self.enhancement_systems.get('venue_registry'):
+        if self.enhancements_active and self.enhancement_systems.get('venue_registry'):
             venue_registry = self.enhancement_systems['venue_registry']
             existing_venues = venue_registry.list_venues()
             if not existing_venues:
@@ -228,7 +241,7 @@ class PeerReviewSimulation:
     @property
     def researchers(self):
         """Get dictionary of researchers by ID."""
-        if self.enhanced_mode:
+        if self.enhancements_active:
             # Return enhanced researchers
             return {agent.name: agent.researcher for agent in self.agents.values() 
                    if hasattr(agent, 'researcher')}
@@ -247,130 +260,134 @@ class PeerReviewSimulation:
         if not ENHANCEMENTS_AVAILABLE:
             logger.error("Cannot initialize enhancement systems - imports failed")
             return
-        
+
         try:
-            # Initialize core enhancement systems
             logger.info("Initializing core enhancement systems...")
-            
-            # Academic hierarchy and reputation system
+
+            if not self.coordinator and SimulationCoordinator:
+                self.coordinator = SimulationCoordinator()
+            if self.coordinator:
+                self.enhancement_systems['simulation_coordinator'] = self.coordinator
+                self.enhancements_active = True
+            else:
+                logger.error("SimulationCoordinator not available; enhancements disabled")
+                self.enhancements_active = False
+                return
+
+            coordinator = self.coordinator
+
             if AcademicHierarchy:
-                self.enhancement_systems['academic_hierarchy'] = AcademicHierarchy()
-                logger.info("Academic hierarchy system initialized")
-            
+                coordinator.academic_hierarchy = coordinator.academic_hierarchy or AcademicHierarchy()
+                self.enhancement_systems['academic_hierarchy'] = coordinator.academic_hierarchy
+
             if ReputationCalculator:
-                self.enhancement_systems['reputation_calculator'] = ReputationCalculator()
-                logger.info("Reputation calculator initialized")
-            
-            # Venue system
+                coordinator.reputation_calculator = coordinator.reputation_calculator or ReputationCalculator()
+                self.enhancement_systems['reputation_calculator'] = coordinator.reputation_calculator
+
             if VenueRegistry:
-                self.enhancement_systems['venue_registry'] = VenueRegistry()
-                logger.info("Venue registry initialized")
-            
-            # Review system
+                coordinator.venue_registry = coordinator.venue_registry or VenueRegistry()
+                self.enhancement_systems['venue_registry'] = coordinator.venue_registry
+
             if StructuredReviewValidator:
                 self.enhancement_systems['structured_review_validator'] = StructuredReviewValidator()
-                logger.info("Structured review validator initialized")
-            
-            # Bias system
+
             if BiasEngine:
-                bias_engine = BiasEngine()
-                
-                # Register individual bias models
-                if AnchoringBiasModel:
-                    from src.enhancements.bias_engine import BiasType, BiasConfiguration
-                    anchoring_config = BiasConfiguration(
-                        bias_type=BiasType.ANCHORING,
-                        base_strength=0.4,
-                        parameters={
-                            'influence_decay': 0.8,
-                            'confidence_weight': 0.3,
-                            'max_influence': 1.0
-                        }
-                    )
-                    bias_engine.register_bias_model(AnchoringBiasModel(anchoring_config))
-                    logger.info("Registered anchoring bias model")
-                
-                if ConfirmationBiasModel:
-                    confirmation_config = BiasConfiguration(
-                        bias_type=BiasType.CONFIRMATION,
-                        base_strength=0.3,
-                        parameters={
-                            'belief_alignment_threshold': 0.7,
-                            'max_score_adjustment': 1.5
-                        }
-                    )
-                    bias_engine.register_bias_model(ConfirmationBiasModel(confirmation_config))
-                    logger.info("Registered confirmation bias model")
-                
-                if HaloEffectModel:
-                    halo_config = BiasConfiguration(
-                        bias_type=BiasType.HALO_EFFECT,
-                        base_strength=0.2,
-                        parameters={
-                            'reputation_threshold': 0.7,
-                            'max_score_boost': 2.0,
-                            'prestige_factor': 0.5
-                        }
-                    )
-                    bias_engine.register_bias_model(HaloEffectModel(halo_config))
-                    logger.info("Registered halo effect bias model")
-                
-                if AvailabilityBiasModel:
-                    availability_config = BiasConfiguration(
-                        bias_type=BiasType.AVAILABILITY,
-                        base_strength=0.3,
-                        parameters={
-                            'recency_window_days': 30,
-                            'similarity_threshold': 0.6,
-                            'max_adjustment': 1.0
-                        }
-                    )
-                    bias_engine.register_bias_model(AvailabilityBiasModel(availability_config))
-                    logger.info("Registered availability bias model")
-                
+                bias_engine = coordinator.bias_engine or BiasEngine()
+                coordinator.bias_engine = bias_engine
+                self._register_bias_models(bias_engine)
                 self.enhancement_systems['bias_engine'] = bias_engine
-                logger.info("Bias engine initialized with individual bias models")
-            
-            # Network systems
+
             if CollaborationNetwork:
-                self.enhancement_systems['collaboration_network'] = CollaborationNetwork()
-                logger.info("Collaboration network initialized")
-            
+                coordinator.collaboration_network = coordinator.collaboration_network or CollaborationNetwork()
+                self.enhancement_systems['collaboration_network'] = coordinator.collaboration_network
+
             if CitationNetwork:
-                self.enhancement_systems['citation_network'] = CitationNetwork()
-                logger.info("Citation network initialized")
-            
-            # Career and funding systems
+                coordinator.citation_network = coordinator.citation_network or CitationNetwork()
+                self.enhancement_systems['citation_network'] = coordinator.citation_network
+
             if TenureTrackManager:
-                self.enhancement_systems['tenure_track_manager'] = TenureTrackManager()
-                logger.info("Tenure track manager initialized")
-            
+                coordinator.tenure_track_manager = coordinator.tenure_track_manager or TenureTrackManager()
+                self.enhancement_systems['tenure_track_manager'] = coordinator.tenure_track_manager
+
             if FundingSystem:
-                self.enhancement_systems['funding_system'] = FundingSystem()
-                logger.info("Funding system initialized")
-            
-            # Temporal systems
+                coordinator.funding_system = coordinator.funding_system or FundingSystem()
+                self.enhancement_systems['funding_system'] = coordinator.funding_system
+
             if WorkloadTracker:
-                self.enhancement_systems['workload_tracker'] = WorkloadTracker()
-                logger.info("Workload tracker initialized")
-            
+                coordinator.workload_tracker = coordinator.workload_tracker or WorkloadTracker()
+                self.enhancement_systems['workload_tracker'] = coordinator.workload_tracker
+
             if DeadlineManager:
-                self.enhancement_systems['deadline_manager'] = DeadlineManager()
-                logger.info("Deadline manager initialized")
-            
-            # Simulation coordinator (orchestrates all systems)
-            if SimulationCoordinator:
-                self.enhancement_systems['simulation_coordinator'] = SimulationCoordinator()
-                logger.info("Simulation coordinator initialized")
-            
-            logger.info(f"Enhanced mode initialized with {len(self.enhancement_systems)} systems")
-            
+                coordinator.deadline_manager = coordinator.deadline_manager or DeadlineManager()
+                self.enhancement_systems['deadline_manager'] = coordinator.deadline_manager
+
+            self.enhancements_active = True
+            logger.info(f"Enhanced mode initialized with coordinator {self.coordinator.state.simulation_id}")
+
         except Exception as e:
             logger.error(f"Failed to initialize enhancement systems: {e}")
-            # Fall back to basic mode
-            self.enhanced_mode = False
+            self.enhancements_active = False
             self.enhancement_systems = {}
+            self.coordinator = None
             logger.warning("Falling back to basic mode due to initialization failure")
+
+    def _register_bias_models(self, bias_engine):
+        """Register default bias models with the bias engine."""
+        if not bias_engine:
+            return
+
+        try:
+            from src.enhancements.bias_engine import BiasType, BiasConfiguration
+
+            if AnchoringBiasModel:
+                anchoring_config = BiasConfiguration(
+                    bias_type=BiasType.ANCHORING,
+                    base_strength=0.4,
+                    parameters={
+                        'influence_decay': 0.8,
+                        'confidence_weight': 0.3,
+                        'max_influence': 1.0
+                    }
+                )
+                bias_engine.register_bias_model(AnchoringBiasModel(anchoring_config))
+
+            if ConfirmationBiasModel:
+                confirmation_config = BiasConfiguration(
+                    bias_type=BiasType.CONFIRMATION,
+                    base_strength=0.3,
+                    parameters={
+                        'belief_alignment_threshold': 0.7,
+                        'max_score_adjustment': 1.5
+                    }
+                )
+                bias_engine.register_bias_model(ConfirmationBiasModel(confirmation_config))
+
+            if HaloEffectModel:
+                halo_config = BiasConfiguration(
+                    bias_type=BiasType.HALO_EFFECT,
+                    base_strength=0.2,
+                    parameters={
+                        'reputation_threshold': 0.7,
+                        'max_score_boost': 2.0,
+                        'prestige_factor': 0.5
+                    }
+                )
+                bias_engine.register_bias_model(HaloEffectModel(halo_config))
+
+            if AvailabilityBiasModel:
+                availability_config = BiasConfiguration(
+                    bias_type=BiasType.AVAILABILITY,
+                    base_strength=0.3,
+                    parameters={
+                        'recency_window_days': 30,
+                        'similarity_threshold': 0.6,
+                        'max_adjustment': 1.0
+                    }
+                )
+                bias_engine.register_bias_model(AvailabilityBiasModel(availability_config))
+
+        except Exception as e:
+            logger.warning(f"Failed to register bias models: {e}")
     
     def _initialize_standard_venues(self):
         """Initialize standard venues in the venue registry."""
@@ -425,7 +442,7 @@ class PeerReviewSimulation:
         researcher_name = custom_name if custom_name else template["name"]
         
         # Create researcher agent (enhanced or basic based on mode)
-        if self.enhanced_mode and EnhancedResearcherAgent:
+        if self.enhancements_active and EnhancedResearcherAgent:
             logger.info(f"Creating enhanced researcher agent: {researcher_name}")
             researcher = EnhancedResearcherAgent(
                 name=researcher_name,
@@ -435,8 +452,23 @@ class PeerReviewSimulation:
                 token_system=self.token_system,
                 bias=template.get("bias", ""),
                 llm_config=self.llm_config,
-                simulation_coordinator=self.enhancement_systems.get('simulation_coordinator')
+                simulation_coordinator=self.coordinator
             )
+            if self.coordinator:
+                profile = ResearcherProfile(
+                    researcher_id=researcher_name,
+                    name=researcher_name,
+                    specialty=template["specialty"],
+                    personality=getattr(researcher, "personality", None),
+                    career_stage=template.get("career_stage", "unknown"),
+                    bias_profile=researcher.behavior_params,
+                )
+                event = SimulationEvent(
+                    event_type=EventType.RESEARCHER_REGISTERED,
+                    timestamp=datetime.utcnow(),
+                    payload={"profile": profile},
+                )
+                self.coordinator.handle_event(event)
         else:
             logger.info(f"Creating basic researcher agent: {researcher_name}")
             researcher = ResearcherAgent(
@@ -453,10 +485,16 @@ class PeerReviewSimulation:
         self.agents[researcher_name] = researcher
         
         # Update collaboration network if in enhanced mode
-        if self.enhanced_mode and self.collaboration_network:
+        if self.enhancements_active and self.collaboration_network:
             self._update_collaboration_network()
         
         print(f"Added researcher agent: {researcher_name}")
+        if self.enhancements_active and self.coordinator:
+            try:
+                self.coordinator.register_researcher(researcher)
+            except Exception as exc:
+                logger.warning(f"Failed to register researcher {researcher_name} with coordinator: {exc}")
+
         return researcher_name
     
     def _update_collaboration_network(self):
@@ -942,7 +980,7 @@ class PeerReviewSimulation:
         
         # Get venue statistics if enhanced mode is enabled
         venue_stats = {}
-        if self.enhanced_mode and self.enhancement_systems.get('venue_registry'):
+        if self.enhancements_active and self.enhancement_systems.get('venue_registry'):
             venue_registry = self.enhancement_systems['venue_registry']
             venues = venue_registry.list_venues()
             
@@ -1126,6 +1164,9 @@ class PeerReviewSimulation:
                     )
                     
                     print(f"Review invitation response: {accepted}, {response_message}")
+                    if accepted:
+                        request['status'] = 'accepted'
+                        self.paper_db.update_paper(paper['id'], {'review_requests': paper['review_requests']})
                     
                     outcome = {
                         "interaction": "respond_to_review_request",
@@ -1178,6 +1219,11 @@ class PeerReviewSimulation:
                     
                     # Award tokens for completing the review
                     if success:
+                        for request in paper.get('review_requests', []):
+                            if request.get('reviewer_id') == reviewer_name:
+                                request['status'] = 'completed'
+                                break
+                        self.paper_db.update_paper(paper['id'], {'review_requests': paper['review_requests']})
                         completion_success = self.token_system.complete_review(reviewer_name, paper["id"])
                         if completion_success:
                             print(f"✅ {reviewer_name} earned completion bonus for reviewing paper {paper['id']}")
@@ -1370,19 +1416,27 @@ class PeerReviewSimulation:
             
             # Find compatible researchers among those who need papers
             compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
-            compatible_and_needy = []
-            
+
+            primary_candidates = [
+                agent_name for agent_name in agents_by_specialty.get(paper_field, [])
+                if agent_name in researchers_needing_papers
+            ]
+            secondary_candidates = []
             for specialty in compatible_specialties:
-                if specialty in agents_by_specialty:
-                    for agent_name in agents_by_specialty[specialty]:
-                        if agent_name in researchers_needing_papers:
-                            compatible_and_needy.append(agent_name)
-            
-            # If no compatible researchers need papers, assign to any researcher who needs papers
-            if not compatible_and_needy:
-                new_owner = random.choice(researchers_needing_papers)
+                if specialty == paper_field:
+                    continue
+                secondary_candidates.extend([
+                    agent_name for agent_name in agents_by_specialty.get(specialty, [])
+                    if agent_name in researchers_needing_papers
+                ])
+
+            if primary_candidates:
+                new_owner = random.choice(primary_candidates)
+            elif secondary_candidates:
+                new_owner = random.choice(secondary_candidates)
             else:
-                new_owner = random.choice(compatible_and_needy)
+                # If no compatible researchers need papers, assign to any researcher who needs papers
+                new_owner = random.choice(researchers_needing_papers)
             
             # Assign the paper
             paper["owner_id"] = new_owner
@@ -1393,23 +1447,42 @@ class PeerReviewSimulation:
             
             print(f"[PRIORITY] Assigned '{paper.get('title', 'Untitled')[:50]}...' (field: {paper_field}) to {new_owner} (now has {papers_per_researcher[new_owner]} papers)")
         
+        # Rebalance any existing papers that are incompatible with their current owners
+        mismatched_papers = []
+        for agent_name, agent in self.agents.items():
+            allowed_fields = set(specialty_compatibility.get(agent.specialty, [])) | {agent.specialty}
+            agent_papers = self.paper_db.get_papers_by_owner(agent_name)
+            for paper in agent_papers:
+                field = paper.get("field", "Artificial Intelligence")
+                if field not in allowed_fields:
+                    mismatched_papers.append(paper)
+                    papers_per_researcher[agent_name] = max(0, papers_per_researcher.get(agent_name, 0) - 1)
+                    self.paper_db.update_paper(paper["id"], {"owner_id": "Imported_PeerRead"})
+        if mismatched_papers:
+            print(f"[REBALANCE] Found {len(mismatched_papers)} incompatible papers; reassigning...")
+            unassigned_papers.extend(mismatched_papers)
+
         # Second pass: Distribute remaining papers normally
         for paper in unassigned_papers:
             paper_field = paper.get("field", "Artificial Intelligence")
             
             # Find agents with compatible specialties
             compatible_specialties = specialty_compatibility.get(paper_field, [paper_field])
-            matching_agents = []
-            
+
+            primary_candidates = list(agents_by_specialty.get(paper_field, []))
+            secondary_candidates = []
             for specialty in compatible_specialties:
-                if specialty in agents_by_specialty:
-                    matching_agents.extend(agents_by_specialty[specialty])
-            
-            # If no matching agents, fall back to any agent
-            if not matching_agents:
-                new_owner = random.choice(list(self.agents.keys()))
+                if specialty == paper_field:
+                    continue
+                secondary_candidates.extend(agents_by_specialty.get(specialty, []))
+
+            if primary_candidates:
+                new_owner = random.choice(primary_candidates)
+            elif secondary_candidates:
+                new_owner = random.choice(secondary_candidates)
             else:
-                new_owner = random.choice(matching_agents)
+                # If no matching agents, fall back to any agent
+                new_owner = random.choice(list(self.agents.keys()))
             
             # Update the paper's owner (keep original field)
             paper["owner_id"] = new_owner
@@ -1646,7 +1719,7 @@ def main():
     print("--------------------------------")
     
     # Create simulation with enhanced mode enabled
-    simulation = PeerReviewSimulation(enhanced_mode=True)
+    simulation = PeerReviewSimulation()
     
     # Choose simulation mode
     print("\nSimulation Modes:")

@@ -1,3 +1,78 @@
+"""Data structures describing coordinator events for integration."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Dict, List, Optional
+
+
+class EventType(str, Enum):
+    RESEARCHER_REGISTERED = "researcher_registered"
+    PAPER_SUBMITTED = "paper_submitted"
+    REVIEW_SUBMITTED = "review_submitted"
+    INVITATION_DECISION = "invitation_decision"
+    TOKEN_TRANSACTION = "token_transaction"
+
+
+@dataclass
+class ResearcherProfile:
+    researcher_id: str
+    name: str
+    specialty: str
+    personality: Optional[str]
+    career_stage: str
+    bias_profile: Dict[str, float] = field(default_factory=dict)
+    strategic_profile: Dict[str, float] = field(default_factory=dict)
+
+
+@dataclass
+class PaperSubmission:
+    paper_id: str
+    title: str
+    field: str
+    author_id: str
+    venue_id: Optional[str]
+    priority_score: float = 0.0
+
+
+@dataclass
+class ReviewDecision:
+    review_id: str
+    paper_id: str
+    reviewer_id: str
+    scores: Dict[str, float]
+    recommendation: str
+    confidence: float
+    thought_process: str
+
+
+@dataclass
+class InvitationDecision:
+    paper_id: str
+    reviewer_id: str
+    author_id: str
+    token_offer: int
+    accepted: bool
+    thought_process: str
+
+
+@dataclass
+class TokenEvent:
+    transaction_id: str
+    from_agent: Optional[str]
+    to_agent: Optional[str]
+    amount: int
+    reason: str
+    metadata: Dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class SimulationEvent:
+    event_type: EventType
+    timestamp: datetime
+    payload: Dict[str, object]
 """
 Enhanced Simulation Coordinator
 
@@ -19,8 +94,21 @@ from concurrent.futures import ThreadPoolExecutor
 from src.core.exceptions import ValidationError, SimulationError
 from src.core.logging_config import get_logger
 from src.data.enhanced_models import (
-    EnhancedResearcher, StructuredReview, EnhancedVenue, 
-    ResearcherLevel, VenueType, BiasEffect
+    EnhancedResearcher,
+    StructuredReview,
+    EnhancedVenue,
+    ResearcherLevel,
+    VenueType,
+    BiasEffect
+)
+from src.enhancements.simulation_events import (
+    EventType,
+    InvitationDecision,
+    PaperSubmission,
+    ResearcherProfile,
+    ReviewDecision,
+    SimulationEvent,
+    TokenEvent,
 )
 
 # Import all enhancement systems - using try/except to handle missing imports gracefully
@@ -45,9 +133,10 @@ except ImportError:
     ReputationCalculator = None
 
 try:
-    from src.enhancements.structured_review_system import StructuredReviewSystem
+    from src.enhancements.structured_review_system import StructuredReviewValidator, ReviewRequirementsManager
 except ImportError:
-    StructuredReviewSystem = None
+    StructuredReviewValidator = None
+    ReviewRequirementsManager = None
 
 try:
     from src.enhancements.venue_standards_enforcement import VenueStandardsEnforcement
@@ -268,12 +357,24 @@ class SimulationCoordinator:
         self._executor = ThreadPoolExecutor(max_workers=4)
         
         logger.info(f"SimulationCoordinator initialized with ID: {self.state.simulation_id}")
+        self._event_listeners: Dict[EventType, List] = {}
     
+    def register_event_listener(self, event_type: EventType, callback):
+        self._event_listeners.setdefault(event_type, []).append(callback)
+
+    def handle_event(self, event: SimulationEvent) -> None:
+        listeners = self._event_listeners.get(event.event_type, [])
+        for callback in listeners:
+            try:
+                callback(event)
+            except Exception as err:
+                logger.warning("Event listener failed for %s: %s", event.event_type, err)
     def _initialize_systems(self):
         """Initialize all enhancement systems with proper configuration."""
         try:
             # Core review and venue systems
-            self.review_system = StructuredReviewSystem() if StructuredReviewSystem else None
+            self.review_validator = StructuredReviewValidator() if StructuredReviewValidator else None
+            self.review_requirements = ReviewRequirementsManager() if ReviewRequirementsManager else None
             self.venue_registry = VenueRegistry() if VenueRegistry else None
             self.venue_standards = VenueStandardsEnforcement() if VenueStandardsEnforcement else None
             
@@ -316,7 +417,7 @@ class SimulationCoordinator:
             
             # Count initialized systems
             initialized_systems = sum(1 for system in [
-                self.review_system, self.venue_registry, self.venue_standards,
+                self.review_validator, self.venue_registry, self.venue_standards,
                 self.academic_hierarchy, self.reputation_calculator, self.deadline_manager,
                 self.workload_tracker, self.revision_cycle_manager, self.bias_engine,
                 self.collaboration_network, self.citation_network, self.conference_community,
@@ -346,6 +447,109 @@ class SimulationCoordinator:
             'meta_science': ['reproducibility_tracker', 'open_science_manager', 'ai_impact_simulator']
         }
     
+    def register_researcher(self, researcher: EnhancedResearcher):
+        """Register a researcher with all relevant systems."""
+        try:
+            self.state.total_researchers += 1
+
+            if not hasattr(self, '_registered_researchers'):
+                self._registered_researchers: Dict[str, EnhancedResearcher] = {}
+
+            self._registered_researchers[researcher.id] = researcher
+
+            event = SimulationEvent(
+                event_type=EventType.RESEARCHER_REGISTERED,
+                timestamp=datetime.utcnow(),
+                payload={
+                    "profile": ResearcherProfile(
+                        researcher_id=researcher.id,
+                        name=researcher.name,
+                        specialty=researcher.specialty,
+                        personality=getattr(researcher, "personality", None),
+                        career_stage=getattr(researcher, "career_stage", "unknown"),
+                        bias_profile=researcher.cognitive_biases,
+                        strategic_profile=researcher.strategic_behavior.strategy_weights
+                        if hasattr(researcher.strategic_behavior, "strategy_weights")
+                        else {},
+                    )
+                },
+            )
+            self.handle_event(event)
+
+            if self.collaboration_network:
+                self.collaboration_network.build_network_from_researchers(list(self._registered_researchers.values()))
+
+            if self.citation_network:
+                self.citation_network.build_network_from_researchers(list(self._registered_researchers.values()))
+
+            if self.bias_engine:
+                self.bias_engine.register_researcher(researcher)
+
+            if self.tenure_track_manager:
+                logger.debug("TenureTrackManager available but registration API not implemented")
+
+            if self.funding_system:
+                logger.debug("FundingSystem available but registration API not implemented")
+
+            if self.job_market_simulator:
+                logger.debug("JobMarketSimulator available but registration API not implemented")
+
+            if self.promotion_criteria_evaluator:
+                logger.debug("PromotionCriteriaEvaluator available but registration API not implemented")
+
+            if self.career_transition_manager:
+                logger.debug("CareerTransitionManager available but registration API not implemented")
+
+            logger.info(f"Registered researcher {researcher.id} with coordinator")
+
+        except Exception as exc:
+            self._handle_coordination_error('register_researcher', exc)
+
+    def register_paper(self, paper: Dict[str, Any]):
+        """Register a paper submission with coordinator systems."""
+        try:
+            self.state.total_papers += 1
+
+            if self.review_requirements and paper.get('venue_id'):
+                venue = self.venue_registry.get_venue(paper['venue_id']) if self.venue_registry else None
+                if venue:
+                    self.review_requirements.ensure_requirements_for_venue(venue.venue_type)
+
+            if self.venue_registry and paper.get('venue_id'):
+                venue = self.venue_registry.get_venue(paper['venue_id'])
+                if venue:
+                    venue.record_submission(paper['id'])
+
+            if self.reputation_calculator:
+                self.reputation_calculator.record_paper_submission(paper)
+
+        except Exception as exc:
+            self._handle_coordination_error('register_paper', exc)
+
+    def record_review(self, review: StructuredReview):
+        """Record a completed review with review tracking systems."""
+        try:
+            self.state.total_reviews += 1
+
+            if self.review_validator and self.venue_registry:
+                venue = self.venue_registry.get_venue(review.venue_id)
+                if venue:
+                    self.review_validator.validate_complete_review(review, venue)
+
+            if self.bias_engine and hasattr(self, '_registered_researchers'):
+                reviewer = self._registered_researchers.get(review.reviewer_id)
+                if reviewer:
+                    self.bias_engine.apply_biases(reviewer, review, context={})
+
+            if self.funding_system:
+                logger.debug("FundingSystem available but review recording not implemented")
+
+            if self.tenure_track_manager:
+                logger.debug("TenureTrackManager available but review recording not implemented")
+
+        except Exception as exc:
+            self._handle_coordination_error('record_review', exc)
+
     def coordinate_review_process(self, paper_id: str, venue_id: str, 
                                 reviewer_ids: List[str]) -> Dict[str, Any]:
         """

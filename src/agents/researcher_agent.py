@@ -6,18 +6,28 @@ with specialized capabilities for the peer review process.
 """
 
 import autogen
+import logging
 from typing import Dict, List, Any, Optional, Tuple, Callable
 import os
 import sys
 import random
 import math
 import time # Added for timestamping memory entries
+import json # Added for JSON parsing
 
 # Add the project root to the path to fix import issues
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from src.data.paper_database import PaperDatabase
 from src.core.token_system import TokenSystem
+from src.core.exceptions import ValidationError, SimulationError
+from src.core.logging_config import get_logger
+from src.core.llm_utils import (
+    extract_structured_decision,
+    extract_structured_review,
+    parse_llm_json_response,
+)
+from src.logging.thought_logger import get_thought_logger
 
 class AgentMemory:
     """Stores memories for an agent, including interactions, reviews, and observations."""
@@ -187,6 +197,7 @@ class ResearcherAgent(autogen.AssistantAgent):
             f"{system_message}\n\n"
             f"You are a researcher specializing in {specialty}.\n"
             f"Your name is {name}.\n"
+            "When thinking about decisions, always reason step by step."
         )
         
         if bias:
@@ -227,6 +238,7 @@ class ResearcherAgent(autogen.AssistantAgent):
         self.current_workload = 0
         self.max_workload = 5  # Maximum number of ongoing reviews
         self.personality = self._derive_personality_from_bias(bias) # Add personality
+        self.thought_logger = get_thought_logger()
     
     def _derive_personality_from_bias(self, bias_str: str) -> str:
         """ Derives a personality trait from the bias string. 
@@ -482,77 +494,89 @@ class ResearcherAgent(autogen.AssistantAgent):
         After your thought process, decide whether to ACCEPT or DECLINE the review request.
         Provide a brief reasoning for your decision.
         
-        Format your response as:
-        THOUGHT_PROCESS: [Your detailed internal thinking here]
-        DECISION: [ACCEPT/DECLINE]
-        REASONING: [Your brief reasoning here]
+        Respond with a JSON object with the following keys:
+        {{
+          "thought_process": "...",
+          "decision": "ACCEPT" or "DECLINE",
+          "reasoning": "..."
+        }}
         """
         
         # Use the agent's LLM to make the decision
         raw_response = self.generate_reply(messages=[{"role": "user", "content": decision_prompt}])
-        
-        # Parse the response
-        decision_str = "DECLINE" # Default to decline if parsing fails
-        reasoning = "Could not properly decide due to an internal error or unclear LLM response."
-        thought_process = "No thought process recorded."
-        
-        # Handle different response formats (string or dictionary)
+
         if isinstance(raw_response, dict) and 'content' in raw_response:
-            # The API returned a dictionary format, extract the content field
             response_text = raw_response['content']
-        elif isinstance(raw_response, str):
-            # The API returned a string directly
-            response_text = raw_response
         else:
-            # Unexpected format, try to convert to string
-            print(f"Warning: Unexpected response type from LLM for {self.name}: {type(raw_response)}")
-            try:
-                response_text = str(raw_response)
-            except:
-                response_text = f"Could not convert response to string: {type(raw_response)}"
-                
-        # Try to extract the thought process
-        thought_marker = "THOUGHT_PROCESS:"
-        decision_marker = "DECISION:"
-        reasoning_marker = "REASONING:"
-        
-        thought_process_start = response_text.find(thought_marker)
-        if thought_process_start != -1:
-            thought_process_end = response_text.find(decision_marker, thought_process_start)
-            if thought_process_end != -1:
-                thought_process = response_text[thought_process_start + len(thought_marker):thought_process_end].strip()
-        
-        # Extract decision and reasoning
-        response_lines = response_text.strip().split('\n')
-        for line in response_lines:
-            if line.startswith(decision_marker):
-                decision_str = line.replace(decision_marker, "").strip().upper()
-            elif line.startswith(reasoning_marker):
-                reasoning = line.replace(reasoning_marker, "").strip()
-                
-        # If unable to extract thought process with markers, use the raw response
-        if thought_process == "No thought process recorded." and len(response_text) > 0:
-            thought_process = f"Raw LLM response: {response_text[:200]}..."
-        
-        accepted = (decision_str == "ACCEPT")
-        
+            response_text = raw_response if isinstance(raw_response, str) else str(raw_response)
+
+        try:
+            parsed_json = json.loads(response_text)
+            parsed_decision = extract_structured_decision(parsed_json)
+        except Exception:
+            parsed_decision = {
+                "decision": "DECLINE",
+                "reasoning": "Unable to parse JSON response.",
+                "thought_process": f"Raw response: {response_text[:200]}"
+            }
+
+        thought_process = parsed_decision["thought_process"]
+        reasoning = parsed_decision["reasoning"]
+        accepted = parsed_decision["decision"] == "ACCEPT"
+
         # Log decision in memory
         self.memory.add_interaction("review_invitation_response", {
-            "paper_id": paper_id, 
+            "paper_id": paper_id,
             "author_id": author_id,
-            "decision": "accepted" if accepted else "declined", 
+            "decision": "accepted" if accepted else "declined",
             "reasoning": reasoning,
             "thought_process": thought_process,
-            "raw_llm_response": raw_response
+            "raw_llm_response": response_text
         })
         
         if accepted:
             self.current_workload += 1
             self.paper_db.update_review_request_status(paper_id, self.name, "accepted")
+            self.thought_logger.log(
+                event_type="review_invitation_accepted",
+                agent_name=self.name,
+                agent_role="researcher",
+                personality=self.personality,
+                specialty=self.specialty,
+                context={
+                    "paper_id": paper_id,
+                    "author_id": author_id,
+                    "token_offer": token_amount,
+                    "workload": self.current_workload,
+                    "max_workload": self.max_workload,
+                    "reasoning": reasoning,
+                    "bias_profile": self.behavior_params,
+                },
+                thought_process=thought_process,
+                raw_response=response_text,
+            )
             return True, f"{self.name} accepted review for {paper_id}. Reasoning: {reasoning}", thought_process
         else:
             self.paper_db.update_review_request_status(paper_id, self.name, "declined")
-            # Potentially add ignore/delay logic here based on another LLM call or probability
+            self.thought_logger.log(
+                event_type="review_invitation_declined",
+                agent_name=self.name,
+                agent_role="researcher",
+                personality=self.personality,
+                specialty=self.specialty,
+                context={
+                    "paper_id": paper_id,
+                    "author_id": author_id,
+                    "token_offer": token_amount,
+                    "workload": self.current_workload,
+                    "max_workload": self.max_workload,
+                    "reasoning": reasoning,
+                    "bias_profile": self.behavior_params,
+                "token_balance": self.get_token_balance(),
+                },
+                thought_process=thought_process,
+                raw_response=response_text,
+            )
             return False, f"{self.name} declined review for {paper_id}. Reasoning: {reasoning}", thought_process
     
     def get_review_invitations(self) -> List[Dict[str, Any]]:
@@ -652,6 +676,23 @@ class ResearcherAgent(autogen.AssistantAgent):
                 author_id=author_id, 
                 review_details=review_content
             )
+
+            self.thought_logger.log(
+                event_type="review_submitted",
+                agent_name=self.name,
+                agent_role="researcher",
+                personality=self.personality,
+                specialty=self.specialty,
+                context={
+                    "paper_id": paper_id,
+                    "author_id": author_id,
+                    "recommendation": review_content.get("recommendation"),
+                    "confidence": review_content.get("confidence"),
+                    "scores": review_content.get("scores"),
+                },
+                thought_process=review_content.get("thought_process", ""),
+                raw_response=None,
+            )
             
             # Mark review as completed for workload tracking
             self.current_workload = max(0, self.current_workload - 1)
@@ -697,9 +738,8 @@ class ResearcherAgent(autogen.AssistantAgent):
         return self.token_system.get_researcher_transaction_history(self.name)
     
     def generate_review(
-        self, 
-        paper_id: str,
-        # custom_prompt: Optional[str] = None # Removing custom_prompt to enforce new structured approach
+        self,
+        paper_id: str
     ) -> Dict[str, Any]: # Will now return a dict with {"review_content": ..., "thought_process": ...}
         """
         Generate a review for a paper using the agent's capabilities, including explicit reasoning.
@@ -746,111 +786,82 @@ class ResearcherAgent(autogen.AssistantAgent):
         }
 
         review_prompt = f"""
-        You are {prompt_context['agent_name']}, a {prompt_context['agent_personality']} researcher specializing in {prompt_context['agent_specialty']}.\
-        Your current token balance is {prompt_context['current_tokens']}.\
-        You are reviewing the paper "{prompt_context['paper_title']}" (Field: {prompt_context['paper_field']}) by {prompt_context['paper_author']}.\
-        Paper Abstract: {prompt_context['paper_abstract']}\
-        Paper Keywords: {prompt_context['paper_keywords']}\
+        You are writing a structured peer review for {paper.get('title', 'an AI research paper')}. Include detailed analysis and follow the JSON format specified below.
+        You are {self.name} with {self.personality} personality.
 
-        Your past interactions with {prompt_context['paper_author']}:\
-        {prompt_context['past_interaction_summary']}\
+        Please provide:
+        1. A comprehensive, multi-paragraph Thought Process about evaluating this paper. Be candid and detailed.
+        2. A JSON object named review_content with keys: "summary", "scores" (novelty, technical_quality, clarity, significance, reproducibility, related_work each 1-10), "strengths", "weaknesses", "suggestions", "confidence" (1-5), "recommendation" (ACCEPT, MINOR_REVISION, MAJOR_REVISION, REJECT).
 
-        Reviewing Guidelines & Strategic Thoughts (Consider these based on your personality and goals):\
-        - How does your personality ({prompt_context['agent_personality']}) affect your review style (e.g., strictness, generosity, potential for bias)?\
-        - Does this paper compete with your own research? How might that influence your review?\
-        - Did the author cite your work? How does that make you feel about the paper?\
-        - How does your current token balance influence your desire to provide a high-quality/fast review for potential bonuses?\
-        - Consider these behavioral examples: {'; '.join(prompt_context['guidelines_examples'])}\
-
-        Instructions:\
-        1. First, write your internal "Thought Process" for approaching this review. Explain your reasoning, any biases you're applying (consciously or unconsciously based on your personality and the situation), and your overall strategy for the review. This thought process should be detailed.\
-        2. Second, based on your thought process, provide the actual "Review Content". The review content MUST be a single, valid JSON object with the following exact keys: "summary" (string), "strengths" (string), "weaknesses" (string), "clarity_assessment" (string), "technical_correctness_assessment" (string), "overall_recommendation" (string, one of: "Accept", "Minor Revision", "Major Revision", "Reject"), "confidence_score" (integer, 1-5, where 5 is very confident), "detailed_comments_for_author" (string).\
-
-        Output Format (strictly follow this):\
-        THOUGHT_PROCESS:\
-        [Your detailed thought process and reasoning for the review strategy here. This can be multiple paragraphs.]\
-
-        REVIEW_CONTENT:\
-        {{...valid JSON review here...}}\
+        Respond strictly as JSON with keys "thought_process" and "review_content".
         """
-        
-        raw_llm_response = self.generate_reply(
-            messages=[{"role": "user", "content": review_prompt}],
-            sender=self # Important for some autogen setups if functions need to be triggered by this agent
+        llm_response = self.generate_reply(messages=[{"role": "user", "content": review_prompt}])
+
+        response_text: str = ""
+        thought_process: Optional[str] = None
+        review_content: Optional[Dict[str, Any]] = None
+        raw_response: Optional[str] = None
+
+        try:
+            if isinstance(llm_response, dict) and 'content' in llm_response:
+                response_text = llm_response['content']
+            else:
+                response_text = llm_response if isinstance(llm_response, str) else str(llm_response)
+
+            parsed_json = parse_llm_json_response(response_text)
+            review_package = extract_structured_review(parsed_json)
+            review_content = review_package["review_content"]
+            thought_process = review_package.get("thought_process")
+            raw_response = review_package.get("raw_response", response_text)
+            if isinstance(review_content, str):
+                try:
+                    review_content = json.loads(review_content)
+                except ValueError:
+                    review_content = {"unparsed": review_content}
+
+            if 'scores' in review_content:
+                for key, value in review_content['scores'].items():
+                    if isinstance(value, str) and value.lower() != "skip":
+                        try:
+                            review_content['scores'][key] = float(value)
+                        except ValueError:
+                            review_content['scores'][key] = 0.0
+
+        except Exception as e:
+            logging.exception("Failed to parse LLM review response for %s", paper_id)
+            review_content = self._generate_fallback_structured_review(paper)
+            if thought_process:
+                thought_process = f"{thought_process} (Error: {str(e)})"
+            else:
+                thought_process = f"Fallback review generated due to error: {str(e)}"
+
+        if review_content is None:
+            review_content = self._generate_fallback_structured_review(paper)
+        if not thought_process:
+            thought_process = "Fallback review generated due to missing review content."
+        if not raw_response:
+            raw_response = response_text
+
+        self.thought_logger.log(
+            event_type="review_generation",
+            agent_name=self.name,
+            agent_role="researcher",
+            personality=self.personality,
+            specialty=self.specialty,
+            context={
+                "paper_id": paper_id,
+                "paper_field": paper.get("field", "Unknown"),
+                "confidence": review_content.get("confidence"),
+                "recommendation": review_content.get("recommendation"),
+            },
+            thought_process=thought_process,
+            raw_response=raw_response,
         )
 
-        thought_process = "LLM did not provide a thought process or it could not be parsed." # Default
-        review_content_json = {"error": "Review could not be generated or parsed from LLM response."}
-
-        # Handle different response formats (string or dictionary)
-        if isinstance(raw_llm_response, dict) and 'content' in raw_llm_response:
-            # The API returned a dictionary format, extract the content field
-            llm_response_text = raw_llm_response['content']
-        elif isinstance(raw_llm_response, str):
-            # The API returned a string directly
-            llm_response_text = raw_llm_response
-        else:
-            # Unexpected format, try to convert to string
-            print(f"Warning: Unexpected response type from LLM for {self.name}: {type(raw_llm_response)}")
-            try:
-                llm_response_text = str(raw_llm_response)
-            except:
-                llm_response_text = f"Could not convert response to string: {type(raw_llm_response)}"
-                
-        try:
-            thought_process_marker = "THOUGHT_PROCESS:"
-            review_content_marker = "REVIEW_CONTENT:"
-            
-            # Extract thought process
-            thought_process_start = llm_response_text.find(thought_process_marker)
-            if thought_process_start != -1:
-                review_content_start = llm_response_text.find(review_content_marker, thought_process_start)
-                if review_content_start != -1:
-                    thought_process = llm_response_text[thought_process_start + len(thought_process_marker):review_content_start].strip()
-                    json_str = llm_response_text[review_content_start + len(review_content_marker):].strip()
-                    
-                    # Sanitize JSON string: LLMs sometimes add trailing commas or comments
-                    import re
-                    json_str = re.sub(r",(\s*\})", r"\1", json_str) # Remove trailing commas before closing brace
-                    json_str = re.sub(r",(\s*\])", r"\1", json_str) # Remove trailing commas before closing bracket
-                    json_str = re.sub(r"//.*?\n|/\*.*?\*/", "", json_str, flags=re.DOTALL) # Remove comments
-                    
-                    import json
-                    review_content_json = json.loads(json_str)
-                else:
-                    # Fallback if markers are not found
-                    thought_process = "Markers not found in complete response."
-                    try:
-                        # Try to parse the whole response as JSON
-                        import json
-                        review_content_json = json.loads(llm_response_text)
-                    except json.JSONDecodeError:
-                        review_content_json = {"error": "Failed to parse LLM response as JSON and markers not found.", "raw_response": llm_response_text[:200]}
-            else:
-                # No markers found
-                thought_process = f"LLM response did not contain expected markers. Raw response: {llm_response_text[:200]}"
-                try:
-                    # Try to parse the whole response as JSON
-                    import json
-                    review_content_json = json.loads(llm_response_text)
-                except json.JSONDecodeError:
-                    review_content_json = {"error": "Failed to parse LLM response as JSON and markers not found.", "raw_response": llm_response_text[:200]}
-
-        except json.JSONDecodeError as e:
-            review_content_json = {"error": f"JSON parsing failed: {str(e)}", "raw_json_string": json_str if 'json_str' in locals() else llm_response_text[:200]}
-            thought_process += " (JSON parsing of review content failed)"
-        except Exception as e:
-            review_content_json = {"error": f"Generic parsing error: {str(e)}", "raw_response": llm_response_text[:200]}
-            thought_process += f" (Error: {str(e)})"
-
-        # Add metadata to the parsed review content
-        review_content_json["reviewer_id"] = self.name
-        review_content_json["paper_id"] = paper_id
-        review_content_json["review_timestamp"] = self.token_system._get_timestamp()
-            
         return {
-            "review_content": review_content_json,
-            "thought_process": thought_process
+            "review_content": review_content,
+            "thought_process": thought_process or "",
+            "raw_response": raw_response
         }
 
     # It's crucial that TokenSystem or the simulation calls this method when tokens are awarded.
