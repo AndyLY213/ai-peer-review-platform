@@ -28,6 +28,7 @@ from src.agents.researcher_templates import get_researcher_template, list_resear
 # Enhanced mode imports - using try/except for graceful fallback
 try:
     from src.enhancements.simulation_coordinator import SimulationCoordinator
+    from src.enhancements.simulation_events import EventType, ResearcherProfile, SimulationEvent
     from src.agents.enhanced_researcher_agent import EnhancedResearcherAgent
     from src.enhancements.bias_engine import BiasEngine
     from src.enhancements.venue_system import VenueRegistry
@@ -54,6 +55,9 @@ except ImportError as e:
     # Set all enhancement classes to None for graceful fallback
     SimulationCoordinator = None
     EnhancedResearcherAgent = None
+    EventType = None
+    ResearcherProfile = None
+    SimulationEvent = None
     # Individual bias models fallback
     AnchoringBiasModel = None
     ConfirmationBiasModel = None
@@ -1226,9 +1230,9 @@ class PeerReviewSimulation:
                         self.paper_db.update_paper(paper['id'], {'review_requests': paper['review_requests']})
                         completion_success = self.token_system.complete_review(reviewer_name, paper["id"])
                         if completion_success:
-                            print(f"✅ {reviewer_name} earned completion bonus for reviewing paper {paper['id']}")
+                            print(f"[SUCCESS] {reviewer_name} earned completion bonus for reviewing paper {paper['id']}")
                         else:
-                            print(f"⚠️ Could not award completion bonus to {reviewer_name} for paper {paper['id']}")
+                            print(f"[WARNING] Could not award completion bonus to {reviewer_name} for paper {paper['id']}")
                     
                     print(f"Review submission result: {success}, {message}")
                     
@@ -1495,15 +1499,15 @@ class PeerReviewSimulation:
         # Report final distribution
         print(f"\nFinal paper distribution:")
         for agent_name, count in sorted(papers_per_researcher.items()):
-            status = "✅" if count >= min_papers_per_researcher else "❌"
+            status = "[OK]" if count >= min_papers_per_researcher else "[LOW]"
             print(f"  {agent_name}: {count} papers {status}")
         
         # Verify no researcher has 0 papers
         zero_paper_researchers = [name for name, count in papers_per_researcher.items() if count == 0]
         if zero_paper_researchers:
-            print(f"❌ WARNING: {len(zero_paper_researchers)} researchers still have 0 papers: {zero_paper_researchers}")
+            print(f"[WARNING] {len(zero_paper_researchers)} researchers still have 0 papers: {zero_paper_researchers}")
         else:
-            print(f"✅ SUCCESS: All researchers have papers")
+            print(f"[SUCCESS] All researchers have papers")
         
         # Save changes to disk
         self.paper_db._save_data()
@@ -1715,7 +1719,7 @@ class PeerReviewSimulation:
 
 def main():
     """Main function to run the peer review simulation."""
-    print("🔬 Peer Review Simulation System")
+    print("Peer Review Simulation System")
     print("--------------------------------")
     
     # Create simulation with enhanced mode enabled

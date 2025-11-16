@@ -181,6 +181,11 @@ class EnhancedResearcherAgent(ResearcherAgent):
         
         logger.info(f"EnhancedResearcherAgent {name} initialized with level {self.enhanced_profile.level.value}")
     
+    @property
+    def id(self) -> str:
+        """Return the agent's ID (same as name for compatibility with coordinator)."""
+        return self.name
+    
     def _create_default_enhanced_profile(self) -> EnhancedResearcher:
         """Create a default enhanced researcher profile."""
         return EnhancedResearcher(
