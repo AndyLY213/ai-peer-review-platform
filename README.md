@@ -1,6 +1,6 @@
 # AI Peer Review Platform
 
-A comprehensive multi-agent simulation of the academic peer review process using AutoGen and Google Gemini AI.
+A comprehensive multi-agent simulation of the academic peer review process using large language models (GPT-4o-mini via OpenAI API).
 
 ## 🎯 Overview
 
@@ -14,7 +14,7 @@ This platform simulates a realistic academic peer review ecosystem where AI-powe
 ## ✨ Key Features
 
 - **🤖 Multi-Agent System**: 10+ specialized researcher agents with distinct personalities and biases
-- **🧠 AI-Powered Reviews**: Realistic peer reviews generated using Google Gemini 2.0 Flash
+- **🧠 AI-Powered Reviews**: Realistic peer reviews generated using GPT-4o-mini via OpenAI API
 - **💰 Token Economy**: Economic simulation of review requests and completions
 - **📊 Advanced Analytics**: Comprehensive metrics and performance tracking
 - **🎭 Bias Simulation**: Models real academic biases (confirmation bias, halo effect, etc.)
@@ -59,7 +59,7 @@ PeerReview/
 ### Prerequisites
 
 - **Python 3.8+** (recommended: Python 3.10+)
-- **Google Gemini API Key** (get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
+- **OpenAI API Key** (get one at [OpenAI Platform](https://platform.openai.com/api-keys))
 
 ### Installation
 
@@ -90,8 +90,10 @@ pip install -r requirements.txt
 # Copy the example environment file
 cp .env.example .env.local
 
-# Edit .env.local and add your Gemini API key
-# GEMINI_API_KEY=your_actual_api_key_here
+# Edit .env.local and add your OpenAI API key
+# LLM_PROVIDER=openai
+# OPENAI_API_KEY=your_actual_api_key_here
+# OPENAI_MODEL=gpt-4o-mini
 ```
 
 5. **Run the simulation**:
@@ -231,9 +233,11 @@ Key configuration options in `.env.local`:
 
 ```bash
 # AI Provider
-GEMINI_API_KEY=your_key_here
-GEMINI_MODEL=gemini-2.0-flash
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-4o-mini
 LLM_TEMPERATURE=0.7
+LLM_TIMEOUT=120
 
 # Simulation Settings
 DEFAULT_RESEARCHERS=10
@@ -317,10 +321,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **AutoGen/AG2** for the multi-agent framework
-- **Google Gemini** for AI-powered review generation
+- **OpenAI** for GPT-4o-mini API enabling realistic agent behavior
 - **PeerRead Dataset** for real academic paper data
 - The academic community for inspiration and validation
+- Multi-agent systems research community for foundational concepts
 
 ## 📞 Support
 
