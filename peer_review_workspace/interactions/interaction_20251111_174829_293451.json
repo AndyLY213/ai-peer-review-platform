@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Efficiency_AI",
+  "reviewer": "Dr_Data_Driven",
+  "paper_id": "paper_010",
+  "paper_field": "Artificial Intelligence",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 8,
+  "success": true,
+  "message": "Successfully transferred 8 tokens"
+}

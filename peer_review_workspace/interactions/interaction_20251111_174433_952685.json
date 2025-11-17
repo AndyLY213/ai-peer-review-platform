@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Practical_AI",
+  "reviewer": "Dr_Empirical_AI",
+  "paper_id": "paper_005",
+  "paper_field": "AI Ethics and Fairness",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 22,
+  "success": true,
+  "message": "Successfully transferred 22 tokens"
+}

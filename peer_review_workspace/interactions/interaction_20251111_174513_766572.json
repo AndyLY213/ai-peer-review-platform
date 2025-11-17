@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Data_Driven",
+  "reviewer": "Dr_Empirical_AI",
+  "paper_id": "paper_007",
+  "paper_field": "Human-Computer Interaction",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 13,
+  "success": true,
+  "message": "Successfully transferred 13 tokens"
+}

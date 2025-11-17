@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Data_Driven",
+  "reviewer": "Dr_Conservative_AI",
+  "paper_id": "paper_009",
+  "paper_field": "Data Science and Analytics",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 12,
+  "success": true,
+  "message": "Successfully transferred 12 tokens"
+}

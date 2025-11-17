@@ -1,0 +1,11 @@
+{
+  "interaction": "respond_to_review_request",
+  "reviewer": "Dr_Empirical_AI",
+  "reviewer_specialty": "Artificial Intelligence",
+  "paper_id": "paper_005",
+  "paper_field": "AI Ethics and Fairness",
+  "accepted": false,
+  "success": true,
+  "message": "Dr_Empirical_AI declined review for paper_005. Reasoning: Unable to parse JSON response.",
+  "thought_process": "Raw response: {\n  \"thought_process\": \"To decide whether to accept the review invitation for the paper titled 'Ethical Considerations in AI Development' by Dr_Practical_AI, I will consider several factors. First, my"
+}

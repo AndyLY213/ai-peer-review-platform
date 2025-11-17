@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_ML_Systems",
+  "reviewer": "Dr_Innovative_AI",
+  "paper_id": "paper_003",
+  "paper_field": "Computer Vision",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 14,
+  "success": true,
+  "message": "Successfully transferred 14 tokens"
+}

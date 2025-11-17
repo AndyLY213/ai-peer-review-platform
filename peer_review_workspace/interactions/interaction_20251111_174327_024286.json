@@ -1,0 +1,7 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Conservative_AI",
+  "paper_id": "paper_008",
+  "success": false,
+  "message": "No valid reviewers found with specialty compatible with paper field: Cybersecurity and Privacy"
+}

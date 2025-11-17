@@ -1,0 +1,11 @@
+{
+  "interaction": "respond_to_review_request",
+  "reviewer": "Dr_Empirical_AI",
+  "reviewer_specialty": "Artificial Intelligence",
+  "paper_id": "paper_007",
+  "paper_field": "Human-Computer Interaction",
+  "accepted": false,
+  "success": true,
+  "message": "Dr_Empirical_AI declined review for paper_007. Reasoning: Unable to parse JSON response.",
+  "thought_process": "Raw response: {\n  \"thought_process\": \"I have received a review invitation for a paper in Human-Computer Interaction, a field adjacent to my expertise in Artificial Intelligence. Given that I have no past interactio"
+}

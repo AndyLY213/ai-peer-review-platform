@@ -1,0 +1,648 @@
+{
+  "papers": {
+    "paper_001": {
+      "id": "paper_001",
+      "title": "Deep Learning for Natural Language Processing",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper explores deep learning approaches for NLP tasks.",
+      "keywords": [
+        "deep learning",
+        "NLP",
+        "transformer"
+      ],
+      "field": "Natural Language Processing",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [],
+      "owner_id": "Dr_Innovative_AI",
+      "review_requests": []
+    },
+    "paper_002": {
+      "id": "paper_002",
+      "title": "Reinforcement Learning in Robotic Control",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper presents a novel approach to robotic control using RL.",
+      "keywords": [
+        "reinforcement learning",
+        "robotics",
+        "control"
+      ],
+      "field": "Robotics and Control Systems",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper presents a novel approach to reinforcement learning applied to robotic control, proposing a new algorithm designed to enhance learning efficiency in environments with limited data. While the experimental results are promising, the paper requires further elaboration on the data challenges faced and how the proposed method addresses them.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 6,
+            "clarity": 8,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The proposed algorithm shows potential for improving learning efficiency in robotic tasks. The clarity of the presentation is commendable, making complex ideas more accessible. The experimental results are generally well-organized and provide a good foundation for future work.",
+          "weaknesses": "The paper does not sufficiently address data limitations and quality issues, which are critical for real-world applications. The reproducibility of the results is questionable due to a lack of details regarding the datasets used and the experimental setup. The related work section is somewhat limited and could benefit from a deeper analysis of the current state-of-the-art.",
+          "suggestions": "The authors should incorporate a more thorough discussion on data quality and how their approach can be adapted to function effectively in data-scarce environments. They should also enhance the reproducibility of their results by providing more detailed descriptions of the experimental conditions and datasets. Expanding the related work section could also strengthen the paper\u2019s context within the field.",
+          "confidence": 4,
+          "recommendation": "MAJOR_REVISION",
+          "reviewer_id": "Dr_Data_Driven"
+        },
+        {
+          "summary": "This paper presents a novel approach to applying reinforcement learning techniques in robotic control systems. The authors propose a new algorithm that aims to enhance the efficiency of robotic learning in dynamic environments. They conduct a series of experiments to validate their approach and compare it against established benchmarks.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 8,
+            "clarity": 6,
+            "significance": 7,
+            "reproducibility": 8,
+            "related_work": 6
+          },
+          "strengths": "The paper introduces a promising algorithm that shows improved performance in specific scenarios compared to existing methods. The experiments are well-designed, and the results are presented clearly, allowing for easy interpretation. The authors have taken care to ensure that their methods can be reproduced by others, which is a significant strength.",
+          "weaknesses": "While the paper provides a solid contribution, the novelty of the algorithm could be further substantiated through more extensive comparisons with recent advancements in reinforcement learning. Additionally, the clarity of some sections is lacking, particularly in the literature review, which could benefit from a more detailed discussion of related works.",
+          "suggestions": "To enhance the paper, I suggest the authors expand the literature review to include a broader range of recent studies in reinforcement learning and robotic control. Clarifying some of the more technical sections would also improve the overall readability and accessibility of the paper. Finally, a more in-depth analysis of the limitations of the proposed approach would provide a more balanced view of the research.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Conservative_AI"
+        },
+        {
+          "summary": "This paper presents a novel approach to Reinforcement Learning in Robotic Control, exploring innovative methodologies and experimental designs. The authors provide a comprehensive analysis of their results, although some technical aspects could be refined.",
+          "scores": {
+            "novelty": 8,
+            "technical_quality": 6,
+            "clarity": 7,
+            "significance": 8,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": [
+            "The proposed approach demonstrates a high degree of novelty in applying reinforcement learning techniques to robotic control.",
+            "The experimental results show promising outcomes that could have significant implications for real-world applications."
+          ],
+          "weaknesses": [
+            "Certain technical details and methodologies could be elaborated further for improved clarity and robustness.",
+            "The reproducibility of the experiments is somewhat limited due to insufficient details on the experimental setup and code availability."
+          ],
+          "suggestions": [
+            "Enhance the technical quality by providing more detailed descriptions of the methodologies employed.",
+            "Consider making the code and datasets publicly available to improve reproducibility.",
+            "Strengthen the related work section by discussing more recent advancements in the field."
+          ],
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Innovative_AI"
+        },
+        {
+          "summary": "The paper presents a novel approach to reinforcement learning in robotic control, focusing on improving data efficiency and quality. It proposes new algorithms that aim to enhance learning performance in environments with limited data availability. While the methodology is sound, the paper could benefit from a more in-depth exploration of the implications of data limitations on the results.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 6,
+            "clarity": 8,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper introduces innovative algorithms that address key challenges in reinforcement learning within the context of robotic control. It provides clear explanations of methods and results, making it accessible to a broader audience. The authors demonstrate a good understanding of the relevant literature.",
+          "weaknesses": "The paper assumes that data can be collected without addressing the challenges of data scarcity in real-world applications. The reproducibility of the results is somewhat limited, as the experimental setup lacks detailed descriptions. Additionally, some figures could be clearer in conveying the results.",
+          "suggestions": "The authors should consider including a more robust discussion on the limitations of data collection in their experiments. Enhancing the reproducibility by providing more detailed methodology would strengthen the paper. Furthermore, clarifying certain figures and results would improve overall comprehension.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Data_Driven"
+        },
+        {
+          "summary": "The paper presents a reinforcement learning approach for robotic control, aiming to enhance performance through novel algorithmic strategies. The authors provide experimental results demonstrating the efficacy of their methods across various robotic tasks. However, the paper lacks a thorough examination of data quality issues and their implications on the proposed approach.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 6,
+            "clarity": 8,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper introduces interesting algorithmic innovations and demonstrates their application in a variety of robotic control tasks. The experimental results are compelling and show improvements over baseline methods. The writing is clear and well-structured, making it accessible to a broad audience.",
+          "weaknesses": "The paper does not adequately address the challenges related to data quality and efficiency, which are critical in real-world applications of reinforcement learning. There is limited discussion on the dataset used for training and testing, and how potential data limitations could impact the results. Furthermore, reproducibility is a concern due to insufficient details on implementation and hyperparameter settings.",
+          "suggestions": "To strengthen the paper, I recommend that the authors include a more comprehensive discussion on data quality issues, potentially incorporating strategies for data-efficient learning or addressing how data limitations were managed. Providing additional details on experimental setups and making code available could enhance reproducibility.",
+          "confidence": 4,
+          "recommendation": "MAJOR_REVISION",
+          "reviewer_id": "Dr_Data_Driven"
+        }
+      ],
+      "owner_id": "Dr_Efficiency_AI",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Data_Driven",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 7,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:43:18.143893"
+        },
+        {
+          "reviewer_id": "Dr_Conservative_AI",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 17,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:21.524128"
+        },
+        {
+          "reviewer_id": "Dr_Data_Driven",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 10,
+          "status": "accepted",
+          "timestamp": "2025-11-11T17:47:27.513652"
+        },
+        {
+          "reviewer_id": "Dr_Innovative_AI",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 7,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:47:27.525720"
+        }
+      ]
+    },
+    "paper_003": {
+      "id": "paper_003",
+      "title": "Computer Vision Techniques for Object Detection",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper introduces a new method for object detection in images.",
+      "keywords": [
+        "computer vision",
+        "object detection",
+        "CNN"
+      ],
+      "field": "Computer Vision",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper presents a novel approach to object detection in computer vision, introducing new techniques aimed at improving accuracy and efficiency. The authors compare their methods with existing state-of-the-art techniques and provide experimental results using well-known datasets.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 8,
+            "clarity": 6,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper introduces innovative techniques that show promise in improving detection accuracy. The experiments are well-designed and demonstrate a clear improvement over existing methods. The authors provide a thorough comparison with related work.",
+          "weaknesses": "The writing lacks clarity in certain sections, making it difficult to grasp some of the more complex concepts. Additionally, reproducibility is compromised due to insufficient details about the implementation and dataset access.",
+          "suggestions": "I recommend that the authors improve the clarity of the paper, particularly in the methodology section. Providing more detailed descriptions of the experimental setup, including data access and code availability, would enhance reproducibility. A deeper discussion of the related work would also strengthen the context of their contributions.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Conservative_AI"
+        },
+        {
+          "summary": "This paper presents novel computer vision techniques for object detection, introducing innovative algorithms aimed at improving detection accuracy and efficiency. The authors provide a thorough analysis of their approach and demonstrate its effectiveness through extensive experiments. However, the technical implementation could benefit from further refinement, and additional clarity is needed in some sections.",
+          "scores": {
+            "novelty": 8,
+            "technical_quality": 6,
+            "clarity": 7,
+            "significance": 8,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper presents innovative algorithms that show promise in enhancing object detection performance. The experimental results are compelling and indicate a significant improvement over baseline methods. The authors demonstrate a strong understanding of the challenges in this field.",
+          "weaknesses": "The technical quality is somewhat lacking due to inconsistencies in the experimental setup and limited details on the datasets used. Some sections of the paper are not as clear as they could be, which may hinder reader comprehension. Reproducibility is also a concern due to missing details.",
+          "suggestions": "To improve the paper, the authors should provide a more detailed explanation of their experimental setup and datasets to enhance reproducibility. Additionally, clarifying certain sections and ensuring a more structured presentation of results would greatly benefit the overall clarity of the paper.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Innovative_AI"
+        }
+      ],
+      "owner_id": "Dr_ML_Systems",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Conservative_AI",
+          "requester_id": "Dr_ML_Systems",
+          "token_amount": 9,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:44:33.968481"
+        },
+        {
+          "reviewer_id": "Dr_Innovative_AI",
+          "requester_id": "Dr_ML_Systems",
+          "token_amount": 14,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:46:18.592351"
+        }
+      ]
+    },
+    "paper_004": {
+      "id": "paper_004",
+      "title": "Theoretical Foundations of Machine Learning",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper explores the theoretical underpinnings of ML algorithms.",
+      "keywords": [
+        "theory",
+        "machine learning",
+        "algorithms"
+      ],
+      "field": "Theoretical Computer Science",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper presents a theoretical analysis of machine learning algorithms, focusing on their foundations and implications. The authors propose a new framework that builds on existing theories, aiming to provide clearer insights into the functioning of various algorithms. However, the ambitious nature of the claims raises questions about their robustness and applicability.",
+          "scores": {
+            "novelty": 6,
+            "technical_quality": 7,
+            "clarity": 8,
+            "significance": 5,
+            "reproducibility": 6,
+            "related_work": 7
+          },
+          "strengths": "The paper is well-structured and clearly written. The authors provide a solid literature review, which helps contextualize their work. The proposed framework appears to build on established theories, which is a positive aspect. The methodology is generally sound, and the authors have made an effort to ensure clarity in their explanations.",
+          "weaknesses": "There are areas where the claims made by the authors seem overly ambitious, and the theoretical justifications could be strengthened. Some experimental results lack sufficient detail for full reproducibility, and there are certain sections where the discussion could be more comprehensive. Additionally, the significance of the contributions could be better articulated in relation to existing work.",
+          "suggestions": "I recommend that the authors refine their theoretical justifications for the more ambitious claims and ensure that all experimental methodologies are adequately detailed. Providing additional context on the significance of their findings in relation to existing literature would enhance the paper's impact. Revising sections for clarity, especially in the discussion of results, would also be beneficial.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Conservative_AI"
+        },
+        {
+          "summary": "The paper presents theoretical insights into machine learning, aiming to establish a solid foundation for understanding certain algorithms. While it offers interesting perspectives, the novelty of the contributions appears limited, and the technical quality requires improvement in terms of clarity and rigor. The significance of the findings is somewhat unclear without practical implications being well-defined.",
+          "scores": {
+            "novelty": 5,
+            "technical_quality": 6,
+            "clarity": 4,
+            "significance": 5,
+            "reproducibility": 3,
+            "related_work": 6
+          },
+          "strengths": "The paper addresses an important topic in machine learning and attempts to contribute theoretically. Some sections are well-structured, and the authors demonstrate a good grasp of fundamental concepts.",
+          "weaknesses": "The novelty of the contributions is not sufficiently clear, and many ideas seem to overlap with existing literature. The technical rigor is inconsistent, with some proofs lacking necessary details, and the clarity of exposition can be improved significantly. The reproducibility aspect is weak as it lacks sufficient methodological detail.",
+          "suggestions": "The authors should clarify the novel aspects of their contributions and explicitly state the implications of their findings. Improving the rigor of proofs and providing more detailed methodologies would enhance the technical quality. The clarity of the writing can be improved by revising complex sections and ensuring logical flow throughout the paper. A more thorough engagement with related work is necessary to position their contributions effectively.",
+          "confidence": 4,
+          "recommendation": "MAJOR_REVISION",
+          "reviewer_id": "Dr_Empirical_AI"
+        }
+      ],
+      "owner_id": "Dr_Innovative_AI",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Data_Driven",
+          "requester_id": "Dr_Innovative_AI",
+          "token_amount": 15,
+          "status": "declined",
+          "timestamp": "2025-11-11T17:43:59.868599"
+        },
+        {
+          "reviewer_id": "Dr_Conservative_AI",
+          "requester_id": "Dr_Innovative_AI",
+          "token_amount": 24,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:07.446228"
+        },
+        {
+          "reviewer_id": "Dr_Empirical_AI",
+          "requester_id": "Dr_Innovative_AI",
+          "token_amount": 15,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:50.686835"
+        }
+      ]
+    },
+    "paper_005": {
+      "id": "paper_005",
+      "title": "Ethical Considerations in AI Development",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper discusses ethical issues in AI development and deployment.",
+      "keywords": [
+        "ethics",
+        "AI",
+        "bias"
+      ],
+      "field": "AI Ethics and Fairness",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper discusses ethical considerations in AI development, addressing various challenges and implications. However, it lacks a thorough exploration of how data quality and limitations impact these ethical issues.",
+          "scores": {
+            "novelty": 6,
+            "technical_quality": 5,
+            "clarity": 7,
+            "significance": 8,
+            "reproducibility": 4,
+            "related_work": 6
+          },
+          "strengths": "The paper addresses a critical and timely topic in AI development. It raises important ethical questions that are relevant to practitioners and researchers alike.",
+          "weaknesses": "The paper lacks depth in discussing the relationship between data quality and ethical considerations. It does not adequately address challenges posed by limited data scenarios and their ethical implications.",
+          "suggestions": "The authors should consider integrating a more comprehensive discussion on how data quality issues affect ethical AI practices. Including case studies or examples where data limitations led to ethical dilemmas could enhance the paper's impact.",
+          "confidence": 4,
+          "recommendation": "MAJOR_REVISION",
+          "reviewer_id": "Dr_Data_Driven"
+        },
+        {
+          "summary": "This paper investigates the ethical considerations surrounding AI development, focusing on various frameworks and their applicability to AI practices. It highlights the need for integrating ethical principles into technical development processes and discusses potential methodologies for ethical assessment.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 6,
+            "clarity": 8,
+            "significance": 9,
+            "reproducibility": 5,
+            "related_work": 7
+          },
+          "strengths": "The paper addresses a highly relevant topic in AI, demonstrating a strong understanding of ethical frameworks and their implications for AI development. It offers practical suggestions for integrating ethics into technical processes, which is crucial for fostering responsible AI.",
+          "weaknesses": "The methodological approaches proposed for ethical assessment lack empirical grounding, making it challenging to evaluate their efficacy. Additionally, while the paper references existing literature, a more exhaustive engagement with related work would strengthen its foundation.",
+          "suggestions": "I recommend the authors enhance the empirical basis of their proposed methodologies and further explore how these can be implemented in real-world AI projects. Additionally, a more comprehensive review of existing literature and ethical frameworks would improve the paper's depth.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Interdisciplinary_AI"
+        }
+      ],
+      "owner_id": "Dr_Practical_AI",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Conservative_AI",
+          "requester_id": "Dr_Practical_AI",
+          "token_amount": 7,
+          "status": "declined",
+          "timestamp": "2025-11-11T17:44:27.529022"
+        },
+        {
+          "reviewer_id": "Dr_Empirical_AI",
+          "requester_id": "Dr_Practical_AI",
+          "token_amount": 22,
+          "status": "declined",
+          "timestamp": "2025-11-11T17:44:33.952685"
+        },
+        {
+          "reviewer_id": "Dr_Data_Driven",
+          "requester_id": "Dr_Practical_AI",
+          "token_amount": 9,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:21.529848"
+        },
+        {
+          "reviewer_id": "Dr_Interdisciplinary_AI",
+          "requester_id": "Dr_Practical_AI",
+          "token_amount": 9,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:48:05.516103"
+        }
+      ]
+    },
+    "paper_006": {
+      "id": "paper_006",
+      "title": "Distributed Systems for Large-Scale Computing",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper presents a novel architecture for distributed computing.",
+      "keywords": [
+        "distributed systems",
+        "architecture",
+        "computing"
+      ],
+      "field": "Computer Systems and Architecture",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [],
+      "owner_id": "Dr_ML_Systems",
+      "review_requests": []
+    },
+    "paper_007": {
+      "id": "paper_007",
+      "title": "Human-Computer Interaction in VR Environments",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper explores user interaction patterns in virtual reality.",
+      "keywords": [
+        "HCI",
+        "virtual reality",
+        "user experience"
+      ],
+      "field": "Human-Computer Interaction",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [],
+      "owner_id": "Dr_Data_Driven",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Empirical_AI",
+          "requester_id": "Dr_Data_Driven",
+          "token_amount": 13,
+          "status": "declined",
+          "timestamp": "2025-11-11T17:45:13.766572"
+        }
+      ]
+    },
+    "paper_008": {
+      "id": "paper_008",
+      "title": "Security Vulnerabilities in IoT Devices",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper analyzes common security issues in IoT deployments.",
+      "keywords": [
+        "security",
+        "IoT",
+        "vulnerabilities"
+      ],
+      "field": "Cybersecurity and Privacy",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [],
+      "owner_id": "Dr_Conservative_AI",
+      "review_requests": []
+    },
+    "paper_009": {
+      "id": "paper_009",
+      "title": "Data Science Techniques for Healthcare Analytics",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper presents data science methods for healthcare data.",
+      "keywords": [
+        "data science",
+        "healthcare",
+        "analytics"
+      ],
+      "field": "Data Science and Analytics",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper presents novel data science techniques aimed at improving healthcare analytics. It discusses various methodologies and their applications while considering the ethical implications of data use in healthcare settings.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 8,
+            "clarity": 6,
+            "significance": 9,
+            "reproducibility": 5,
+            "related_work": 7
+          },
+          "strengths": "The paper offers innovative approaches to healthcare analytics and addresses significant ethical concerns related to data usage. The proposed techniques are well-supported by theoretical foundations and demonstrate potential for real-world applications.",
+          "weaknesses": "The clarity of the writing could be improved for wider accessibility. Additionally, there is a lack of detailed information regarding the reproducibility of the experiments, which may hinder validation by other researchers.",
+          "suggestions": "The authors should enhance the clarity of their writing by minimizing jargon and including more explanations of complex concepts. They should also provide more comprehensive details about data sources and methodologies to improve reproducibility. Adding a section explicitly discussing bias and mitigation strategies would strengthen the ethical considerations in the work.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Ethical_AI"
+        },
+        {
+          "summary": "The paper presents novel data science techniques tailored for healthcare analytics. It evaluates their effectiveness using real-world datasets and provides insights into their applicability in healthcare settings. However, the experimental validation is somewhat limited, and the paper could benefit from a deeper discussion of related work.",
+          "scores": {
+            "novelty": 7,
+            "technical_quality": 6,
+            "clarity": 8,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper introduces relevant techniques that show promise in healthcare analytics. The writing is clear, making complex topics accessible. The results indicate potential practical applications in the field.",
+          "weaknesses": "The experimental validation is not comprehensive, lacking sufficient statistical analysis and robustness checks. The discussion of related work is somewhat superficial and could be expanded to better situate this research within the existing literature.",
+          "suggestions": "Enhance the experimental validation by including more datasets and conducting robustness checks. Provide a more extensive review of related work to highlight how this research builds upon or differs from existing methods. Consider including a section on the limitations of the proposed techniques.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Empirical_AI"
+        },
+        {
+          "summary": "The paper presents various data science techniques tailored for healthcare analytics, intending to enhance decision-making and operational efficiency in healthcare settings. It reviews existing methodologies and proposes new approaches based on empirical results from case studies.",
+          "scores": {
+            "novelty": 6,
+            "technical_quality": 7,
+            "clarity": 8,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": "The paper is well-structured and provides a comprehensive overview of healthcare analytics. The authors present several case studies that illustrate the application of the techniques discussed, which enhances the practical relevance of their work.",
+          "weaknesses": "The novelty of the proposed techniques is somewhat limited, as many are adaptations of existing methods rather than groundbreaking innovations. Additionally, the reproducibility aspect lacks detail, particularly regarding dataset access and algorithmic implementation.",
+          "suggestions": "The authors should enhance the reproducibility section by providing clearer guidelines on how to access datasets and implement the algorithms discussed. Incorporating a more critical engagement with related work would strengthen the paper's context and position within the field.",
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Conservative_AI"
+        }
+      ],
+      "owner_id": "Dr_Data_Driven",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Ethical_AI",
+          "requester_id": "Dr_Data_Driven",
+          "token_amount": 17,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:43:39.794397"
+        },
+        {
+          "reviewer_id": "Dr_Empirical_AI",
+          "requester_id": "Dr_Data_Driven",
+          "token_amount": 22,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:07.451577"
+        },
+        {
+          "reviewer_id": "Dr_Conservative_AI",
+          "requester_id": "Dr_Data_Driven",
+          "token_amount": 12,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:45:21.530538"
+        }
+      ]
+    },
+    "paper_010": {
+      "id": "paper_010",
+      "title": "Advanced Deep Learning Architectures",
+      "authors": [
+        "Imported_Author"
+      ],
+      "abstract": "This paper introduces novel neural network architectures.",
+      "keywords": [
+        "deep learning",
+        "neural networks",
+        "architectures"
+      ],
+      "field": "Artificial Intelligence",
+      "raw_venue": "",
+      "status": "published",
+      "content": "",
+      "publication_date": null,
+      "citations": 0,
+      "reviews": [
+        {
+          "summary": "The paper presents innovative architectures in deep learning that aim to tackle specific limitations of existing models. The authors propose unique combinations of techniques and provide experimental results that demonstrate their effectiveness in various applications. However, while the core ideas are promising, there are areas requiring clarification and additional detail to enhance reproducibility.",
+          "scores": {
+            "novelty": 8,
+            "technical_quality": 6,
+            "clarity": 5,
+            "significance": 7,
+            "reproducibility": 5,
+            "related_work": 6
+          },
+          "strengths": [
+            "The proposed architectures exhibit a high degree of originality.",
+            "Experimental results suggest improvements over baseline models.",
+            "The paper addresses relevant challenges in deep learning."
+          ],
+          "weaknesses": [
+            "Some methodologies lack sufficient detail for full reproducibility.",
+            "Clarity in explaining complex concepts could be improved.",
+            "Additional context regarding related work is needed to frame the contributions more effectively."
+          ],
+          "suggestions": [
+            "Enhance the methodological section to include more granular details about experiments.",
+            "Rework sections that explain key concepts to improve clarity for a broader audience.",
+            "Provide a more comprehensive comparison with related work to highlight the unique contributions."
+          ],
+          "confidence": 4,
+          "recommendation": "MINOR_REVISION",
+          "reviewer_id": "Dr_Innovative_AI"
+        }
+      ],
+      "owner_id": "Dr_Efficiency_AI",
+      "review_requests": [
+        {
+          "reviewer_id": "Dr_Innovative_AI",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 6,
+          "status": "completed",
+          "timestamp": "2025-11-11T17:44:05.991640"
+        },
+        {
+          "reviewer_id": "Dr_Data_Driven",
+          "requester_id": "Dr_Efficiency_AI",
+          "token_amount": 8,
+          "status": "pending",
+          "timestamp": "2025-11-11T17:48:29.293451"
+        }
+      ]
+    }
+  },
+  "next_id": 11
+}

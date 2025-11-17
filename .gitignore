@@ -58,7 +58,7 @@ ehthumbs.db
 Desktop.ini
 
 # Project specific
-peer_review_workspace/
+# peer_review_workspace/ - Now tracked to show simulation results
 logs/
 *.log
 test_dataset/

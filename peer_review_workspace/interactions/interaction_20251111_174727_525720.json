@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Efficiency_AI",
+  "reviewer": "Dr_Innovative_AI",
+  "paper_id": "paper_002",
+  "paper_field": "Robotics and Control Systems",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 7,
+  "success": true,
+  "message": "Successfully transferred 7 tokens"
+}

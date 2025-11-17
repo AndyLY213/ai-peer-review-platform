@@ -1,0 +1,3391 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "interactions": [
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Data_Driven",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 7,
+          "success": true,
+          "message": "Successfully transferred 7 tokens"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Data_Driven accepted review for paper_002. Reasoning: I have a healthy token balance, no pending reviews, and the opportunity to provide valuable feedback on a topic relevant to my research interests.",
+          "thought_process": "I need to evaluate the review invitation for the paper 'Reinforcement Learning in Robotic Control' by Dr_Efficiency_AI. My current token balance is 107, which is healthy, and I have no pending reviews (0/5), allowing me to take on more work without overburdening myself. The offered token reward of 7 is reasonable and would contribute positively to my balance. However, I must consider the content of the paper itself. The title suggests a focus on reinforcement learning, which might touch on aspects of data efficiency\u2014something I value. However, if the paper does not address the data limitations in reinforcement learning, I may find myself critical of its approach. Furthermore, I have no significant past interactions with Dr_Efficiency_AI, which means there is no history of rivalry or bias influencing my decision. Since I have the capacity to take on more reviews and the potential to provide valuable feedback on data quality and efficiency in their work, I should accept this review request. It aligns with my research interests, and reviewing it could provide insights that may benefit my own work."
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 1,
+          "total_reviews_completed": 0,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 7,
+          "average_token_per_review": 7.0,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 7,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 7
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 100,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Innovative_AI": {
+              "balance": 100,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Conservative_AI": {
+              "balance": 100,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 93,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_ML_Systems": {
+              "balance": 100,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 107,
+              "published_papers": 2,
+              "reviews_completed": 0
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 107,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 100,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 100,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 100,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 100,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 93,
+            "published_papers": 2,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "interactions": [
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Conservative_AI",
+          "paper_id": "paper_008",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Cybersecurity and Privacy"
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "success": true,
+          "message": "Review for paper paper_002 submitted successfully",
+          "thought_process": "In evaluating the paper on Reinforcement Learning in Robotic Control, I will first consider the overall contribution of the research to the field of artificial intelligence, particularly in the context of robotic applications. The novelty of the proposed approach is essential, and I will look for innovative methods or techniques that enhance existing algorithms or introduce new paradigms. Furthermore, I will critically assess the technical quality of the experiments conducted, ensuring that the methodologies are robust, and the results are statistically sound and reproducible. Given my emphasis on data quality and efficiency, I will pay close attention to how the authors address data limitations, especially in scenarios where high-quality, plentiful data may not be available. The significance of the findings will also be crucial; I will evaluate whether the results have practical implications for real-world robotic control tasks. Clarity in presentation is vital for the paper's accessibility to a broader audience, so I will consider the organization and readability of the document. I will also review the related work section to ensure that the authors engage with pertinent literature, acknowledging previous contributions and positioning their work within the existing body of knowledge. Finally, my confidence in the overall evaluation will guide my final recommendation, which will balance the strengths and weaknesses identified throughout the review."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Data_Driven",
+          "reviewer": "Dr_Ethical_AI",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 17,
+          "success": true,
+          "message": "Successfully transferred 17 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Theoretical_AI",
+          "success": false,
+          "message": "Requester Dr_Theoretical_AI has no papers"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Conservative_AI",
+          "paper_id": "paper_008",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Cybersecurity and Privacy"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Ethical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Ethical_AI accepted review for paper_009. Reasoning: Accepting this review aligns with my values, supports my token balance, and allows me to ensure ethical considerations are integrated into this important area of research.",
+          "thought_process": "As Dr. Ethical AI, I prioritize ethical considerations and societal impacts in AI research. When reviewing the paper 'Data Science Techniques for Healthcare Analytics,' I must evaluate how well it addresses ethical implications, bias, and potential societal consequences in healthcare analytics. My token balance is currently 117, which is relatively healthy, and I have no pending reviews, meaning accepting this review would not overload my workload. There are no prior interactions with Dr. Data Driven that could bias my decision positively or negatively. The offered token reward of 17 would be a nice addition to my balance and could support my future research endeavors. Given that I value quality feedback and the potential for this paper to impact healthcare analytics, I see merit in accepting this review to ensure it adheres to ethical standards. Overall, I can contribute positively while also gaining tokens for my efforts."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Ethical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "success": true,
+          "message": "Review for paper paper_009 submitted successfully",
+          "thought_process": "Evaluating the paper on 'Data Science Techniques for Healthcare Analytics' involves a thorough examination of its contributions to the field, particularly in terms of ethical implications and societal impact. First, I will assess the novelty of the proposed techniques in comparison to existing methodologies. It is crucial that the paper clearly articulates how its approaches are distinct and beneficial in the context of healthcare analytics, as innovation is key in this rapidly evolving field. \n\nNext, I will evaluate the technical quality of the methodologies presented. This includes scrutinizing the robustness of the data sources used, the algorithms applied, and the rigor of the analyses performed. I will look for validation through real-world applications or simulations that demonstrate the efficacy of these techniques, as healthcare professionals rely heavily on accurate data insights for decision-making. \n\nClarity is another important aspect, as the paper should communicate its findings effectively to a diverse audience that may include healthcare practitioners, data scientists, and policy makers. The writing must be clear, concise, and free from jargon that could alienate readers not familiar with technical terminologies.\n\nThe significance of the research must also be examined; it should address pressing issues in healthcare analytics such as patient privacy, bias in data collection, and the potential for misuse of AI technologies. I will pay particular attention to how the authors address these concerns throughout the paper and whether they propose solutions or recommendations for ethical practices. \n\nReproducibility is vital in scientific research, and I will look for detailed explanations of the datasets and algorithms used, as well as any code repositories or supplementary materials that allow other researchers to replicate the findings. This transparency is essential in building trust within the scientific and healthcare communities.\n\nLastly, I will evaluate the related work section to ensure that the authors have adequately contextualized their research within the existing body of knowledge. A comprehensive literature review is necessary to demonstrate awareness of prior work and to justify the relevance of the current study. Overall, my evaluation will be guided by the principles of ethical AI development, focusing on the potential societal impact and the need to mitigate any negative consequences arising from the implementation of these data science techniques in healthcare."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Innovative_AI",
+          "reviewer": "Dr_Data_Driven",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 15,
+          "success": true,
+          "message": "Successfully transferred 15 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "accepted": false,
+          "success": true,
+          "message": "Dr_Data_Driven declined review for paper_004. Reasoning: Unable to parse JSON response.",
+          "thought_process": "Raw response: {\n  \"thought_process\": \"I have received a review invitation for a paper titled 'Theoretical Foundations of Machine Learning' by Dr_Innovative_AI. Given my current token balance of 120 and my workload "
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 3,
+          "total_reviews_completed": 2,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 39,
+          "average_token_per_review": 13.0,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 7,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 1,
+              "reviews_received": 2,
+              "tokens_spent": 17,
+              "tokens_earned": 22
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 15,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 100,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Innovative_AI": {
+              "balance": 85,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Conservative_AI": {
+              "balance": 100,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 93,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 100,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 120,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 120,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 100,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 100,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 100,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 93,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 85,
+            "published_papers": 2,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "interactions": [
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Innovative_AI",
+          "paper_id": "paper_010",
+          "paper_field": "Artificial Intelligence",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 6,
+          "success": true,
+          "message": "Successfully transferred 6 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_010",
+          "paper_field": "Artificial Intelligence",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Innovative_AI accepted review for paper_010. Reasoning: I have the capacity to take on this review, it offers a token reward that will aid my balance, and I have no past negative interactions with the author.",
+          "thought_process": "As Dr_Innovative_AI, I have a strong appreciation for novelty and creativity in research, particularly in the field of Artificial Intelligence. Given my current token balance of 91 and a workload of 0/5 reviews, I have the capacity to take on an additional review without overextending myself. The offered token reward of 6 is a reasonable incentive that would contribute positively to my balance. Additionally, I do not have any significant past interactions with Dr_Efficiency_AI, which means there are no personal biases or grudges that would influence my decision negatively. Since this paper is titled 'Advanced Deep Learning Architectures,' it may present some novel ideas or approaches that could contribute to the field, aligning with my interest in innovative research. Considering I am not familiar with the quality of Dr_Efficiency_AI's previous work, I should assess this paper on its own merits, maintaining an open mind. Overall, accepting this review could also enhance my visibility in the research community and potentially lead to collaborative opportunities in the future. Therefore, I see no compelling reason to decline the review request."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_010",
+          "paper_field": "Artificial Intelligence",
+          "success": true,
+          "message": "Review for paper paper_010 submitted successfully",
+          "thought_process": "In evaluating the paper on Advanced Deep Learning Architectures, I approached the review with a focus on the novelty of the proposed architectures and their potential impact on the field of artificial intelligence. My first step was to assess the originality of the ideas presented. I looked for unique approaches or combinations of existing techniques that could lead to significant advancements. I considered how the authors positioned their work within the current landscape of deep learning research and whether they provided a compelling case for their innovations. \n\nNext, I examined the technical quality of the paper. This involved evaluating the soundness of the methodologies employed, the rigor of the experiments conducted, and the robustness of the results. I paid particular attention to any new algorithms or architectural designs introduced, ensuring that they were not only theoretically sound but also practically applicable. \n\nClarity was another critical factor in my evaluation. A groundbreaking idea is less impactful if it is not communicated effectively. I assessed whether the authors clearly articulated their concepts, provided adequate background information, and explained their results in a way that is accessible to the intended audience. \n\nThe significance of the research was paramount; I reflected on how the proposed architectures could address existing challenges in deep learning and whether they opened new avenues for future research. I looked for signs of real-world applicability or transformative potential that could justify the effort put into the research. \n\nReproducibility is crucial in scientific research, especially in AI, where the ability to replicate results can significantly affect the field's advancement. I evaluated whether the authors provided enough detail in their experiments and methodologies to allow other researchers to reproduce their findings. \n\nFinally, I compared the work to related studies to ensure that it was not only innovative but also situated correctly within the existing body of knowledge. I looked for gaps that this paper filled or new perspectives it offered. Overall, my review process was thorough, focusing on both the merits and the areas for improvement in this exciting exploration of advanced deep learning architectures."
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Practical_AI",
+          "reviewer": "Dr_Conservative_AI",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 7,
+          "success": true,
+          "message": "Successfully transferred 7 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "accepted": false,
+          "success": true,
+          "message": "Dr_Conservative_AI declined review for paper_005. Reasoning: Unable to parse JSON response.",
+          "thought_process": "Raw response: {\n  \"thought_process\": \"I have received an invitation to review a paper titled 'Ethical Considerations in AI Development' by Dr_Practical_AI. My current token balance is 107, and I have no pending rev"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 5,
+          "total_reviews_completed": 3,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 52,
+          "average_token_per_review": 10.4,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 13,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 1,
+              "reviews_received": 2,
+              "tokens_spent": 17,
+              "tokens_earned": 22
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 1,
+              "reviews_received": 1,
+              "tokens_spent": 15,
+              "tokens_earned": 6
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 7,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 7
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 93,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Innovative_AI": {
+              "balance": 106,
+              "published_papers": 2,
+              "reviews_completed": 1
+            },
+            "Dr_Conservative_AI": {
+              "balance": 107,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 87,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 100,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 120,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 120,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 107,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 106,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 100,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 93,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 87,
+            "published_papers": 2,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 4,
+      "interactions": [
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Practical_AI",
+          "reviewer": "Dr_Empirical_AI",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 22,
+          "success": true,
+          "message": "Successfully transferred 22 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_ML_Systems",
+          "reviewer": "Dr_Conservative_AI",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 9,
+          "success": true,
+          "message": "Successfully transferred 9 tokens"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "accepted": false,
+          "success": true,
+          "message": "Dr_Empirical_AI declined review for paper_005. Reasoning: Unable to parse JSON response.",
+          "thought_process": "Raw response: {\n  \"thought_process\": \"To decide whether to accept the review invitation for the paper titled 'Ethical Considerations in AI Development' by Dr_Practical_AI, I will consider several factors. First, my"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Conservative_AI accepted review for paper_003. Reasoning: The review aligns with my expertise, adds to my token balance, and does not overload my current workload.",
+          "thought_process": "I need to evaluate the review request based on several factors. First, my current token balance is 116, and the offered reward for this review is 9 tokens, which is a reasonable addition to my balance. I have 0 pending reviews, meaning my workload is currently manageable, and taking on this review will not overwhelm me. I have no significant past interactions with Dr_ML_Systems, so I don't have any biases or grievances that could affect my judgment. Since this paper is on 'Computer Vision Techniques for Object Detection', it is within my field of expertise, allowing me to provide valuable feedback. Importantly, reviewing this paper could also help keep my knowledge up-to-date with current trends in computer vision, which is beneficial for my own research. Given that I am focused on incremental progress and value well-established methodologies, I can contribute constructive criticism to help refine the paper without fearing that it would negatively impact my own work. Thus, accepting this review aligns with my goals of maintaining a healthy token balance and contributing to the field thoughtfully."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "success": true,
+          "message": "Review for paper paper_003 submitted successfully",
+          "thought_process": "In evaluating the paper on Computer Vision Techniques for Object Detection, I will begin by examining the novelty of the proposed methods. It's essential to determine whether the authors contribute significantly to the existing body of knowledge or merely replicate previous works with minor adjustments. I will look for clear comparisons with established techniques, ensuring that the paper situates itself within the current landscape of object detection methodologies.\n\nNext, I will assess the technical quality of the work. This includes evaluating the soundness of the algorithms presented and their implementation. I will check for rigorous experimental validation, appropriate datasets, and robust performance metrics. It\u2019s vital that the authors provide sufficient detail in their experiments to allow for reproducibility, which is a cornerstone of credible research.\n\nClarity is another critical aspect of my review. The writing must be coherent, with a logical flow that guides the reader through the methodology, results, and conclusions. I will evaluate whether the authors effectively communicate complex concepts, ensuring that both specialists and non-specialists can comprehend the significance of their findings.\n\nThe significance of the research will also be a focal point. I will consider whether the proposed techniques address pressing issues in the field and whether they hold potential for real-world applications. I will also assess whether the findings contribute to theoretical advancements or practical implementations in object detection.\n\nReproducibility is paramount. I will look for details regarding data access, code availability, and specific parameters used in experiments. Proper documentation will be crucial for the community to validate and build upon this work. Related work must be properly cited and discussed, ensuring that the authors acknowledge prior contributions and clearly delineate how their work builds on or diverges from these existing methods.\n\nOverall, my review will strive for a balanced approach, acknowledging the contributions while also identifying areas for improvement. I will ensure that my scores reflect a careful consideration of all the aforementioned factors, culminating in a recommendation that aligns with the paper's overall quality and contribution to the field."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Interdisciplinary_AI",
+          "success": false,
+          "message": "Requester Dr_Interdisciplinary_AI has no papers"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Innovative_AI",
+          "reviewer": "Dr_Conservative_AI",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 24,
+          "success": true,
+          "message": "Successfully transferred 24 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_ML_Systems",
+          "paper_id": "paper_006",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Computer Systems and Architecture"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Interdisciplinary_AI",
+          "success": false,
+          "message": "Requester Dr_Interdisciplinary_AI has no papers"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 8,
+          "total_reviews_completed": 4,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 107,
+          "average_token_per_review": 13.375,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 13,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 1,
+              "reviews_received": 2,
+              "tokens_spent": 17,
+              "tokens_earned": 22
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 2,
+              "reviews_received": 1,
+              "tokens_spent": 39,
+              "tokens_earned": 6
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 29,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 3,
+              "tokens_spent": 0,
+              "tokens_earned": 40
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 22
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 9,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 71,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 122,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Innovative_AI": {
+              "balance": 82,
+              "published_papers": 2,
+              "reviews_completed": 1
+            },
+            "Dr_Conservative_AI": {
+              "balance": 155,
+              "published_papers": 1,
+              "reviews_completed": 1
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 87,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 91,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 120,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 155,
+            "published_papers": 1,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 122,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 120,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 91,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 87,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 82,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 71,
+            "published_papers": 1,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 5,
+      "interactions": [
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Data_Driven",
+          "reviewer": "Dr_Empirical_AI",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 22,
+          "success": true,
+          "message": "Successfully transferred 22 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Empirical_AI",
+          "success": false,
+          "message": "Requester Dr_Empirical_AI has no papers"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Empirical_AI accepted review for paper_009. Reasoning: Accepting the review will help me maintain a healthy token balance while also allowing me to contribute to the field, as I have the capacity to take on the review.",
+          "thought_process": "I need to evaluate the review invitation for the paper 'Data Science Techniques for Healthcare Analytics' from Dr_Data_Driven. First, I consider my current token balance of 144 tokens and the offered reward of 22 tokens for completing this review. Accepting this review would increase my token balance, which could be beneficial for future opportunities. My workload is currently 0/5 reviews, meaning I have the capacity to take on this review without overburdening myself. Additionally, I have no significant past interactions with Dr_Data_Driven, which means there are no emotional biases or negative memories affecting my decision. Since I am a researcher who values experimental rigor, I will approach this paper critically. However, reviewing a paper in a different field (Data Science and Analytics) may provide me with insights that could benefit my own research in AI. There are no rivalries or past grievances to consider, and since I have the capacity and the potential need for tokens, it makes sense to accept the review. Therefore, I will accept the review request."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Data_Driven",
+          "reviewer": "Dr_Empirical_AI",
+          "paper_id": "paper_007",
+          "paper_field": "Human-Computer Interaction",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 13,
+          "success": true,
+          "message": "Successfully transferred 13 tokens"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Conservative_AI accepted review for paper_004. Reasoning: The review will add to my token balance, I have the capacity to take it on, and there are no past conflicts with the author.",
+          "thought_process": "To evaluate the review invitation for the paper 'Theoretical Foundations of Machine Learning,' I will consider several factors. First, my current token balance is 155, and the offered reward for this review is 24 tokens, which would be a beneficial addition to my balance. Given that I have a workload of 0/5 reviews, I am not overloaded, which means I have the capacity to take on this review without negatively impacting my reputation. Additionally, I have no past interactions with Dr_Innovative_AI, so there is no prior bias or conflict that would influence my decision. Since I prefer incremental progress and well-established methodologies, reviewing this paper aligns with my approach, as it may help reinforce the theoretical foundations we work upon. However, I do remain cautious about overly ambitious claims, which may arise in a theoretical context. Overall, I see this as an opportunity to contribute to the field while also improving my own token balance, and there are no significant risks involved in accepting this review."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Conservative_AI",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 17,
+          "success": true,
+          "message": "Successfully transferred 17 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_ML_Systems",
+          "paper_id": "paper_006",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Computer Systems and Architecture"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Practical_AI",
+          "reviewer": "Dr_Data_Driven",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 9,
+          "success": true,
+          "message": "Successfully transferred 9 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Ethical_AI",
+          "success": false,
+          "message": "Requester Dr_Ethical_AI has no papers"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 12,
+          "total_reviews_completed": 4,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 168,
+          "average_token_per_review": 14.0,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 30,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 3,
+              "reviews_received": 3,
+              "tokens_spent": 52,
+              "tokens_earned": 31
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 2,
+              "reviews_received": 1,
+              "tokens_spent": 39,
+              "tokens_earned": 6
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 38,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 57
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 3,
+              "tokens_spent": 0,
+              "tokens_earned": 57
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 1,
+              "reviews_received": 0,
+              "tokens_spent": 9,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 62,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 157,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Innovative_AI": {
+              "balance": 82,
+              "published_papers": 2,
+              "reviews_completed": 1
+            },
+            "Dr_Conservative_AI": {
+              "balance": 172,
+              "published_papers": 1,
+              "reviews_completed": 1
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 70,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 91,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 94,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 172,
+            "published_papers": 1,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 157,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 94,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 91,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 82,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 70,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 62,
+            "published_papers": 1,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 6,
+      "interactions": [
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Data_Driven",
+          "reviewer": "Dr_Conservative_AI",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 12,
+          "success": true,
+          "message": "Successfully transferred 12 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "success": true,
+          "message": "Review for paper paper_004 submitted successfully",
+          "thought_process": "In evaluating the paper 'Theoretical Foundations of Machine Learning', I will begin by examining the abstract and introduction to understand the main contributions and objectives of the work. I will assess whether the authors provide a clear motivation for their research and how it fits within the existing body of literature in machine learning theory. I will then delve into the methodology section, scrutinizing the rigor and validity of the techniques employed. It is crucial to determine if the authors have built upon established theories or if they have ventured into overly ambitious claims without proper justification. Additionally, I will evaluate the results presented, ensuring that they are reproducible and supported by sufficient evidence. This includes checking for clear descriptions of experiments, datasets, and statistical analyses. I will also consider the clarity of the writing and how well the authors communicate their findings. Lastly, I will reflect on the significance of the contributions to the field, weighing their potential impact against the current state of research. Throughout this process, I will maintain a critical yet constructive perspective, recognizing the importance of incremental advancements in theoretical foundations while being cautious of any claims that appear overly novel without substantial backing."
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_007",
+          "paper_field": "Human-Computer Interaction",
+          "accepted": false,
+          "success": true,
+          "message": "Dr_Empirical_AI declined review for paper_007. Reasoning: Unable to parse JSON response.",
+          "thought_process": "Raw response: {\n  \"thought_process\": \"I have received a review invitation for a paper in Human-Computer Interaction, a field adjacent to my expertise in Artificial Intelligence. Given that I have no past interactio"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Ethical_AI",
+          "success": false,
+          "message": "Requester Dr_Ethical_AI has no papers"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Conservative_AI accepted review for paper_002. Reasoning: The review aligns with my current workload capacity and offers a reasonable token reward, allowing me to maintain a healthy token balance while contributing positively to the field.",
+          "thought_process": "I have received a review invitation for a paper titled 'Reinforcement Learning in Robotic Control' by Dr_Efficiency_AI. Since I have a neutral stance towards the author and no significant past interactions, I can approach this review without any bias from previous experiences. My current token balance is 199, which is healthy, and the offered token reward of 17 is reasonable for the effort required for a review. I have no pending reviews, so accepting this opportunity would not overload me. Reviewing this paper might also provide me with insights into current methodologies in the field, which could be beneficial for my own research. While the paper is in a related field, it does not directly compete with my work, allowing me to provide constructive feedback without concern for rivalry. Overall, accepting this review aligns with my goal of maintaining a good token balance while contributing to the academic community in a meaningful way."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Innovative_AI",
+          "reviewer": "Dr_Empirical_AI",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 15,
+          "success": true,
+          "message": "Successfully transferred 15 tokens"
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "success": true,
+          "message": "Review for paper paper_002 submitted successfully",
+          "thought_process": "In evaluating the paper on Reinforcement Learning in Robotic Control, my approach involves a systematic examination of several critical components. First, I will assess the novelty of the research presented. Given the rapid advancements in reinforcement learning, it is vital to determine whether the authors have contributed a genuinely new perspective or methodology, or if they are building on existing frameworks in a meaningful way. Novelty is important, but it should not overshadow the need for a solid foundation in established practices.\n\nNext, I will evaluate the technical quality of the methods and algorithms proposed. This includes looking for a clear description of the experimental setup, the appropriateness of the chosen methodologies, and a thorough analysis of the results. It is essential that the authors provide sufficient details to allow for reproducibility, a principle I strongly value. Reproducibility is crucial in AI research to ensure that the findings can be verified and built upon by others in the field.\n\nClarity is another significant aspect to consider. The paper should be well-structured, with clear definitions of terms and concepts, especially for complex ideas that might not be widely understood. I will be particularly attentive to whether the authors have effectively communicated their thoughts without assuming too much prior knowledge from the reader.\n\nFurthermore, I will examine the significance of the work. Does this paper address a pressing issue in the field of robotic control? Are the implications of the findings substantial enough to warrant attention from the research community? \n\nI will also conduct a thorough review of the related work presented in the paper. It is essential for authors to situate their contributions within the existing body of research. I will look for a comprehensive literature review that acknowledges key developments and how the current work fits into that landscape.\n\nFinally, I will assess my confidence in the evaluation based on the completeness of the work and the rigor of the methodologies employed. After synthesizing all these aspects, I will formulate my recommendation based on a balanced view of the strengths and weaknesses identified throughout the review process."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "success": true,
+          "message": "Review for paper paper_009 submitted successfully",
+          "thought_process": "In evaluating the paper on Data Science Techniques for Healthcare Analytics, I will adopt a systematic approach to ensure that every aspect of the research is thoroughly analyzed. First, I will assess the novelty of the techniques presented in the paper. It is crucial to determine whether the authors have introduced new methodologies or improved upon existing ones, as this will influence the impact of the work in the field. Next, I will scrutinize the technical quality of the experiments conducted. This will involve examining the datasets used, the rigor of the experimental design, and the appropriateness of the statistical methods employed. The clarity of the writing is also essential; the authors must communicate their findings in a way that is accessible to both experts and non-experts in the field. \n\nFurthermore, I will evaluate the significance of the results. Are the findings robust and do they contribute meaningfully to healthcare analytics? This will require looking into whether the results have practical implications for healthcare practitioners and whether they address pressing issues in the field. Analyzing reproducibility is another critical aspect; the authors should provide enough detail for other researchers to replicate their experiments. Lastly, I will review the related work section to see if the authors have adequately contextualized their work within existing literature, which is vital for understanding the impact of their contributions. \n\nOverall, my review will be grounded in a careful consideration of these factors, as they are imperative for assessing the quality of research in data science, particularly in the impactful domain of healthcare analytics."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_ML_Systems",
+          "reviewer": "Dr_Innovative_AI",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 14,
+          "success": true,
+          "message": "Successfully transferred 14 tokens"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Conservative_AI accepted review for paper_009. Reasoning: Accepting the review will increase my token balance and allow me to contribute to the field, as I currently have the capacity to take on the review without impacting my workload negatively.",
+          "thought_process": "As Dr_Conservative_AI, I value incremental contributions and prefer well-established methodologies. My current token balance is 214, and I have no pending reviews, which means I have the capacity to take on more work without overcommitting myself. The offered token reward of 12 is modest but could help my token balance, which is beneficial for future projects or reviews I might want to request. I have no significant past interactions with Dr_Data_Driven, so there's no emotional bias steering my decision either way. Given that I have the bandwidth and the opportunity to earn tokens, I believe that accepting the review could help support my research endeavors while also contributing to the field of Data Science and Analytics. Overall, accepting this review aligns with my cautious yet constructive approach to advancing research."
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 15,
+          "total_reviews_completed": 7,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 209,
+          "average_token_per_review": 13.933333333333334,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 30,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 4,
+              "reviews_received": 3,
+              "tokens_spent": 64,
+              "tokens_earned": 31
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 2,
+              "tokens_spent": 54,
+              "tokens_earned": 20
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 38,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 5,
+              "tokens_spent": 0,
+              "tokens_earned": 69
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 72
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 23,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 62,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 187,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_Innovative_AI": {
+              "balance": 81,
+              "published_papers": 2,
+              "reviews_completed": 1
+            },
+            "Dr_Conservative_AI": {
+              "balance": 214,
+              "published_papers": 1,
+              "reviews_completed": 3
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 70,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 77,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 82,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 214,
+            "published_papers": 1,
+            "reviews_completed": 3
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 187,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 82,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 81,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 77,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 70,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 62,
+            "published_papers": 1,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 7,
+      "interactions": [
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Conservative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_009",
+          "paper_field": "Data Science and Analytics",
+          "success": true,
+          "message": "Review for paper paper_009 submitted successfully",
+          "thought_process": "In evaluating the paper 'Data Science Techniques for Healthcare Analytics', I approached the task by first assessing the overall structure and coherence of the manuscript. I paid close attention to how the authors defined their objectives and whether they aligned with established methodologies in the field. Given my inclination towards incremental contributions, I scrutinized the novelty of the proposed techniques against existing literature to determine if they build on solid foundations or introduce overly ambitious claims without sufficient empirical support.\n\nNext, I examined the technical quality of the methods presented. This involved evaluating the appropriateness of the data sources, the robustness of the algorithms employed, and the methods of validation used. I looked for clarity in the presentation of results and whether the authors provided sufficient detail to allow for reproducibility. Given the importance of reproducibility in scientific research, I checked if the authors included details about their datasets, preprocessing steps, and any specific software used.\n\nMoreover, I considered the implications of their findings within the context of healthcare analytics. The significance of their contributions was weighed against the potential impact on real-world applications. I also looked for a thorough discussion of related work, ensuring that the authors acknowledged previous research adequately and positioned their work within the broader landscape of healthcare data science.\n\nOverall, my evaluation sought a balance between recognizing the merits of the work while ensuring that the authors provided a solid empirical foundation for their claims. I aimed to give constructive feedback that would help them improve the paper while maintaining a healthy token balance for future peer review engagements."
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Empirical_AI accepted review for paper_004. Reasoning: I have no pending reviews, a healthy token balance is beneficial for future needs, and I see no reason to decline based on past interactions or rivalry.",
+          "thought_process": "I need to evaluate the review invitation for the paper titled 'Theoretical Foundations of Machine Learning' by Dr_Innovative_AI. My current token balance stands at 187, and I have no pending reviews, which means I can take on additional work without impacting my reputation. The offered token reward of 15 is a modest addition to my balance, but it does contribute positively. Since I have no past interactions with Dr_Innovative_AI, I don't have any biases against them or any history of harsh reviews that would influence my decision. As a researcher who values experimental rigor and comprehensive evaluation, reviewing a paper in the theoretical domain of machine learning could provide me with insights that might be beneficial for my own work. Additionally, since I am not aware of any competition or rivalry with this author, there is no reason to decline based on that aspect. Given my neutral personality and the absence of negative past experiences with this author, I see no reason not to accept the review. Accepting this review will also help maintain a healthy token balance, which is important for future opportunities. Therefore, I will proceed to accept this review request."
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Innovative_AI accepted review for paper_003. Reasoning: The paper presents an opportunity to earn tokens without any negative history with the author, and it aligns with my interests in AI. Therefore, I will accept the review.",
+          "thought_process": "As Dr_Innovative_AI, I prioritize novelty and creative approaches in my field, which is Artificial Intelligence. I have a neutral personality, which means I can approach this decision without any personal bias against the author. My current token balance is 81, and the offered reward of 14 tokens is relatively enticing, especially since I am currently at 0/5 reviews and have no pending workload. Reviewing this paper could not only boost my token balance but also keep me engaged with the latest developments in computer vision, which is relevant to my research. Additionally, I have no prior interactions with Dr_ML_Systems that would indicate rivalry or a negative history. Therefore, accepting this review could be beneficial for both my token balance and my understanding of the field, as I may gain insights from the paper itself. Overall, I see no reason to decline this opportunity."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Empirical_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_004",
+          "paper_field": "Theoretical Computer Science",
+          "success": true,
+          "message": "Review for paper paper_004 submitted successfully",
+          "thought_process": "When evaluating the paper titled 'Theoretical Foundations of Machine Learning', my approach involves a thorough examination of several critical aspects. First, I will assess the novelty of the contributions presented in the paper. This includes determining whether the theoretical insights offered are genuinely innovative or if they simply reiterate established concepts without adding substantial value. I will compare the proposed theories against existing literature to understand their unique position within the broader context of machine learning research. \n\nNext, I will analyze the technical quality of the work. This involves scrutinizing the rigor of the mathematical formulations, proofs, and logical arguments made throughout the paper. I will look for clarity in the presentation of theoretical concepts and ensure that the authors provide adequate justification for their claims. A strong theoretical paper should stand up to scrutiny and be able to be reproduced through the methods described. \n\nClarity is another key aspect of my review. The paper must communicate complex ideas effectively, using precise language and appropriate terminology. I will evaluate whether the authors have organized their work in a coherent manner that allows readers to follow their arguments without confusion. \n\nSignificance is also crucial; I will consider whether the insights presented have meaningful implications for the field of machine learning. The authors should clearly articulate the potential impact of their findings on both theoretical and practical fronts. \n\nReproducibility is essential for any scientific work. I will check if the authors provide sufficient detail about their methodologies, allowing other researchers to replicate their results. This includes any assumptions made and the contexts in which their theories hold true.\n\nLastly, I will evaluate the related work section to ensure that the authors have adequately engaged with previous research. A comprehensive literature review should frame their contributions in the context of existing theories and methodologies. \n\nAfter considering all these factors, I will assign scores based on the defined criteria and provide constructive feedback to guide the authors in strengthening their work. My overall recommendation will reflect the balance of strengths and weaknesses identified throughout the review process."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_003",
+          "paper_field": "Computer Vision",
+          "success": true,
+          "message": "Review for paper paper_003 submitted successfully",
+          "thought_process": "As I embark on the evaluation of the paper on Computer Vision Techniques for Object Detection, my first step is to assess the novelty of the proposed methods. I believe that innovation is vital in the rapidly evolving field of computer vision, especially given the increasing demands for more efficient and accurate object detection systems. I will examine whether the authors introduce new algorithms, methodologies, or applications that significantly advance the state of the art. Additionally, I will consider whether the approach is sufficiently distinct from existing techniques, as even incremental improvements can be valuable if they address specific challenges in a novel way.\n\nNext, I will delve into the technical quality of the work presented. This includes scrutinizing the experimental design, the robustness of the results, and the appropriateness of the metrics used to evaluate the performance of the proposed techniques. I will also look for any potential biases in the datasets used for training and testing, as the validity of the conclusions drawn from the experiments hinges on the quality of the data.\n\nClarity is another crucial aspect of my evaluation. The authors must communicate their ideas effectively, making it easy for readers to understand the rationale behind their work and the implications of their findings. I will assess whether the paper is well-structured, whether the figures and tables support the text adequately, and whether there is a logical flow to the arguments presented.\n\nThe significance of the research is important as well; I will consider how the proposed methods could impact the field of object detection and whether they address real-world challenges. It is essential to recognize whether the contribution is merely theoretical or if it has practical implications that could benefit industry applications.\n\nFor reproducibility, I will check if the authors provide sufficient details regarding their methodologies, datasets, and experimental setups. Transparency in these areas is critical for the scientific community, as it allows other researchers to validate and build upon the work presented.\n\nLastly, I will review the related work section to ensure that the authors have contextualized their research within the existing literature. A well-rounded understanding of related advancements is vital for establishing the relevance and timeliness of the proposed contributions. Overall, my evaluation will balance these components to arrive at a comprehensive assessment of the paper's strengths and weaknesses, leading to an informed recommendation."
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Data_Driven accepted review for paper_005. Reasoning: Accepting the review will provide a token reward and allow me to contribute valuable feedback, despite the paper not being directly in my area of expertise.",
+          "thought_process": "As Dr. Data Driven, I specialize in areas related to data quality, data efficiency, and learning from limited data, which may not directly align with the focus of the paper on ethical considerations in AI development. However, I recognize that ethical implications can be linked to data practices, such as bias in datasets and the need for quality data in ensuring fairness. My token balance is currently at 82, and the offered token reward of 9 would improve my balance, which is a positive aspect. Additionally, I have no prior interactions with Dr_Practical_AI, meaning there are no biases in my decision based on past experiences with them. My workload is currently at 0/5, so accepting this review would not negatively impact my reputation or workload. Overall, while the paper's topic may not be my primary focus, my expertise could still provide valuable feedback, and the token reward would help maintain my balance. Therefore, it seems reasonable to accept this review request."
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 15,
+          "total_reviews_completed": 10,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 209,
+          "average_token_per_review": 13.933333333333334,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 30,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 4,
+              "reviews_received": 3,
+              "tokens_spent": 64,
+              "tokens_earned": 31
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 2,
+              "tokens_spent": 54,
+              "tokens_earned": 20
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 38,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 5,
+              "tokens_spent": 0,
+              "tokens_earned": 69
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 72
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 23,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 62,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 202,
+              "published_papers": 0,
+              "reviews_completed": 2
+            },
+            "Dr_Innovative_AI": {
+              "balance": 96,
+              "published_papers": 2,
+              "reviews_completed": 2
+            },
+            "Dr_Conservative_AI": {
+              "balance": 229,
+              "published_papers": 1,
+              "reviews_completed": 4
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 70,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 77,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 82,
+              "published_papers": 2,
+              "reviews_completed": 1
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 229,
+            "published_papers": 1,
+            "reviews_completed": 4
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 202,
+            "published_papers": 0,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 96,
+            "published_papers": 2,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 82,
+            "published_papers": 2,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 77,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 70,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 62,
+            "published_papers": 1,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 8,
+      "interactions": [
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "success": true,
+          "message": "Review for paper paper_005 submitted successfully",
+          "thought_process": "In evaluating the paper titled 'Ethical Considerations in AI Development', I first considered the importance of addressing ethical issues in the rapidly evolving field of AI. The authors have presented a timely discussion that aligns well with current global concerns regarding AI's impact on society. However, my analysis must also focus on how these ethical considerations are framed within the context of data quality and efficiency, which are paramount in AI research. As I reviewed the paper, I noted that while the ethical challenges are outlined, there is a lack of engagement with the implications of data limitations on ethical AI practices. For instance, the discussion surrounding biased data and its effects on AI outcomes is critical, yet it appears somewhat superficial without delving into how data quality issues can exacerbate or mitigate ethical concerns. Furthermore, the paper does not adequately address how limited data scenarios can impact ethical decision-making in AI development. I also scrutinized the clarity of the arguments presented. While the paper is generally well-written, some sections could benefit from clearer definitions and more robust examples to illustrate complex ethical dilemmas. Overall, I found that while the paper raises valid ethical considerations, it could greatly benefit from a deeper exploration of the interplay between data quality, ethical implications, and AI efficiency. This would not only enhance the paper's contribution to the field but also resonate with my emphasis on data-centric approaches in AI."
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Conservative_AI",
+          "paper_id": "paper_008",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Cybersecurity and Privacy"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Conservative_AI",
+          "paper_id": "paper_008",
+          "success": false,
+          "message": "No valid reviewers found with specialty compatible with paper field: Cybersecurity and Privacy"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Ethical_AI",
+          "success": false,
+          "message": "Requester Dr_Ethical_AI has no papers"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Ethical_AI",
+          "success": false,
+          "message": "Requester Dr_Ethical_AI has no papers"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 15,
+          "total_reviews_completed": 11,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 209,
+          "average_token_per_review": 13.933333333333334,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 30,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 4,
+              "reviews_received": 3,
+              "tokens_spent": 64,
+              "tokens_earned": 31
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 2,
+              "tokens_spent": 54,
+              "tokens_earned": 20
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 38,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 5,
+              "tokens_spent": 0,
+              "tokens_earned": 69
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 72
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 23,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 62,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 202,
+              "published_papers": 0,
+              "reviews_completed": 2
+            },
+            "Dr_Innovative_AI": {
+              "balance": 96,
+              "published_papers": 2,
+              "reviews_completed": 2
+            },
+            "Dr_Conservative_AI": {
+              "balance": 229,
+              "published_papers": 1,
+              "reviews_completed": 4
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 70,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 77,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 97,
+              "published_papers": 2,
+              "reviews_completed": 2
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 229,
+            "published_papers": 1,
+            "reviews_completed": 4
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 202,
+            "published_papers": 0,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 97,
+            "published_papers": 2,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 96,
+            "published_papers": 2,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 77,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 70,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 62,
+            "published_papers": 1,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 9,
+      "interactions": [
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Theoretical_AI",
+          "success": false,
+          "message": "Requester Dr_Theoretical_AI has no papers"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Theoretical_AI",
+          "success": false,
+          "message": "Requester Dr_Theoretical_AI has no papers"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Interdisciplinary_AI",
+          "success": false,
+          "message": "Requester Dr_Interdisciplinary_AI has no papers"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Empirical_AI",
+          "success": false,
+          "message": "Requester Dr_Empirical_AI has no papers"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "success": false,
+          "message": "No pending review requests found"
+        },
+        {
+          "interaction": "complete_review",
+          "success": false,
+          "message": "No accepted reviews found to complete"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Data_Driven",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 10,
+          "success": true,
+          "message": "Successfully transferred 10 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Innovative_AI",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 7,
+          "success": true,
+          "message": "Successfully transferred 7 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Empirical_AI",
+          "success": false,
+          "message": "Requester Dr_Empirical_AI has no papers"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 17,
+          "total_reviews_completed": 11,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 226,
+          "average_token_per_review": 13.294117647058824,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 5,
+              "reviews_received": 0,
+              "tokens_spent": 47,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 4,
+              "reviews_received": 4,
+              "tokens_spent": 64,
+              "tokens_earned": 41
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 3,
+              "tokens_spent": 54,
+              "tokens_earned": 27
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 0,
+              "tokens_spent": 38,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 5,
+              "tokens_spent": 0,
+              "tokens_earned": 69
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 72
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 23,
+              "tokens_earned": 0
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 62,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 202,
+              "published_papers": 0,
+              "reviews_completed": 2
+            },
+            "Dr_Innovative_AI": {
+              "balance": 103,
+              "published_papers": 2,
+              "reviews_completed": 2
+            },
+            "Dr_Conservative_AI": {
+              "balance": 229,
+              "published_papers": 1,
+              "reviews_completed": 4
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 53,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 77,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 107,
+              "published_papers": 2,
+              "reviews_completed": 2
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 229,
+            "published_papers": 1,
+            "reviews_completed": 4
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 202,
+            "published_papers": 0,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 107,
+            "published_papers": 2,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 103,
+            "published_papers": 2,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 77,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 62,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 53,
+            "published_papers": 2,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    },
+    {
+      "round": 10,
+      "interactions": [
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Innovative_AI accepted review for paper_002. Reasoning: The offered token reward is beneficial, I have no current workload, and I see no reason to view this author as a rival. Accepting this review aligns with my goals of advancing my research and maintaining a healthy token balance.",
+          "thought_process": "As Dr_Innovative_AI, I prioritize novelty and creative approaches in my research, and I understand the importance of maintaining a healthy token balance for future endeavors. Currently, I have 103 tokens and a workload of 0/5 reviews, which means I am not overwhelmed and can afford to take on more work. The offered token reward of 7 is modest but would help improve my balance. I also need to consider my past interaction with Dr_Efficiency_AI, where I reviewed their paper 'Advanced Deep Learning Architectures.' Since the outcome was N/A, I don't have a strong emotional history with them, either positive or negative. There is no indication that this author is a rival, nor do I perceive their paper as a direct competitor to my work. Therefore, taking on this review could help me contribute to the field and earn tokens without any significant downside. Given that my workload is currently empty, accepting this review could enhance my reputation for being active and engaged in the community."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Innovative_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "success": true,
+          "message": "Review for paper paper_002 submitted successfully",
+          "thought_process": "In evaluating the paper on Reinforcement Learning in Robotic Control, I will first focus on the core contributions made by the authors. The novelty of the proposed approach is paramount; I will look for any innovative methods or unique applications that distinguish this work from existing literature. This involves a thorough analysis of how the authors have applied reinforcement learning principles to robotic control, considering whether they have introduced new algorithms, architectures, or methodologies that could potentially lead to significant advancements in the field.\n\nNext, I will assess the technical quality of the work. This includes evaluating the experimental setup, the robustness of the results, and whether the authors have sufficiently validated their approach against established benchmarks. I will be particularly interested in how well the experiments are designed and if the authors have provided a comprehensive analysis of the results, including any limitations of their approach.\n\nThe clarity of writing is also crucial. I will examine how well the authors convey their ideas, structures their arguments, and present their findings. Clear and concise communication is necessary for the impact of the research to be fully realized.\n\nMoreover, I will consider the significance of this research within the broader context of AI and robotics. I will analyze how the findings might influence future research directions and practical applications in robotic systems. This will help me understand the potential implications of their work for the field as a whole.\n\nReproducibility is another critical aspect; I will look for sufficient details about the experiments, including code availability, datasets, and parameter settings, which are essential for other researchers to replicate the study. Lastly, I will review the related work section to ensure that the authors have adequately positioned their contribution within the existing body of literature, acknowledging relevant prior work and demonstrating how their approach builds upon or diverges from it.\n\nOverall, my review will balance these various dimensions to provide a comprehensive evaluation of the paper's strengths and weaknesses, leading to a well-informed recommendation."
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Data_Driven accepted review for paper_002. Reasoning: I have the capacity to take on this review, and the token reward will be beneficial for my research. Despite my neutral feelings towards the author, I can provide valuable feedback while maintaining my focus on data quality.",
+          "thought_process": "First, I consider my current workload, which is 0 out of 5 reviews. This means I have the capacity to take on additional reviews without overloading myself. Next, I evaluate the token reward for completing this review, which is 10 tokens. Given that I currently have 107 tokens, accepting this review would increase my balance and could help support my future research endeavors. However, I also reflect on my past interactions with Dr_Efficiency_AI, where I reviewed their previous paper on the same topic. The outcome was marked as N/A, which suggests I either had not provided feedback or it was not assessed yet. This raises a question of whether I want to engage again with this author, particularly since they have not provided any clear value in our previous interaction. Additionally, I must consider if their work competes with mine or if it poses any challenges to my research focus on data quality and efficiency. Although I have no direct rivalry with them, I am cautious about the potential implications of my feedback on their paper. Ultimately, while accepting the review could be beneficial for my token balance, I also recognize that I need to maintain quality and focus on papers that address data limitations more explicitly. Since I have the capacity and the token reward is decent, I will choose to ACCEPT the review, but I will remain critical and focused on how their approach aligns with my research values."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "success": true,
+          "message": "Review for paper paper_002 submitted successfully",
+          "thought_process": "In evaluating the paper on Reinforcement Learning in Robotic Control, I begin by assessing the motivation behind the study. It is crucial to identify whether the authors adequately address the challenges of data efficiency and quality, particularly in the context of robotic control tasks, where obtaining high-quality labeled data can be expensive and time-consuming. I will analyze the methods proposed in the paper to determine if they effectively handle limited data scenarios, as well as how they leverage existing datasets. \n\nNext, I will evaluate the novelty of the approach. It is essential to ascertain whether the proposed methods bring something new to the field or if they merely replicate existing strategies without advancing the state of the art. A thorough literature review should be presented to contextualize the work within existing research and highlight its unique contributions. \n\nTechnical quality is another critical aspect. I will examine the algorithms and models used, considering their robustness and efficiency in learning from potentially noisy or sparse data. If the authors utilize simulations, I will also assess the realism and applicability of these simulations to real-world scenarios, as unrealistic environments can lead to misleading conclusions. \n\nClarity of presentation is vital for the paper's accessibility to the audience. The writing should be coherent, with clear explanations of methodologies and results. Figures and tables should be used effectively to support the narrative without overwhelming the reader. \n\nThe significance of the results will be evaluated based on their implications for the field of robotic control. Are the findings impactful, and do they provide a pathway for future research or practical applications? Additionally, I will consider reproducibility: are the experiments detailed enough for another researcher to replicate the results? This is particularly important in AI research, where reproducibility is often a concern. \n\nFinally, I will compile the strengths and weaknesses of the paper, offering suggestions for improvement that could enhance its overall contribution to the field. My confidence level in the paper's findings will also play a role in my recommendation, which will ultimately be based on the paper's thoroughness and adherence to the principles of data quality and efficiency."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Practical_AI",
+          "reviewer": "Dr_Interdisciplinary_AI",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 9,
+          "success": true,
+          "message": "Successfully transferred 9 tokens"
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Interdisciplinary_AI",
+          "success": false,
+          "message": "Requester Dr_Interdisciplinary_AI has no papers"
+        },
+        {
+          "interaction": "respond_to_review_request",
+          "reviewer": "Dr_Interdisciplinary_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "accepted": true,
+          "success": true,
+          "message": "Dr_Interdisciplinary_AI accepted review for paper_005. Reasoning: Accepting this review will help me earn tokens and contribute to an important interdisciplinary area of AI ethics, aligning with my research values.",
+          "thought_process": "I received an invitation to review a paper titled 'Ethical Considerations in AI Development' by Dr_Practical_AI. As a researcher specializing in AI, I recognize the importance of AI ethics and fairness, which are critical areas that connect with broader societal implications. This aligns well with my interdisciplinary focus. The offered token reward is 9, which would be beneficial for my current balance of 109 tokens, enabling me to maintain a healthy token count and potentially fund future review requests or my own publications. I have no previous significant interactions with Dr_Practical_AI, which suggests that there are no biases or rivalries influencing my decision. Furthermore, my workload is currently at 0/5 reviews, meaning that accepting this review will not overwhelm me or hurt my reputation. Given all these factors, it seems advantageous to accept this review as it not only aids in my token balance but also contributes to a field I value highly."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Interdisciplinary_AI",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_005",
+          "paper_field": "AI Ethics and Fairness",
+          "success": true,
+          "message": "Review for paper paper_005 submitted successfully",
+          "thought_process": "In evaluating the paper titled 'Ethical Considerations in AI Development', I begin by examining the extent to which the authors have integrated ethical frameworks with technical AI development practices. Given the increasing relevance of ethical considerations in AI, especially in light of recent controversies surrounding bias, privacy, and accountability, it is crucial that this paper not only discusses ethical principles but also situates them within a broader interdisciplinary context that includes insights from philosophy, sociology, and law. I will assess whether the authors provide a robust analysis of existing ethical frameworks and their applicability to AI, as well as whether they propose novel approaches that could enhance ethical compliance in AI systems.\n\nNext, I will evaluate the technical quality of the paper, focusing on whether the methodologies proposed for ethical assessment are actionable and grounded in empirical evidence. I will be looking for a clear connection between the ethical principles discussed and the technical implementations suggested. This connection is vital for ensuring that the paper contributes meaningfully to the discourse on AI ethics, rather than remaining a theoretical discussion without practical implications.\n\nClarity is another critical aspect of my evaluation. The authors must convey complex ethical concepts and technical details in an accessible manner, making sure that both AI researchers and ethicists can understand and engage with the content. I will also consider the significance of the paper's contributions to the field of AI ethics as a whole, asking whether it addresses pressing ethical issues and whether its findings have the potential to influence future research and policy decisions. Finally, I will evaluate how well the authors situate their work within the existing literature, identifying gaps they aim to fill and engaging with previous work in both AI and ethics. This consideration will help me assess the reproducibility of their findings and suggestions, determining whether other researchers can build upon their work effectively. Overall, I will seek to provide a balanced review that acknowledges the paper's contributions while also highlighting areas for improvement."
+        },
+        {
+          "interaction": "complete_review",
+          "reviewer": "Dr_Data_Driven",
+          "reviewer_specialty": "Artificial Intelligence",
+          "paper_id": "paper_002",
+          "paper_field": "Robotics and Control Systems",
+          "success": true,
+          "message": "Review for paper paper_002 submitted successfully",
+          "thought_process": "In evaluating the paper on Reinforcement Learning in Robotic Control, I will first consider the novelty of the proposed methods and how they contribute to the existing body of knowledge in this area. I am particularly interested in how the authors address data quality and efficiency, as these are critical in real-world applications of reinforcement learning (RL) in robotics. Next, I will assess the technical quality of the methodology, ensuring that the techniques used are sound and appropriate for the problems they aim to solve. It's important to analyze whether the experiments are well-designed, whether they properly validate the claims made, and if they consider the limitations of data availability and quality.\n\nClarity is another major factor; the paper must effectively communicate complex ideas, especially in a field as intricate as RL. I will look for clear explanations of the RL algorithms, the experimental setup, and how results are interpreted. The significance of the work will also be examined, focusing on its potential impact on the field of robotic control and its practical applications.\n\nReproducibility is essential in research. I will check if the authors provide sufficient details about their experiments, including code, datasets, and hyperparameters, to ensure that other researchers can replicate their work. It is also important to evaluate how well the paper engages with related work, acknowledging existing literature and positioning itself within that context.\n\nOverall, I will take a balanced approach, highlighting strengths and weaknesses while ensuring that my review provides constructive feedback that could help improve the paper, especially regarding its treatment of data limitations, which is often overlooked in RL research."
+        },
+        {
+          "interaction": "request_review",
+          "requester": "Dr_Efficiency_AI",
+          "reviewer": "Dr_Data_Driven",
+          "paper_id": "paper_010",
+          "paper_field": "Artificial Intelligence",
+          "reviewer_specialty": "Artificial Intelligence",
+          "token_amount": 8,
+          "success": true,
+          "message": "Successfully transferred 8 tokens"
+        }
+      ],
+      "stats": {
+        "token_stats": {
+          "total_reviews_requested": 19,
+          "total_reviews_completed": 14,
+          "total_reviews_cancelled": 0,
+          "total_tokens_spent": 243,
+          "average_token_per_review": 12.789473684210526,
+          "researchers": {
+            "Dr_Efficiency_AI": {
+              "reviews_requested": 6,
+              "reviews_received": 0,
+              "tokens_spent": 55,
+              "tokens_earned": 0
+            },
+            "Dr_Data_Driven": {
+              "reviews_requested": 4,
+              "reviews_received": 5,
+              "tokens_spent": 64,
+              "tokens_earned": 49
+            },
+            "Dr_Ethical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 17
+            },
+            "Dr_Innovative_AI": {
+              "reviews_requested": 3,
+              "reviews_received": 3,
+              "tokens_spent": 54,
+              "tokens_earned": 27
+            },
+            "Dr_Practical_AI": {
+              "reviews_requested": 4,
+              "reviews_received": 0,
+              "tokens_spent": 47,
+              "tokens_earned": 0
+            },
+            "Dr_Conservative_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 5,
+              "tokens_spent": 0,
+              "tokens_earned": 69
+            },
+            "Dr_Empirical_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 4,
+              "tokens_spent": 0,
+              "tokens_earned": 72
+            },
+            "Dr_ML_Systems": {
+              "reviews_requested": 2,
+              "reviews_received": 0,
+              "tokens_spent": 23,
+              "tokens_earned": 0
+            },
+            "Dr_Interdisciplinary_AI": {
+              "reviews_requested": 0,
+              "reviews_received": 1,
+              "tokens_spent": 0,
+              "tokens_earned": 9
+            }
+          }
+        },
+        "paper_stats": {
+          "total_papers": 10,
+          "papers_by_status": {
+            "draft": 0,
+            "submitted": 0,
+            "in_review": 0,
+            "published": 10
+          }
+        },
+        "researcher_stats": {
+          "total_researchers": 10,
+          "researchers": {
+            "Dr_Theoretical_AI": {
+              "balance": 100,
+              "published_papers": 0,
+              "reviews_completed": 0
+            },
+            "Dr_Practical_AI": {
+              "balance": 53,
+              "published_papers": 1,
+              "reviews_completed": 0
+            },
+            "Dr_Empirical_AI": {
+              "balance": 202,
+              "published_papers": 0,
+              "reviews_completed": 2
+            },
+            "Dr_Innovative_AI": {
+              "balance": 118,
+              "published_papers": 2,
+              "reviews_completed": 3
+            },
+            "Dr_Conservative_AI": {
+              "balance": 229,
+              "published_papers": 1,
+              "reviews_completed": 4
+            },
+            "Dr_Interdisciplinary_AI": {
+              "balance": 124,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_Efficiency_AI": {
+              "balance": 45,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Ethical_AI": {
+              "balance": 132,
+              "published_papers": 0,
+              "reviews_completed": 1
+            },
+            "Dr_ML_Systems": {
+              "balance": 77,
+              "published_papers": 2,
+              "reviews_completed": 0
+            },
+            "Dr_Data_Driven": {
+              "balance": 130,
+              "published_papers": 2,
+              "reviews_completed": 3
+            }
+          }
+        },
+        "venue_stats": {
+          "total_venues": 4,
+          "venues_by_type": {
+            "Top Conference": 3,
+            "Mid Conference": 1
+          },
+          "venues_by_field": {
+            "Natural Language Processing": 2,
+            "Machine Learning": 2
+          },
+          "venues": [
+            {
+              "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+              "name": "ACL",
+              "type": "Top Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.05,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+              "name": "NeurIPS",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.2,
+              "prestige_score": 10,
+              "submissions": 0
+            },
+            {
+              "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+              "name": "ICLR",
+              "type": "Top Conference",
+              "field": "Machine Learning",
+              "acceptance_rate": 0.3,
+              "prestige_score": 9,
+              "submissions": 0
+            },
+            {
+              "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+              "name": "CoNLL",
+              "type": "Mid Conference",
+              "field": "Natural Language Processing",
+              "acceptance_rate": 0.35,
+              "prestige_score": 7,
+              "submissions": 0
+            }
+          ]
+        },
+        "leaderboard": [
+          {
+            "researcher_id": "Dr_Conservative_AI",
+            "balance": 229,
+            "published_papers": 1,
+            "reviews_completed": 4
+          },
+          {
+            "researcher_id": "Dr_Empirical_AI",
+            "balance": 202,
+            "published_papers": 0,
+            "reviews_completed": 2
+          },
+          {
+            "researcher_id": "Dr_Ethical_AI",
+            "balance": 132,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Data_Driven",
+            "balance": 130,
+            "published_papers": 2,
+            "reviews_completed": 3
+          },
+          {
+            "researcher_id": "Dr_Interdisciplinary_AI",
+            "balance": 124,
+            "published_papers": 0,
+            "reviews_completed": 1
+          },
+          {
+            "researcher_id": "Dr_Innovative_AI",
+            "balance": 118,
+            "published_papers": 2,
+            "reviews_completed": 3
+          },
+          {
+            "researcher_id": "Dr_Theoretical_AI",
+            "balance": 100,
+            "published_papers": 0,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_ML_Systems",
+            "balance": 77,
+            "published_papers": 2,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Practical_AI",
+            "balance": 53,
+            "published_papers": 1,
+            "reviews_completed": 0
+          },
+          {
+            "researcher_id": "Dr_Efficiency_AI",
+            "balance": 45,
+            "published_papers": 2,
+            "reviews_completed": 0
+          }
+        ]
+      }
+    }
+  ],
+  "final_stats": {
+    "token_stats": {
+      "total_reviews_requested": 19,
+      "total_reviews_completed": 14,
+      "total_reviews_cancelled": 0,
+      "total_tokens_spent": 243,
+      "average_token_per_review": 12.789473684210526,
+      "researchers": {
+        "Dr_Efficiency_AI": {
+          "reviews_requested": 6,
+          "reviews_received": 0,
+          "tokens_spent": 55,
+          "tokens_earned": 0
+        },
+        "Dr_Data_Driven": {
+          "reviews_requested": 4,
+          "reviews_received": 5,
+          "tokens_spent": 64,
+          "tokens_earned": 49
+        },
+        "Dr_Ethical_AI": {
+          "reviews_requested": 0,
+          "reviews_received": 1,
+          "tokens_spent": 0,
+          "tokens_earned": 17
+        },
+        "Dr_Innovative_AI": {
+          "reviews_requested": 3,
+          "reviews_received": 3,
+          "tokens_spent": 54,
+          "tokens_earned": 27
+        },
+        "Dr_Practical_AI": {
+          "reviews_requested": 4,
+          "reviews_received": 0,
+          "tokens_spent": 47,
+          "tokens_earned": 0
+        },
+        "Dr_Conservative_AI": {
+          "reviews_requested": 0,
+          "reviews_received": 5,
+          "tokens_spent": 0,
+          "tokens_earned": 69
+        },
+        "Dr_Empirical_AI": {
+          "reviews_requested": 0,
+          "reviews_received": 4,
+          "tokens_spent": 0,
+          "tokens_earned": 72
+        },
+        "Dr_ML_Systems": {
+          "reviews_requested": 2,
+          "reviews_received": 0,
+          "tokens_spent": 23,
+          "tokens_earned": 0
+        },
+        "Dr_Interdisciplinary_AI": {
+          "reviews_requested": 0,
+          "reviews_received": 1,
+          "tokens_spent": 0,
+          "tokens_earned": 9
+        }
+      }
+    },
+    "paper_stats": {
+      "total_papers": 10,
+      "papers_by_status": {
+        "draft": 0,
+        "submitted": 0,
+        "in_review": 0,
+        "published": 10
+      }
+    },
+    "researcher_stats": {
+      "total_researchers": 10,
+      "researchers": {
+        "Dr_Theoretical_AI": {
+          "balance": 100,
+          "published_papers": 0,
+          "reviews_completed": 0
+        },
+        "Dr_Practical_AI": {
+          "balance": 53,
+          "published_papers": 1,
+          "reviews_completed": 0
+        },
+        "Dr_Empirical_AI": {
+          "balance": 202,
+          "published_papers": 0,
+          "reviews_completed": 2
+        },
+        "Dr_Innovative_AI": {
+          "balance": 118,
+          "published_papers": 2,
+          "reviews_completed": 3
+        },
+        "Dr_Conservative_AI": {
+          "balance": 229,
+          "published_papers": 1,
+          "reviews_completed": 4
+        },
+        "Dr_Interdisciplinary_AI": {
+          "balance": 124,
+          "published_papers": 0,
+          "reviews_completed": 1
+        },
+        "Dr_Efficiency_AI": {
+          "balance": 45,
+          "published_papers": 2,
+          "reviews_completed": 0
+        },
+        "Dr_Ethical_AI": {
+          "balance": 132,
+          "published_papers": 0,
+          "reviews_completed": 1
+        },
+        "Dr_ML_Systems": {
+          "balance": 77,
+          "published_papers": 2,
+          "reviews_completed": 0
+        },
+        "Dr_Data_Driven": {
+          "balance": 130,
+          "published_papers": 2,
+          "reviews_completed": 3
+        }
+      }
+    },
+    "venue_stats": {
+      "total_venues": 4,
+      "venues_by_type": {
+        "Top Conference": 3,
+        "Mid Conference": 1
+      },
+      "venues_by_field": {
+        "Natural Language Processing": 2,
+        "Machine Learning": 2
+      },
+      "venues": [
+        {
+          "id": "0b2461a1-ec19-4273-b8bc-018abae60c1d",
+          "name": "ACL",
+          "type": "Top Conference",
+          "field": "Natural Language Processing",
+          "acceptance_rate": 0.05,
+          "prestige_score": 9,
+          "submissions": 0
+        },
+        {
+          "id": "34f5cf26-9d54-4f38-97dd-aa514ba65d76",
+          "name": "NeurIPS",
+          "type": "Top Conference",
+          "field": "Machine Learning",
+          "acceptance_rate": 0.2,
+          "prestige_score": 10,
+          "submissions": 0
+        },
+        {
+          "id": "d5d70266-bbca-4d15-a285-75196bbdeefd",
+          "name": "ICLR",
+          "type": "Top Conference",
+          "field": "Machine Learning",
+          "acceptance_rate": 0.3,
+          "prestige_score": 9,
+          "submissions": 0
+        },
+        {
+          "id": "e976cf53-eb17-4bfe-957e-d0119789c62e",
+          "name": "CoNLL",
+          "type": "Mid Conference",
+          "field": "Natural Language Processing",
+          "acceptance_rate": 0.35,
+          "prestige_score": 7,
+          "submissions": 0
+        }
+      ]
+    },
+    "leaderboard": [
+      {
+        "researcher_id": "Dr_Conservative_AI",
+        "balance": 229,
+        "published_papers": 1,
+        "reviews_completed": 4
+      },
+      {
+        "researcher_id": "Dr_Empirical_AI",
+        "balance": 202,
+        "published_papers": 0,
+        "reviews_completed": 2
+      },
+      {
+        "researcher_id": "Dr_Ethical_AI",
+        "balance": 132,
+        "published_papers": 0,
+        "reviews_completed": 1
+      },
+      {
+        "researcher_id": "Dr_Data_Driven",
+        "balance": 130,
+        "published_papers": 2,
+        "reviews_completed": 3
+      },
+      {
+        "researcher_id": "Dr_Interdisciplinary_AI",
+        "balance": 124,
+        "published_papers": 0,
+        "reviews_completed": 1
+      },
+      {
+        "researcher_id": "Dr_Innovative_AI",
+        "balance": 118,
+        "published_papers": 2,
+        "reviews_completed": 3
+      },
+      {
+        "researcher_id": "Dr_Theoretical_AI",
+        "balance": 100,
+        "published_papers": 0,
+        "reviews_completed": 0
+      },
+      {
+        "researcher_id": "Dr_ML_Systems",
+        "balance": 77,
+        "published_papers": 2,
+        "reviews_completed": 0
+      },
+      {
+        "researcher_id": "Dr_Practical_AI",
+        "balance": 53,
+        "published_papers": 1,
+        "reviews_completed": 0
+      },
+      {
+        "researcher_id": "Dr_Efficiency_AI",
+        "balance": 45,
+        "published_papers": 2,
+        "reviews_completed": 0
+      }
+    ]
+  }
+}

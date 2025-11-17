@@ -1,0 +1,11 @@
+{
+  "interaction": "request_review",
+  "requester": "Dr_Innovative_AI",
+  "reviewer": "Dr_Empirical_AI",
+  "paper_id": "paper_004",
+  "paper_field": "Theoretical Computer Science",
+  "reviewer_specialty": "Artificial Intelligence",
+  "token_amount": 15,
+  "success": true,
+  "message": "Successfully transferred 15 tokens"
+}
